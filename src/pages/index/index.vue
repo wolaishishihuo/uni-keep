@@ -11,6 +11,7 @@
 </route>
 
 <script lang="ts" setup>
+import dayjs from 'dayjs'
 import { useSafeArea } from '@/hooks/useSafeArea'
 
 defineOptions({
@@ -44,7 +45,7 @@ const remainingTimeDisplay = computed(() => {
 
 // 获取问候语
 function getGreeting() {
-  const hour = new Date().getHours()
+  const hour = dayjs().hour()
   if (hour < 6)
     return '夜深了'
   if (hour < 12)

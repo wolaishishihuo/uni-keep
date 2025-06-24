@@ -10,6 +10,7 @@
 
 <script lang="ts" setup>
 import { useSafeArea } from '@/hooks/useSafeArea'
+import { formatTime } from '@/utils/time'
 
 defineOptions({
   name: 'Weight',
@@ -210,7 +211,7 @@ onLoad(() => {
       <view class="records-list">
         <view v-for="(record, index) in weightHistory.slice(-3)" :key="index" class="record-item">
           <view class="record-date">
-            {{ record.date }}
+            {{ formatTime(record.date, 'MM-DD') }}
           </view>
           <view class="record-weight">
             {{ record.weight }}kg

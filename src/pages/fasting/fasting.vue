@@ -10,6 +10,7 @@
 
 <script lang="ts" setup>
 import { useSafeArea } from '@/hooks/useSafeArea'
+import { formatDuration, formatTime } from '@/utils/time'
 
 defineOptions({
   name: 'Fasting',
@@ -43,18 +44,10 @@ const currentStatus = ref({
 })
 
 // 计算已坚持时间显示
-const elapsedTimeDisplay = computed(() => {
-  const hours = Math.floor(currentStatus.value.elapsedTime / 3600)
-  const minutes = Math.floor((currentStatus.value.elapsedTime % 3600) / 60)
-  return `${hours}小时${minutes}分钟`
-})
+const elapsedTimeDisplay = computed(() => formatDuration(currentStatus.value.elapsedTime))
 
 // 计算剩余时间显示
-const remainingTimeDisplay = computed(() => {
-  const hours = Math.floor(currentStatus.value.remainingTime / 3600)
-  const minutes = Math.floor((currentStatus.value.remainingTime % 3600) / 60)
-  return `${hours}小时${minutes}分`
-})
+const remainingTimeDisplay = computed(() => formatDuration(currentStatus.value.remainingTime))
 
 // 历史记录数据
 const historyStats = ref({
@@ -150,7 +143,7 @@ onLoad(() => {
           </text>
         </view>
         <text class="schedule-value">
-          {{ fastingPlan.startDate }}
+          {{ formatTime(fastingPlan.startDate, 'YYYY-MM-DD') }}
         </text>
       </view>
     </view>
