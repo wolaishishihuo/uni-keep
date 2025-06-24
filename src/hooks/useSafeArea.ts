@@ -24,7 +24,6 @@ export function useSafeArea() {
   systemInfo = uni.getSystemInfoSync()
   safeAreaInsets = systemInfo.safeAreaInsets
   // #endif
-
   return {
     safeAreaInsets,
     systemInfo,

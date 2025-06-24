@@ -28,17 +28,13 @@
         "iconPath": "static/tabbar/home.png",
         "selectedIconPath": "static/tabbar/homeHL.png",
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "icon": "home",
-        "iconType": "uiLib"
+        "text": "首页"
       },
       {
         "iconPath": "static/tabbar/example.png",
         "selectedIconPath": "static/tabbar/exampleHL.png",
-        "pagePath": "pages/about/about",
-        "text": "关于",
-        "icon": "i-carbon-code",
-        "iconType": "unocss"
+        "pagePath": "pages/profile/profile",
+        "text": "个人中心"
       }
     ]
   },
@@ -58,6 +54,15 @@
       "layout": "tabbar",
       "style": {
         "navigationBarTitleText": "关于"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "type": "page",
+      "layout": "tabbar",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "个人中心"
       }
     }
   ],

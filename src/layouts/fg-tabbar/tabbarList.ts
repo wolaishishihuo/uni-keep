@@ -29,24 +29,11 @@ export const tabbarList = [
   {
     iconPath: 'static/tabbar/example.png',
     selectedIconPath: 'static/tabbar/exampleHL.png',
-    pagePath: 'pages/about/about',
-    text: '关于',
-    icon: 'i-carbon-code',
-    // 注意 unocss 的图标需要在 页面上引入一下，或者配置到 unocss.config.ts 的 safelist 中
-    iconType: 'unocss',
+    pagePath: 'pages/profile/profile',
+    text: '个人中心',
+    icon: 'user',
+    iconType: 'uiLib',
   },
-  // {
-  //   pagePath: 'pages/my/index',
-  //   text: '我的',
-  //   icon: '/static/logo.svg',
-  //   iconType: 'local',
-  // },
-  // {
-  //   pagePath: 'pages/mine/index',
-  //   text: '我的',
-  //   icon: 'iconfont icon-my',
-  //   iconType: 'iconfont',
-  // },
 ]
 
 const _tabbar = {
