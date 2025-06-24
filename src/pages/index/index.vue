@@ -257,7 +257,6 @@ onLoad(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  animation: rotate 2s linear infinite;
 }
 
 .timer-content {
@@ -389,15 +388,6 @@ onLoad(() => {
 
   &.active {
     color: #4ecdc4;
-  }
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 </style>
