@@ -4,8 +4,8 @@ module.exports = {
   printWidth: 100,
   tabWidth: 2,
   useTabs: false,
-  semi: false,
-  trailingComma: 'all',
+  semi: true,
+  trailingComma: 'none',
   endOfLine: 'auto',
   htmlWhitespaceSensitivity: 'ignore',
   overrides: [

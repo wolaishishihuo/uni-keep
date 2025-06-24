@@ -58,7 +58,11 @@ const _tabbar = {
   fontSize: '10px',
   iconWidth: '24px',
   spacing: '3px',
-  list: tabbarList,
+  list: tabbarList.map((item) => {
+    // 当使用原生 tabBar (strategy=0) 时，移除自定义字段，只保留微信小程序支持的字段
+    const { icon, iconType, ...validFields } = item
+    return validFields
+  }),
 }
 
 // 0和1 需要显示底部的tabbar的各种配置，以利用缓存
