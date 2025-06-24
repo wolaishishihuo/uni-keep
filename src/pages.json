@@ -16,7 +16,7 @@
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#018d71",
+    "selectedColor": "#4ecdc4",
     "backgroundColor": "#F8F8F8",
     "borderStyle": "black",
     "height": "50px",
@@ -33,8 +33,20 @@
       {
         "iconPath": "static/tabbar/example.png",
         "selectedIconPath": "static/tabbar/exampleHL.png",
+        "pagePath": "pages/fasting/fasting",
+        "text": "断食"
+      },
+      {
+        "iconPath": "static/tabbar/example.png",
+        "selectedIconPath": "static/tabbar/exampleHL.png",
+        "pagePath": "pages/weight/weight",
+        "text": "体重"
+      },
+      {
+        "iconPath": "static/tabbar/personal.png",
+        "selectedIconPath": "static/tabbar/personalHL.png",
         "pagePath": "pages/profile/profile",
-        "text": "个人中心"
+        "text": "我的"
       }
     ]
   },
@@ -45,7 +57,7 @@
       "layout": "tabbar",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "首页"
+        "navigationBarTitleText": "坚持有你"
       }
     },
     {
@@ -57,12 +69,30 @@
       }
     },
     {
+      "path": "pages/fasting/fasting",
+      "type": "page",
+      "layout": "tabbar",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "断食计划"
+      }
+    },
+    {
       "path": "pages/profile/profile",
       "type": "page",
       "layout": "tabbar",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "个人中心"
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/weight/weight",
+      "type": "page",
+      "layout": "tabbar",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "体重管理"
       }
     }
   ],

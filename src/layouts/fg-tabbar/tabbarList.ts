@@ -29,8 +29,24 @@ export const tabbarList = [
   {
     iconPath: 'static/tabbar/example.png',
     selectedIconPath: 'static/tabbar/exampleHL.png',
+    pagePath: 'pages/fasting/fasting',
+    text: '断食',
+    icon: 'clock',
+    iconType: 'uiLib',
+  },
+  {
+    iconPath: 'static/tabbar/example.png',
+    selectedIconPath: 'static/tabbar/exampleHL.png',
+    pagePath: 'pages/weight/weight',
+    text: '体重',
+    icon: 'chart-trend',
+    iconType: 'uiLib',
+  },
+  {
+    iconPath: 'static/tabbar/personal.png',
+    selectedIconPath: 'static/tabbar/personalHL.png',
     pagePath: 'pages/profile/profile',
-    text: '个人中心',
+    text: '我的',
     icon: 'user',
     iconType: 'uiLib',
   },
@@ -38,7 +54,7 @@ export const tabbarList = [
 
 const _tabbar = {
   color: '#999999',
-  selectedColor: '#018d71',
+  selectedColor: '#4ecdc4',
   backgroundColor: '#F8F8F8',
   borderStyle: 'black',
   height: '50px',
