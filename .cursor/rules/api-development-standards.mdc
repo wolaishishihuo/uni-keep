@@ -1,0 +1,576 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# API 开发规范
+
+## 概述
+
+本规范定义了项目中 API 接口开发的标准流程，包括接口定义、请求处理、错误处理、类型安全等方面的最佳实践。
+
+## 目录结构
+
+```
+src/
+├── api/                     # API 接口定义
+│   ├── login.ts            # 登录相关接口
+│   ├── login.typings.ts    # 登录接口类型定义
+│   └── ...
+├── service/                # 业务服务层
+│   ├── app/               # 应用服务
+│   │   ├── user.ts        # 用户服务
+│   │   ├── user.vuequery.ts # 用户服务 Vue Query 封装
+│   │   └── types.ts       # 类型定义
+│   └── index/
+├── hooks/                  # 请求相关 hooks
+│   ├── useRequest.ts      # 通用请求 hook
+│   └── useUpload.ts       # 上传文件 hook
+└── utils/
+    ├── request.ts         # 请求工具
+    └── http.ts           # HTTP 客户端
+```
+
+## API 接口定义规范
+
+### 1. 接口文件命名
+
+- 按功能模块命名：`[module].ts`
+- 类型定义文件：`[module].typings.ts`
+- 示例：[login.ts](mdc:src/api/login.ts) 和 [login.typings.ts](mdc:src/api/login.typings.ts)
+
+### 2. 接口定义格式
+
+```typescript
+// api/user.ts
+import type { UserInfo, LoginParams, LoginResponse } from './user.typings'
+
+/**
+ * 用户登录
+ * @param params 登录参数
+ * @returns 登录响应
+ */
+export const loginApi = (params: LoginParams): Promise<LoginResponse> => {
+  return http.post('/auth/login', params)
+}
+
+/**
+ * 获取用户信息
+ * @returns 用户信息
+ */
+export const getUserInfoApi = (): Promise<UserInfo> => {
+  return http.get('/user/info')
+}
+
+/**
+ * 更新用户信息
+ * @param data 用户信息
+ * @returns 更新结果
+ */
+export const updateUserInfoApi = (data: Partial<UserInfo>): Promise<void> => {
+  return http.put('/user/info', data)
+}
+```
+
+### 3. 类型定义规范
+
+```typescript
+// api/user.typings.ts
+
+/** 用户信息 */
+export interface UserInfo {
+  id: number
+  username: string
+  nickname: string
+  avatar?: string
+  email?: string
+  phone?: string
+  createTime: string
+  updateTime: string
+}
+
+/** 登录参数 */
+export interface LoginParams {
+  username: string
+  password: string
+  captcha?: string
+}
+
+/** 登录响应 */
+export interface LoginResponse {
+  token: string
+  refreshToken: string
+  userInfo: UserInfo
+  expires: number
+}
+
+/** API 响应基础结构 */
+export interface ApiResponse<T = any> {
+  code: number
+  message: string
+  data: T
+  success: boolean
+  timestamp: number
+}
+```
+
+## 业务服务层规范
+
+### 1. 服务文件结构
+
+```typescript
+// service/app/user.ts
+import { loginApi, getUserInfoApi } from '@/api/login'
+import type { LoginParams, UserInfo } from '@/api/login.typings'
+
+export class UserService {
+  /**
+   * 用户登录
+   */
+  static async login(params: LoginParams) {
+    try {
+      const response = await loginApi(params)
+      // 登录成功后的业务处理
+      this.saveToken(response.token)
+      return response
+    } catch (error) {
+      // 错误处理
+      throw new Error('登录失败')
+    }
+  }
+
+  /**
+   * 获取用户信息
+   */
+  static async getUserInfo(): Promise<UserInfo> {
+    const userInfo = await getUserInfoApi()
+    // 业务逻辑处理
+    return userInfo
+  }
+
+  /**
+   * 保存 Token
+   */
+  private static saveToken(token: string) {
+    uni.setStorageSync('token', token)
+  }
+}
+```
+
+### 2. Vue Query 集成
+
+```typescript
+// service/app/user.vuequery.ts
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
+import { UserService } from './user'
+import type { LoginParams } from '@/api/login.typings'
+
+/** 查询键 */
+export const userQueryKeys = {
+  all: ['user'] as const,
+  info: () => [...userQueryKeys.all, 'info'] as const,
+}
+
+/**
+ * 获取用户信息 Query
+ */
+export const useUserInfoQuery = () => {
+  return useQuery({
+    queryKey: userQueryKeys.info(),
+    queryFn: UserService.getUserInfo,
+    staleTime: 5 * 60 * 1000, // 5分钟
+  })
+}
+
+/**
+ * 用户登录 Mutation
+ */
+export const useLoginMutation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (params: LoginParams) => UserService.login(params),
+    onSuccess: () => {
+      // 登录成功后刷新用户信息
+      queryClient.invalidateQueries({ queryKey: userQueryKeys.info() })
+    },
+    onError: (error) => {
+      console.error('登录失败:', error)
+    },
+  })
+}
+```
+
+## 请求封装规范
+
+### 1. HTTP 客户端配置
+
+使用统一的请求客户端 [src/utils/http.ts](mdc:src/utils/http.ts)：
+
+```typescript
+// utils/http.ts
+class HttpClient {
+  private baseURL: string
+  private timeout: number
+
+  constructor(config: HttpConfig) {
+    this.baseURL = config.baseURL
+    this.timeout = config.timeout || 10000
+  }
+
+  async get<T>(url: string, params?: any): Promise<T> {
+    return this.request('GET', url, { params })
+  }
+
+  async post<T>(url: string, data?: any): Promise<T> {
+    return this.request('POST', url, { data })
+  }
+
+  async put<T>(url: string, data?: any): Promise<T> {
+    return this.request('PUT', url, { data })
+  }
+
+  async delete<T>(url: string, params?: any): Promise<T> {
+    return this.request('DELETE', url, { params })
+  }
+
+  private async request<T>(method: string, url: string, options: any): Promise<T> {
+    // 请求拦截器
+    const config = this.interceptRequest(method, url, options)
+    
+    try {
+      const response = await uni.request(config)
+      return this.interceptResponse(response)
+    } catch (error) {
+      throw this.handleError(error)
+    }
+  }
+}
+```
+
+### 2. 请求拦截器
+
+```typescript
+// 请求拦截器
+private interceptRequest(method: string, url: string, options: any) {
+  const token = uni.getStorageSync('token')
+  
+  return {
+    url: this.baseURL + url,
+    method: method as any,
+    timeout: this.timeout,
+    header: {
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : '',
+      ...options.headers,
+    },
+    data: options.data || options.params,
+  }
+}
+
+// 响应拦截器
+private interceptResponse(response: any) {
+  const { statusCode, data } = response
+
+  if (statusCode === 200) {
+    if (data.success) {
+      return data.data
+    } else {
+      throw new ApiError(data.message, data.code)
+    }
+  } else {
+    throw new HttpError(`HTTP ${statusCode}`, statusCode)
+  }
+}
+```
+
+## Hooks 使用规范
+
+### 1. useRequest Hook
+
+```typescript
+// hooks/useRequest.ts
+import { ref, reactive } from 'vue'
+
+export interface UseRequestOptions<T> {
+  immediate?: boolean
+  onSuccess?: (data: T) => void
+  onError?: (error: Error) => void
+}
+
+export function useRequest<T>(
+  api: () => Promise<T>,
+  options: UseRequestOptions<T> = {}
+) {
+  const data = ref<T>()
+  const loading = ref(false)
+  const error = ref<Error>()
+
+  const execute = async () => {
+    try {
+      loading.value = true
+      error.value = undefined
+      
+      const result = await api()
+      data.value = result
+      
+      options.onSuccess?.(result)
+      return result
+    } catch (err) {
+      error.value = err as Error
+      options.onError?.(err as Error)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  if (options.immediate !== false) {
+    execute()
+  }
+
+  return {
+    data: readonly(data),
+    loading: readonly(loading),
+    error: readonly(error),
+    execute,
+    refresh: execute,
+  }
+}
+```
+
+### 2. 在组件中使用
+
+```vue
+<script setup lang="ts">
+import { useRequest } from '@/hooks/useRequest'
+import { getUserInfoApi } from '@/api/user'
+
+// 方式1：使用 useRequest
+const { data: userInfo, loading, error, refresh } = useRequest(getUserInfoApi)
+
+// 方式2：使用 Vue Query
+const { data: userInfo2, isLoading } = useUserInfoQuery()
+
+// 方式3：手动调用
+const handleLogin = async () => {
+  try {
+    const result = await loginApi(loginForm)
+    // 处理登录结果
+  } catch (error) {
+    // 处理错误
+  }
+}
+</script>
+```
+
+## 错误处理规范
+
+### 1. 错误类型定义
+
+```typescript
+// utils/errors.ts
+
+/** API 错误 */
+export class ApiError extends Error {
+  public code: number
+  
+  constructor(message: string, code: number) {
+    super(message)
+    this.name = 'ApiError'
+    this.code = code
+  }
+}
+
+/** HTTP 错误 */
+export class HttpError extends Error {
+  public status: number
+  
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'HttpError'
+    this.status = status
+  }
+}
+
+/** 网络错误 */
+export class NetworkError extends Error {
+  constructor(message: string = '网络连接失败') {
+    super(message)
+    this.name = 'NetworkError'
+  }
+}
+```
+
+### 2. 全局错误处理
+
+```typescript
+// interceptors/request.ts
+export const setupErrorHandler = () => {
+  // 全局错误处理
+  const handleGlobalError = (error: Error) => {
+    if (error instanceof ApiError) {
+      switch (error.code) {
+        case 401:
+          // 未授权，跳转登录
+          uni.navigateTo({ url: '/pages/login/login' })
+          break
+        case 403:
+          uni.showToast({ title: '权限不足', icon: 'none' })
+          break
+        case 500:
+          uni.showToast({ title: '服务器错误', icon: 'none' })
+          break
+        default:
+          uni.showToast({ title: error.message, icon: 'none' })
+      }
+    } else if (error instanceof NetworkError) {
+      uni.showToast({ title: '网络连接失败', icon: 'none' })
+    } else {
+      uni.showToast({ title: '未知错误', icon: 'none' })
+    }
+  }
+
+  return { handleGlobalError }
+}
+```
+
+## OpenAPI 集成
+
+### 1. 配置文件
+
+参考 [openapi-ts-request.config.ts](mdc:openapi-ts-request.config.ts) 配置：
+
+```typescript
+export default {
+  // OpenAPI 文档地址
+  schemaPath: 'http://localhost:3000/api-docs',
+  // 生成的代码输出目录
+  serversPath: './src/service',
+  // 请求库
+  requestLibPath: '@/utils/request',
+}
+```
+
+### 2. 自动生成类型
+
+```bash
+# 根据 OpenAPI 文档生成 API 代码和类型
+pnpm openapi-ts-request
+```
+
+## 性能优化
+
+### 1. 请求缓存
+
+- 使用 Vue Query 进行数据缓存
+- 设置合适的 `staleTime` 和 `cacheTime`
+- 实现智能的缓存失效策略
+
+### 2. 请求合并
+
+```typescript
+// 批量请求处理
+export const batchRequest = async <T>(requests: Promise<T>[]): Promise<T[]> => {
+  try {
+    return await Promise.all(requests)
+  } catch (error) {
+    // 处理批量请求错误
+    throw error
+  }
+}
+```
+
+### 3. 请求取消
+
+```typescript
+// 支持请求取消
+export const useRequestWithCancel = <T>(api: (signal: AbortSignal) => Promise<T>) => {
+  const abortController = ref<AbortController>()
+
+  const execute = async () => {
+    // 取消上一个请求
+    abortController.value?.abort()
+    
+    // 创建新的 AbortController
+    abortController.value = new AbortController()
+    
+    try {
+      return await api(abortController.value.signal)
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('请求已取消')
+      } else {
+        throw error
+      }
+    }
+  }
+
+  const cancel = () => {
+    abortController.value?.abort()
+  }
+
+  return { execute, cancel }
+}
+```
+
+## 测试规范
+
+### 1. API 测试
+
+```typescript
+// __tests__/api/user.test.ts
+import { describe, it, expect, vi } from 'vitest'
+import { loginApi, getUserInfoApi } from '@/api/user'
+
+describe('User API', () => {
+  it('should login successfully', async () => {
+    const mockResponse = {
+      token: 'mock-token',
+      userInfo: { id: 1, username: 'test' }
+    }
+
+    // Mock 请求
+    vi.mocked(http.post).mockResolvedValue(mockResponse)
+
+    const result = await loginApi({
+      username: 'test',
+      password: 'password'
+    })
+
+    expect(result).toEqual(mockResponse)
+  })
+})
+```
+
+### 2. Service 测试
+
+```typescript
+// __tests__/service/user.test.ts
+import { describe, it, expect } from 'vitest'
+import { UserService } from '@/service/app/user'
+
+describe('UserService', () => {
+  it('should handle login flow', async () => {
+    const loginParams = {
+      username: 'test',
+      password: 'password'
+    }
+
+    const result = await UserService.login(loginParams)
+    
+    expect(result.token).toBeDefined()
+    expect(result.userInfo).toBeDefined()
+  })
+})
+```
+
+## 最佳实践
+
+1. **类型安全** - 充分利用 TypeScript 类型检查
+2. **错误处理** - 统一错误处理和用户提示
+3. **请求优化** - 合理使用缓存和请求合并
+4. **代码复用** - 提取公共逻辑到 Service 层
+5. **测试覆盖** - 重要接口必须有测试覆盖
+6. **文档维护** - API 变更及时更新文档
+7. **性能监控** - 监控接口响应时间和成功率

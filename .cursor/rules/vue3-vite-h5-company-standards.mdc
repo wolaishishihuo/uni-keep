@@ -1,0 +1,246 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Vue3 + Vite + uni-app 小程序开发规范
+
+## 项目概述
+
+这是一个基于 **uni-app** 的跨平台小程序项目，使用 Vue3 + Vite + TypeScript 技术栈，支持编译为微信小程序、H5、App 等多端应用。
+
+## 技术栈
+
+- **框架**: uni-app (基于 Vue3)
+- **构建工具**: Vite 5.2.8
+- **语言**: TypeScript 5.7.2
+- **状态管理**: Pinia 2.0.36 + pinia-plugin-persistedstate
+- **数据请求**: @tanstack/vue-query
+- **UI组件库**: wot-design-uni
+- **样式方案**: UnoCSS + SCSS
+- **代码规范**: ESLint + Prettier
+- **提交规范**: commitlint + husky
+- **分页组件**: z-paging
+
+## 项目结构
+
+```
+src/
+├── api/                    # API 接口定义
+├── components/             # 公共组件
+├── hooks/                 # 组合式函数
+├── interceptors/          # 拦截器
+├── layouts/               # 布局组件
+├── pages/                 # 页面文件
+├── pages-sub/             # 子包页面
+├── service/               # 业务服务层
+├── static/                # 静态资源
+├── store/                 # 状态管理
+├── style/                 # 全局样式
+├── utils/                 # 工具函数
+└── uni_modules/           # uni-app 插件
+```
+
+## 核心配置文件
+
+- [pages.json](mdc:src/pages.json) - 页面路由配置
+- [manifest.json](mdc:src/manifest.json) - 应用配置清单
+- [App.vue](mdc:src/App.vue) - 应用入口文件
+- [main.ts](mdc:src/main.ts) - 主入口文件
+- [vite.config.ts](mdc:vite.config.ts) - Vite 配置
+- [uno.config.ts](mdc:uno.config.ts) - UnoCSS 配置
+
+## 开发规范
+
+### 1. 代码风格
+
+- 使用 **@antfu/eslint-config** 规范
+- 启用 TypeScript 严格模式
+- 使用组合式 API (Composition API)
+- 遵循 Vue3 单文件组件规范
+
+### 2. 组件开发
+
+```vue
+<template>
+  <view class="component-name">
+    <!-- 使用 uni-app 标签 -->
+  </view>
+</template>
+
+<script setup lang="ts">
+// 使用 setup 语法糖
+import { ref, computed } from 'vue'
+
+// 定义 props 类型
+interface Props {
+  title: string
+  count?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  count: 0
+})
+
+// 定义 emits
+const emit = defineEmits<{
+  change: [value: string]
+}>()
+</script>
+
+<style lang="scss" scoped>
+.component-name {
+  /* 使用 UnoCSS 原子化类名或 SCSS */
+}
+</style>
+```
+
+### 3. 页面开发
+
+- 页面文件放在 [src/pages/](mdc:src/pages) 目录
+- 子包页面放在 [src/pages-sub/](mdc:src/pages-sub) 目录
+- 使用 [pages.config.ts](mdc:pages.config.ts) 自动生成页面配置
+- 页面组件使用 `definePageMeta` 定义页面元信息
+
+### 4. API 请求
+
+使用统一的请求封装 [src/utils/request.ts](mdc:src/utils/request.ts)：
+
+```typescript
+import { useRequest } from '@/hooks/useRequest'
+
+// 在组件中使用
+const { data, loading, error } = useRequest('/api/user/info')
+```
+
+### 5. 状态管理
+
+使用 Pinia + 持久化插件：
+
+```typescript
+// store/user.ts
+import { defineStore } from 'pinia'
+
+export const useUserStore = defineStore('user', () => {
+  const userInfo = ref(null)
+  
+  const getUserInfo = async () => {
+    // 获取用户信息
+  }
+  
+  return {
+    userInfo,
+    getUserInfo
+  }
+}, {
+  persist: true // 启用持久化
+})
+```
+
+### 6. 样式规范
+
+- 优先使用 UnoCSS 原子化类名
+- 复杂样式使用 SCSS
+- 全局样式定义在 [src/style/](mdc:src/style) 目录
+- 使用 CSS 变量定义主题色彩
+
+### 7. 类型定义
+
+- 全局类型定义在 [src/typings.ts](mdc:src/typings.ts)
+- API 类型定义在对应的 `.typings.ts` 文件
+- 使用 `openapi-ts-request` 自动生成 API 类型
+
+## 跨平台兼容性
+
+### 1. 条件编译
+
+```vue
+<!-- #ifdef MP-WEIXIN -->
+<!-- 微信小程序特有代码 -->
+<!-- #endif -->
+
+<!-- #ifdef H5 -->
+<!-- H5 特有代码 -->
+<!-- #endif -->
+```
+
+### 2. 平台判断
+
+使用工具函数 [src/utils/platform.ts](mdc:src/utils/platform.ts)：
+
+```typescript
+import { isH5, isMp, isApp } from '@/utils/platform'
+
+if (isH5()) {
+  // H5 特有逻辑
+}
+```
+
+## 构建和部署
+
+### 开发命令
+
+- `pnpm dev` - H5 开发
+- `pnpm dev:mp-weixin` - 微信小程序开发
+- `pnpm dev:app` - App 开发
+
+### 构建命令
+
+- `pnpm build` - H5 构建
+- `pnpm build:mp-weixin` - 微信小程序构建
+- `pnpm build:app` - App 构建
+
+## 代码提交规范
+
+使用 Conventional Commits 规范：
+
+- `feat` - 新功能
+- `fix` - 修复 bug
+- `docs` - 文档变更
+- `style` - 代码格式化
+- `refactor` - 重构
+- `test` - 测试相关
+- `chore` - 构建过程或辅助工具变动
+
+## 性能优化
+
+### 1. 分包加载
+
+- 主包大小控制在 2MB 以内
+- 使用分包预下载
+- 按业务模块划分子包
+
+### 2. 图片优化
+
+- 小图标使用 iconfont
+- 大图片放在 CDN
+- 使用 webp 格式（H5端）
+
+### 3. 代码优化
+
+- 使用 Tree Shaking
+- 组件懒加载
+- 避免全局引入大型库
+
+## 最佳实践
+
+1. **组件化开发** - 提取可复用组件到 [src/components/](mdc:src/components)
+2. **hooks 复用** - 业务逻辑封装到 [src/hooks/](mdc:src/hooks)
+3. **类型安全** - 充分利用 TypeScript 类型检查
+4. **错误处理** - 统一错误处理和用户提示
+5. **性能监控** - 关注页面加载时间和内存使用
+
+## 调试技巧
+
+- 使用 uni-app 开发者工具
+- 启用 sourcemap 调试
+- 使用 Vue Devtools (H5端)
+- 小程序真机调试
+
+## 注意事项
+
+1. **兼容性** - 注意各平台 API 差异
+2. **性能** - 避免频繁 setData (小程序)
+3. **安全** - 敏感信息不要硬编码
+4. **用户体验** - 适配不同屏幕尺寸
+5. **审核** - 遵循各平台审核规范
