@@ -1,4 +1,4 @@
-import type { UnwrapRef } from 'vue'
+import type { Ref, UnwrapRef } from 'vue'
 
 interface IUseRequestOptions<T> {
   /** 是否立即执行 */
@@ -18,7 +18,12 @@ interface IUseRequestOptions<T> {
 export default function useRequest<T>(
   func: () => Promise<IResData<T>>,
   options: IUseRequestOptions<T> = { immediate: false },
-) {
+): {
+    loading: Ref<boolean>
+    error: Ref<boolean>
+    data: Ref<any, any> | Ref<T, T> | Ref<UnwrapRef<T>, T | UnwrapRef<T>>
+    run: () => Promise<T>
+  } {
   const loading = ref(false)
   const error = ref(false)
   const data = ref<T>(options.initialData)

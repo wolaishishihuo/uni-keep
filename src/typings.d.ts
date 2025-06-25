@@ -23,6 +23,7 @@ declare global {
     openid?: string
     token?: string
   }
+  const __UNI_PLATFORM__: string
 }
 
 export {} // 防止模块污染
