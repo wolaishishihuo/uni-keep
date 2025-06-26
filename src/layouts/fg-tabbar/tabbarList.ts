@@ -9,10 +9,10 @@
  */
 
 // TODO：通过这里切换使用tabbar的策略
-export const selectedTabbarStrategy = 0
+export const selectedTabbarStrategy = 0;
 
 // 0 和 1 时，需要tabbar缓存
-export const cacheTabbarEnable = selectedTabbarStrategy < 2
+export const cacheTabbarEnable = selectedTabbarStrategy < 2;
 
 // selectedTabbarStrategy==0 时，需要填 iconPath 和 selectedIconPath
 // selectedTabbarStrategy==1 or 2 时，需要填 icon 和 iconType
@@ -24,23 +24,23 @@ export const tabbarList = [
     pagePath: 'pages/index/index',
     text: '首页',
     icon: 'home',
-    iconType: 'uiLib',
+    iconType: 'uiLib'
   },
   {
-    iconPath: 'static/tabbar/example.png',
-    selectedIconPath: 'static/tabbar/exampleHL.png',
+    iconPath: 'static/tabbar/fasting.png',
+    selectedIconPath: 'static/tabbar/fastingHL.png',
     pagePath: 'pages/fasting/fasting',
     text: '断食',
     icon: 'clock',
-    iconType: 'uiLib',
+    iconType: 'uiLib'
   },
   {
-    iconPath: 'static/tabbar/example.png',
-    selectedIconPath: 'static/tabbar/exampleHL.png',
+    iconPath: 'static/tabbar/weight.png',
+    selectedIconPath: 'static/tabbar/weightHL.png',
     pagePath: 'pages/weight/weight',
     text: '体重',
     icon: 'chart-trend',
-    iconType: 'uiLib',
+    iconType: 'uiLib'
   },
   {
     iconPath: 'static/tabbar/personal.png',
@@ -48,9 +48,9 @@ export const tabbarList = [
     pagePath: 'pages/profile/profile',
     text: '我的',
     icon: 'user',
-    iconType: 'uiLib',
-  },
-]
+    iconType: 'uiLib'
+  }
+];
 
 const _tabbar = {
   color: '#999999',
@@ -63,10 +63,10 @@ const _tabbar = {
   spacing: '3px',
   list: tabbarList.map((item) => {
     // 当使用原生 tabBar (strategy=0) 时，移除自定义字段，只保留微信小程序支持的字段
-    const { icon, iconType, ...validFields } = item
-    return validFields
-  }),
-}
+    const { icon, iconType, ...validFields } = item;
+    return validFields;
+  })
+};
 
 // 0和1 需要显示底部的tabbar的各种配置，以利用缓存
-export const tabBar = cacheTabbarEnable ? _tabbar : undefined
+export const tabBar = cacheTabbarEnable ? _tabbar : undefined;

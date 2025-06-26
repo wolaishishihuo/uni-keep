@@ -36,10 +36,10 @@ const fastingState = ref({
 });
 
 // 进度条颜色配置
-const gradientColor = { from: '#ff9800', to: '#ff5722' };
+const gradientColor = { 0: '#ff9800', 100: '#ff5722' };
 
 // 使用断食计时器 Hook（统一的数据源）
-const { percent, remainingText, statusText, descText, isFasting, isEating } = useFastingTimer(
+const { percent, statusText, descText } = useFastingTimer(
   fastingState.value.eatingWindow
 );
 

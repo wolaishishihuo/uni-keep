@@ -16,7 +16,7 @@
   },
   "tabBar": {
     "color": "#999999",
-    "selectedColor": "#4ecdc4",
+    "selectedColor": "#4195e1",
     "backgroundColor": "#F8F8F8",
     "borderStyle": "black",
     "height": "50px",
@@ -31,14 +31,14 @@
         "text": "首页"
       },
       {
-        "iconPath": "static/tabbar/example.png",
-        "selectedIconPath": "static/tabbar/exampleHL.png",
+        "iconPath": "static/tabbar/fasting.png",
+        "selectedIconPath": "static/tabbar/fastingHL.png",
         "pagePath": "pages/fasting/fasting",
         "text": "断食"
       },
       {
-        "iconPath": "static/tabbar/example.png",
-        "selectedIconPath": "static/tabbar/exampleHL.png",
+        "iconPath": "static/tabbar/weight.png",
+        "selectedIconPath": "static/tabbar/weightHL.png",
         "pagePath": "pages/weight/weight",
         "text": "体重"
       },
