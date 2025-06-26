@@ -45,34 +45,11 @@
     text-align: center;
     margin-bottom: 40rpx;
     backdrop-filter: blur(10rpx);
-    .timer-circle {
-      width: 240rpx;
-      height: 240rpx;
-      border: 12rpx solid rgba(255, 255, 255, 0.3);
-      border-top: 12rpx solid white;
-      border-radius: 50%;
-      margin: 0 auto 30rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      .timer-content {
-        text-align: center;
-        .timer-time {
-          display: block;
-          font-size: 36rpx;
-          font-weight: bold;
-          margin-bottom: 10rpx;
-        }
-        .timer-status {
-          font-size: 24rpx;
-          opacity: 0.8;
-        }
-      }
-    }
     .timer-description {
+      text-align: center;
+      margin-top: 20rpx;
       font-size: 28rpx;
-      opacity: 0.9;
+      color: #999;
     }
   }
 

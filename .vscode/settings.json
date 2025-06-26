@@ -1,6 +1,6 @@
 {
-  // 默认格式化工具选择prettier
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // 默认格式化工具选择ESLint
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
 
   // 配置stylelint检查的文件类型范围
   "stylelint.validate": ["css", "scss", "vue", "html"], // 与package.json的scripts对应
@@ -15,13 +15,13 @@
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
   "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   // 配置语言的文件关联
   "files.associations": {
@@ -53,28 +53,17 @@
     "README.md": "index.html,favicon.ico,robots.txt,CHANGELOG.md",
     "pages.config.ts": "manifest.config.ts,openapi-ts-request.config.ts",
     "package.json": "pnpm-lock.yaml,pnpm-workspace.yaml,LICENSE,.gitattributes,.gitignore,.gitpod.yml,CNAME,.npmrc,.browserslistrc",
-    "eslint.config.mjs": "tsconfig.json,.commitlintrc.*,.prettier*,.editorconfig,.commitlint.cjs,.eslint*"
+    "eslint.config.mjs": "tsconfig.json,.commitlintrc.*,.editorconfig,.commitlint.cjs,.eslint*"
   },
 
-  // 保存的时候自动格式化
-  "prettier.enable": true,
+  // 使用 ESLint 作为唯一格式化工具
   "editor.formatOnSave": true,
-  // 开启自动修复
+
+  // 使用 ESLint 自动修复作为格式化
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
     "source.fixAll.eslint": "explicit",
-    "source.fixAll.stylelint": "explicit"
+    "source.organizeImports": "never"
   },
-
-  // Disable the default formatter, use eslint instead
-  // "prettier.enable": false,
-  // "editor.formatOnSave": false,
-
-  // Auto fix
-  // "editor.codeActionsOnSave": {
-  //   "source.fixAll.eslint": "explicit",
-  //   "source.organizeImports": "never"
-  // },
 
   // Silent the stylistic rules in you IDE, but still auto fix them
   "eslint.rules.customizations": [

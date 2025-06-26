@@ -11,84 +11,84 @@
 </route>
 
 <script lang="ts" setup>
-import dayjs from 'dayjs'
-import { useSafeArea } from '@/hooks/useSafeArea'
+import dayjs from 'dayjs';
+import { useSafeArea } from '@/hooks/useSafeArea';
+import { useFastingTimer } from '@/pages/index/hooks/useFastingTimer';
 
 defineOptions({
-  name: 'Home',
-})
+  name: 'Home'
+});
 
 // 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = useSafeArea()
+const { safeAreaInsets } = useSafeArea();
 
 // 用户信息
 const userInfo = ref({
   name: '小明',
-  partner: '小红',
-})
+  partner: '小红'
+});
 
-// 断食状态
+// 断食状态配置
 const fastingState = ref({
-  isFasting: true,
-  remainingTime: 5 * 3600 + 32 * 60, // 5小时32分钟（秒）
   fastingHours: 16,
   eatingHours: 8,
-  eatingWindow: '10:00 - 18:00',
-})
+  eatingWindow: '08:00 - 16:00'
+});
 
-// 计算剩余时间显示
-const remainingTimeDisplay = computed(() => {
-  const hours = Math.floor(fastingState.value.remainingTime / 3600)
-  const minutes = Math.floor((fastingState.value.remainingTime % 3600) / 60)
-  return `${hours}小时${minutes}分`
-})
+// 进度条颜色配置
+const gradientColor = { from: '#ff9800', to: '#ff5722' };
+
+// 使用断食计时器 Hook（统一的数据源）
+const { percent, remainingText, statusText, descText, isFasting, isEating } = useFastingTimer(
+  fastingState.value.eatingWindow
+);
 
 // 获取问候语
 function getGreeting() {
-  const hour = dayjs().hour()
+  const hour = dayjs().hour();
   if (hour < 6)
-    return '夜深了'
+    return '夜深了';
   if (hour < 12)
-    return '早安'
+    return '早安';
   if (hour < 18)
-    return '下午好'
-  return '晚上好'
+    return '下午好';
+  return '晚上好';
 }
 
-const greeting = computed(() => getGreeting())
+const greeting = computed(() => getGreeting());
 
 // 快速操作
 const quickActions = [
   { icon: '📊', text: '记录体重', action: 'recordWeight' },
   { icon: '💧', text: '喝水记录', action: 'recordWater' },
   { icon: '🏃‍♂️', text: '运动打卡', action: 'recordExercise' },
-  { icon: '❤️', text: '情侣互动', action: 'coupleInteraction' },
-]
+  { icon: '❤️', text: '情侣互动', action: 'coupleInteraction' }
+];
 
 // 处理快速操作点击
 function handleQuickAction(action: string) {
   switch (action) {
     case 'recordWeight':
-      uni.navigateTo({ url: '/pages/weight/record' })
-      break
+      uni.navigateTo({ url: '/pages/weight/record' });
+      break;
     case 'recordWater':
       // TODO: 实现喝水记录
-      uni.showToast({ title: '功能开发中', icon: 'none' })
-      break
+      uni.showToast({ title: '功能开发中', icon: 'none' });
+      break;
     case 'recordExercise':
       // TODO: 实现运动打卡
-      uni.showToast({ title: '功能开发中', icon: 'none' })
-      break
+      uni.showToast({ title: '功能开发中', icon: 'none' });
+      break;
     case 'coupleInteraction':
-      uni.navigateTo({ url: '/pages/couple/interaction' })
-      break
+      uni.navigateTo({ url: '/pages/couple/interaction' });
+      break;
   }
 }
 
 // 页面加载
 onLoad(() => {
-  console.log('首页加载完成')
-})
+  console.log('首页加载完成');
+});
 </script>
 
 <template>
@@ -108,17 +108,14 @@ onLoad(() => {
     <!-- 断食计时器 -->
     <view class="fasting-timer">
       <view class="timer-circle">
-        <view class="timer-content">
-          <text class="timer-time">
-            {{ remainingTimeDisplay }}
-          </text>
-          <text class="timer-status">
-            {{ fastingState.isFasting ? '断食中' : '进食中' }}
-          </text>
-        </view>
+        <wd-circle v-model="percent" :color="gradientColor">
+          <view class="timer-content">
+            {{ statusText }}
+          </view>
+        </wd-circle>
       </view>
       <text class="timer-description">
-        {{ fastingState.isFasting ? '距离进食窗口还有' : '距离断食开始还有' }}
+        {{ descText }}
       </text>
     </view>
 

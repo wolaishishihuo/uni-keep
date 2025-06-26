@@ -73,7 +73,9 @@
     "openapi-ts-request": "openapi-ts",
     "prepare": "git init && husky",
     "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "format": "eslint --fix .",
+    "format:check": "eslint ."
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-4060620250520001",
@@ -139,7 +141,6 @@
     "postcss": "^8.4.49",
     "postcss-html": "^1.7.0",
     "postcss-scss": "^4.0.9",
-    "prettier": "^3.5.3",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "1.77.8",
     "terser": "^5.36.0",
@@ -154,6 +155,6 @@
     "bin-wrapper": "npm:bin-wrapper-china"
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*.{js,jsx,ts,tsx,vue}": "eslint --fix --max-warnings=0"
   }
 }
