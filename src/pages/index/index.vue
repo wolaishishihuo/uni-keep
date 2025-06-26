@@ -105,8 +105,8 @@ onLoad(() => {
       </view>
     </view>
 
-    <!-- 断食计时器 -->
-    <view class="fasting-timer">
+    <!-- 断食计时器 - 使用组合样式类 -->
+    <view class="fasting-timer keep-glass-card">
       <view class="timer-circle">
         <wd-circle v-model="percent" :color="gradientColor">
           <view class="timer-content">
@@ -119,9 +119,9 @@ onLoad(() => {
       </text>
     </view>
 
-    <!-- 今日概览 -->
+    <!-- 今日概览 - 使用组合样式类 -->
     <view class="daily-overview">
-      <view class="overview-item">
+      <view class="overview-item keep-glass-card-light">
         <text class="overview-label">
           进食窗口
         </text>
@@ -129,7 +129,7 @@ onLoad(() => {
           {{ fastingState.eatingWindow }}
         </text>
       </view>
-      <view class="overview-item">
+      <view class="overview-item keep-glass-card-light">
         <text class="overview-label">
           今日坚持
         </text>
@@ -139,7 +139,7 @@ onLoad(() => {
       </view>
     </view>
 
-    <!-- 快速操作 -->
+    <!-- 快速操作 - 使用组合样式类 -->
     <view class="quick-actions">
       <view class="quick-actions-title">
         快速操作
@@ -148,7 +148,7 @@ onLoad(() => {
         <view
           v-for="action in quickActions"
           :key="action.action"
-          class="action-item"
+          class="keep-glass-card-light action-item"
           @click="handleQuickAction(action.action)"
         >
           <text class="action-icon">
@@ -161,8 +161,8 @@ onLoad(() => {
       </view>
     </view>
 
-    <!-- 情侣状态 -->
-    <view class="couple-status">
+    <!-- 情侣状态 - 使用组合样式类 -->
+    <view class="keep-glass-card-light couple-status">
       <view class="couple-header">
         <text class="couple-title">
           {{ userInfo.partner }}的状态

@@ -1,7 +1,7 @@
 // 断食计划页面整体容器
 .fasting-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--keep-gradient-bg);
   padding: 0 40rpx 40rpx;
 
   // 页面标题
@@ -11,7 +11,7 @@
     .page-title {
       font-size: 44rpx;
       font-weight: 600;
-      color: #333;
+      color: var(--keep-text-primary);
     }
   }
 
@@ -19,35 +19,38 @@
   .plan-info {
     text-align: center;
     margin-bottom: 40rpx;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20rpx;
     .plan-type {
-      background: linear-gradient(45deg, #4ecdc4, #44a08d);
-      color: white;
+      background: var(--keep-gradient-secondary);
+      color: var(--keep-text-white);
       padding: 20rpx 60rpx;
       border-radius: 50rpx;
       display: inline-block;
       font-weight: 600;
       font-size: 32rpx;
-      margin-bottom: 20rpx;
     }
     .plan-description {
       font-size: 28rpx;
-      color: #666;
+      color: var(--keep-primary-light);
     }
   }
 
   // 时间安排
   .schedule-card {
-    background: white;
+    background: var(--keep-bg-primary);
     border-radius: 30rpx;
     padding: 40rpx;
     margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
     .schedule-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 25rpx 0;
-      border-bottom: 1rpx solid #f0f0f0;
+      border-bottom: 1rpx solid var(--keep-border-light);
       &:last-child {
         border-bottom: none;
       }
@@ -60,7 +63,7 @@
         }
         .schedule-label {
           font-size: 30rpx;
-          color: #333;
+          color: var(--keep-text-primary);
           font-weight: 500;
         }
       }
@@ -70,28 +73,28 @@
         font-size: 26rpx;
         font-weight: 600;
         &.eating {
-          background: linear-gradient(45deg, #4ecdc4, #44a08d);
-          color: white;
+          background: var(--keep-gradient-primary);
+          color: var(--keep-text-white);
         }
         &.fasting {
-          background: linear-gradient(45deg, #ff9a9e, #fecfef);
-          color: white;
+          background: var(--keep-gradient-primary);
+          color: var(--keep-text-white);
         }
       }
       .schedule-value {
         font-size: 28rpx;
-        color: #666;
+        color: var(--keep-text-secondary);
       }
     }
   }
 
   // 当前状态
   .current-status {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--keep-gradient-primary);
     border-radius: 30rpx;
     padding: 40rpx;
     margin-bottom: 40rpx;
-    color: white;
+    color: var(--keep-text-white);
     text-align: center;
     .status-header {
       margin-bottom: 30rpx;
@@ -106,7 +109,7 @@
         font-size: 48rpx;
         font-weight: bold;
         &.active {
-          color: #4ecdc4;
+          color: var(--keep-accent);
         }
       }
     }
@@ -134,7 +137,7 @@
       .remaining-value {
         font-size: 32rpx;
         font-weight: 600;
-        color: #4ecdc4;
+        color: var(--keep-accent);
       }
     }
   }
@@ -146,21 +149,21 @@
     gap: 20rpx;
     margin-bottom: 40rpx;
     .stat-item {
-      background: white;
+      background: var(--keep-bg-primary);
       border-radius: 20rpx;
       padding: 30rpx 20rpx;
       text-align: center;
-      box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4rpx 15rpx var(--keep-shadow-light);
       .stat-value {
         display: block;
         font-size: 32rpx;
         font-weight: bold;
-        color: #4ecdc4;
+        color: var(--keep-primary);
         margin-bottom: 10rpx;
       }
       .stat-label {
         font-size: 22rpx;
-        color: #666;
+        color: var(--keep-text-secondary);
       }
     }
   }
@@ -178,12 +181,12 @@
       font-size: 30rpx;
       font-weight: 600;
       &.emergency {
-        background: linear-gradient(45deg, #ff6b9d, #ff8e9e);
-        color: white;
+        background: var(--keep-gradient-primary);
+        color: var(--keep-text-white);
       }
       &.history {
-        background: linear-gradient(45deg, #4ecdc4, #44a08d);
-        color: white;
+        background: var(--keep-gradient-secondary);
+        color: var(--keep-text-white);
       }
     }
   }
@@ -193,8 +196,8 @@
     text-align: center;
     .adjust-btn {
       background: white;
-      color: #4ecdc4;
-      border: 2rpx solid #4ecdc4;
+      color: var(--keep-primary);
+      border: 2rpx solid var(--keep-primary);
       border-radius: 50rpx;
       padding: 25rpx 80rpx;
       font-size: 28rpx;

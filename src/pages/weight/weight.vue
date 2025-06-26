@@ -9,15 +9,15 @@
 </route>
 
 <script lang="ts" setup>
-import { useSafeArea } from '@/hooks/useSafeArea'
-import { formatTime } from '@/utils/time'
+import { useSafeArea } from '@/hooks/useSafeArea';
+import { formatTime } from '@/utils/time';
 
 defineOptions({
-  name: 'Weight',
-})
+  name: 'Weight'
+});
 
 // 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = useSafeArea()
+const { safeAreaInsets } = useSafeArea();
 
 // 当前体重数据
 const currentWeight = ref({
@@ -25,15 +25,15 @@ const currentWeight = ref({
   lastWeight: 66.2,
   change: -0.7,
   date: '2024-12-20',
-  bmi: 22.8,
-})
+  bmi: 22.8
+});
 
 // 目标体重
 const targetWeight = ref({
   target: 60.0,
   remaining: 5.5,
-  progress: 85, // 进度百分比
-})
+  progress: 85 // 进度百分比
+});
 
 // 体重历史数据（模拟图表数据）
 const weightHistory = ref([
@@ -41,70 +41,70 @@ const weightHistory = ref([
   { date: '12-05', weight: 67.8 },
   { date: '12-10', weight: 67.2 },
   { date: '12-15', weight: 66.5 },
-  { date: '12-20', weight: 65.5 },
-])
+  { date: '12-20', weight: 65.5 }
+]);
 
 // 周期选择
-const selectedPeriod = ref('7天')
-const periods = ['7天', '30天', '90天']
+const selectedPeriod = ref('7天');
+const periods = ['7天', '30天', '90天'];
 
 // 快速记录选项
 const quickRecords = ref([
   { label: '早晨', time: '07:00', selected: true },
   { label: '睡前', time: '22:00', selected: false },
-  { label: '自定义', time: '', selected: false },
-])
+  { label: '自定义', time: '', selected: false }
+]);
 
 // 计算体重变化显示
 const weightChangeDisplay = computed(() => {
-  const change = currentWeight.value.change
+  const change = currentWeight.value.change;
   if (change > 0) {
-    return { text: `+${change}kg`, color: '#ff6b9d', icon: '📈' }
+    return { text: `+${change}kg`, color: 'var(--keep-accent)', icon: '📈' };
   }
   else if (change < 0) {
-    return { text: `${change}kg`, color: '#4ecdc4', icon: '📉' }
+    return { text: `${change}kg`, color: 'var(--keep-accent)', icon: '📉' };
   }
   else {
-    return { text: '0kg', color: '#666', icon: '➖' }
+    return { text: '0kg', color: 'var(--keep-accent)', icon: '➖' };
   }
-})
+});
 
 // 计算BMI状态
 const bmiStatus = computed(() => {
-  const bmi = currentWeight.value.bmi
+  const bmi = currentWeight.value.bmi;
   if (bmi < 18.5)
-    return { text: '偏瘦', color: '#ffd93d' }
+    return { text: '偏瘦', color: 'var(--keep-accent)' };
   if (bmi < 24)
-    return { text: '正常', color: '#4ecdc4' }
+    return { text: '正常', color: 'var(--keep-accent)' };
   if (bmi < 28)
-    return { text: '超重', color: '#ff6b9d' }
-  return { text: '肥胖', color: '#ff4757' }
-})
+    return { text: '超重', color: 'var(--keep-accent)' };
+  return { text: '肥胖', color: 'var(--keep-accent)' };
+});
 
 // 记录体重
 function recordWeight() {
-  uni.navigateTo({ url: '/pages/weight/record' })
+  uni.navigateTo({ url: '/pages/weight/record' });
 }
 
 // 查看详细历史
 function viewHistory() {
-  uni.navigateTo({ url: '/pages/weight/history' })
+  uni.navigateTo({ url: '/pages/weight/history' });
 }
 
 // 设置目标
 function setTarget() {
-  uni.navigateTo({ url: '/pages/weight/target' })
+  uni.navigateTo({ url: '/pages/weight/target' });
 }
 
 // 切换周期
 function changePeriod(period: string) {
-  selectedPeriod.value = period
+  selectedPeriod.value = period;
   // TODO: 根据周期获取数据
 }
 
 onLoad(() => {
-  console.log('体重管理页面加载完成')
-})
+  console.log('体重管理页面加载完成');
+});
 </script>
 
 <template>

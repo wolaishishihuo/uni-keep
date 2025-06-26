@@ -9,15 +9,15 @@
 </route>
 
 <script lang="ts" setup>
-import { useSafeArea } from '@/hooks/useSafeArea'
-import { formatDuration, formatTime } from '@/utils/time'
+import { useSafeArea } from '@/hooks/useSafeArea';
+import { formatDuration, formatTime } from '@/utils/time';
 
 defineOptions({
-  name: 'Fasting',
-})
+  name: 'Fasting'
+});
 
 // 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = useSafeArea()
+const { safeAreaInsets } = useSafeArea();
 
 // 断食计划配置
 const fastingPlan = ref({
@@ -26,36 +26,36 @@ const fastingPlan = ref({
   description: '16小时禁食 · 8小时进食',
   eatingWindow: {
     start: '10:00',
-    end: '18:00',
+    end: '18:00'
   },
   fastingWindow: {
     start: '18:00',
-    end: '10:00',
+    end: '10:00'
   },
-  startDate: '2024-12-19',
-})
+  startDate: '2024-12-19'
+});
 
 // 当前状态
 const currentStatus = ref({
   isFasting: true,
   elapsedTime: 5 * 3600 + 32 * 60, // 已坚持5小时32分钟
   remainingTime: 10 * 3600 + 28 * 60, // 剩余10小时28分钟
-  phase: 'fasting', // fasting 或 eating
-})
+  phase: 'fasting' // fasting 或 eating
+});
 
 // 计算已坚持时间显示
-const elapsedTimeDisplay = computed(() => formatDuration(currentStatus.value.elapsedTime))
+const elapsedTimeDisplay = computed(() => formatDuration(currentStatus.value.elapsedTime));
 
 // 计算剩余时间显示
-const remainingTimeDisplay = computed(() => formatDuration(currentStatus.value.remainingTime))
+const remainingTimeDisplay = computed(() => formatDuration(currentStatus.value.remainingTime));
 
 // 历史记录数据
 const historyStats = ref({
   totalDays: 25,
   successDays: 22,
   successRate: 88,
-  continuousDays: 7,
-})
+  continuousDays: 7
+});
 
 // 处理紧急中断
 function handleEmergencyStop() {
@@ -65,25 +65,25 @@ function handleEmergencyStop() {
     success: (res) => {
       if (res.confirm) {
         // TODO: 实现中断逻辑
-        uni.showToast({ title: '已中断断食', icon: 'none' })
+        uni.showToast({ title: '已中断断食', icon: 'none' });
       }
-    },
-  })
+    }
+  });
 }
 
 // 查看历史记录
 function viewHistory() {
-  uni.navigateTo({ url: '/pages/fasting/history' })
+  uni.navigateTo({ url: '/pages/fasting/history' });
 }
 
 // 调整计划
 function adjustPlan() {
-  uni.navigateTo({ url: '/pages/fasting/settings' })
+  uni.navigateTo({ url: '/pages/fasting/settings' });
 }
 
 onLoad(() => {
-  console.log('断食页面加载完成')
-})
+  console.log('断食页面加载完成');
+});
 </script>
 
 <template>

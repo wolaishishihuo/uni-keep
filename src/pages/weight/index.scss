@@ -1,7 +1,7 @@
 // 体重管理页面整体容器
 .weight-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--keep-gradient-bg);
   padding: 0 40rpx 40rpx;
 
   // 页面标题
@@ -11,18 +11,18 @@
     .page-title {
       font-size: 44rpx;
       font-weight: 600;
-      color: #333;
+      color: var(--keep-text-primary);
     }
   }
 
   // 当前体重显示
   .weight-display {
-    background: linear-gradient(45deg, #ff9a9e, #fecfef);
+    background: var(--keep-gradient-primary);
     border-radius: 40rpx;
     padding: 60rpx 40rpx;
     text-align: center;
     margin-bottom: 40rpx;
-    color: white;
+    color: var(--keep-text-white);
     .weight-main {
       display: flex;
       align-items: baseline;
@@ -70,7 +70,7 @@
         font-size: 28rpx;
         font-weight: 600;
         padding: 5rpx 20rpx;
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--keep-primary-alpha-20);
         border-radius: 20rpx;
       }
     }
@@ -78,11 +78,11 @@
 
   // 目标进度
   .target-progress {
-    background: white;
+    background: var(--keep-bg-primary);
     border-radius: 30rpx;
     padding: 40rpx;
     margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
     .progress-header {
       display: flex;
       justify-content: space-between;
@@ -91,22 +91,22 @@
       .progress-title {
         font-size: 32rpx;
         font-weight: 600;
-        color: #333;
+        color: var(--keep-text-primary);
       }
       .progress-target {
         font-size: 26rpx;
-        color: #666;
+        color: var(--keep-text-secondary);
       }
     }
     .progress-bar {
       height: 20rpx;
-      background: #f0f0f0;
+      background: var(--keep-border-light);
       border-radius: 10rpx;
       overflow: hidden;
       margin-bottom: 20rpx;
       .progress-fill {
         height: 100%;
-        background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        background: var(--keep-gradient-secondary);
         border-radius: 10rpx;
         transition: width 0.3s ease;
       }
@@ -117,11 +117,11 @@
       align-items: center;
       .progress-text {
         font-size: 28rpx;
-        color: #666;
+        color: var(--keep-text-secondary);
       }
       .progress-percent {
         font-size: 28rpx;
-        color: #4ecdc4;
+        color: var(--keep-primary);
         font-weight: 600;
       }
     }
@@ -129,11 +129,11 @@
 
   // 趋势图表
   .chart-container {
-    background: white;
+    background: var(--keep-bg-primary);
     border-radius: 30rpx;
     padding: 40rpx;
     margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
     .chart-header {
       display: flex;
       justify-content: space-between;
@@ -142,7 +142,7 @@
       .chart-title {
         font-size: 32rpx;
         font-weight: 600;
-        color: #333;
+        color: var(--keep-text-primary);
       }
       .period-selector {
         display: flex;
@@ -151,24 +151,24 @@
           padding: 10rpx 25rpx;
           border-radius: 20rpx;
           font-size: 24rpx;
-          color: #666;
-          background: #f5f5f5;
+          color: var(--keep-text-secondary);
+          background: var(--keep-bg-tertiary);
           &.active {
-            background: #4ecdc4;
-            color: white;
+            background: var(--keep-primary);
+            color: var(--keep-text-white);
           }
         }
       }
     }
     .chart-placeholder {
       height: 300rpx;
-      background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+      background: var(--keep-gradient-secondary);
       border-radius: 20rpx;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: var(--keep-text-white);
       .chart-text {
         font-size: 32rpx;
         font-weight: 600;
@@ -183,11 +183,11 @@
 
   // 最近记录
   .recent-records {
-    background: white;
+    background: var(--keep-bg-primary);
     border-radius: 30rpx;
     padding: 40rpx;
     margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
     .records-header {
       display: flex;
       justify-content: space-between;
@@ -196,11 +196,11 @@
       .records-title {
         font-size: 32rpx;
         font-weight: 600;
-        color: #333;
+        color: var(--keep-text-primary);
       }
       .view-all {
         font-size: 26rpx;
-        color: #4ecdc4;
+        color: var(--keep-primary);
       }
     }
     .records-list {
@@ -212,18 +212,18 @@
         justify-content: space-between;
         align-items: center;
         padding: 25rpx 0;
-        border-bottom: 1rpx solid #f0f0f0;
+        border-bottom: 1rpx solid var(--keep-border-light);
         &:last-child {
           border-bottom: none;
         }
         .record-date {
           font-size: 28rpx;
-          color: #666;
+          color: var(--keep-text-secondary);
         }
         .record-weight {
           font-size: 30rpx;
           font-weight: 600;
-          color: #333;
+          color: var(--keep-text-primary);
         }
         .trend-icon {
           font-size: 24rpx;
@@ -258,7 +258,7 @@
         background: #f8f9fa;
         border: 2rpx solid transparent;
         &.selected {
-          background: #4ecdc4;
+          background: var(--keep-primary);
           color: white;
         }
         .option-label {
@@ -281,7 +281,7 @@
     grid-template-columns: 2fr 1fr;
     gap: 20rpx;
     .record-btn {
-      background: linear-gradient(45deg, #4ecdc4, #44a08d);
+      background: var(--keep-gradient-primary);
       color: white;
       border: none;
       border-radius: 30rpx;
@@ -291,8 +291,8 @@
     }
     .target-btn {
       background: white;
-      color: #4ecdc4;
-      border: 2rpx solid #4ecdc4;
+      color: var(--keep-primary);
+      border: 2rpx solid var(--keep-primary);
       border-radius: 30rpx;
       padding: 30rpx 40rpx;
       font-size: 30rpx;
