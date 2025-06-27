@@ -22,7 +22,7 @@ const { safeAreaInsets } = useSafeArea();
 
 // 主题管理
 const themeStore = useThemeStore();
-const { primaryColor, gender } = storeToRefs(themeStore);
+const { themeColor, themeClassName, themeName } = storeToRefs(themeStore);
 
 // 用户信息
 const userInfo = ref({
@@ -77,7 +77,7 @@ const menuSections = computed(() => [
       {
         icon: '🎨',
         title: '主题设置',
-        description: `当前：${themeStore.getCurrentThemeInfo().name}`,
+        description: `当前：${themeName}`,
         action: 'theme'
       },
       { icon: '⚙️', title: '应用设置', description: '通知提醒等', route: '/pages/settings/app' },
@@ -125,7 +125,7 @@ function editProfile() {
 
 // 切换主题
 function handleThemeToggle() {
-  themeStore.toggleTheme();
+  themeStore.toggleGenderTheme();
 }
 
 // 查看成就详情
@@ -143,7 +143,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="profile-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="`theme-${gender}`">
+  <view class="profile-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
     <!-- 用户信息卡片 -->
     <view class="user-card">
       <view class="user-info">
@@ -163,7 +163,7 @@ onLoad(() => {
         </view>
         <view class="user-actions">
           <view class="theme-btn" @click="handleThemeToggle">
-            <text class="theme-icon" :style="{ color: primaryColor }">
+            <text class="theme-icon" :style="{ color: themeColor }">
               🎨
             </text>
           </view>

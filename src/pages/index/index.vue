@@ -26,7 +26,7 @@ const { safeAreaInsets } = useSafeArea();
 
 // 主题管理
 const themeStore = useThemeStore();
-const { gender } = storeToRefs(themeStore);
+const { themeClassName } = storeToRefs(themeStore);
 
 // 用户信息
 const userInfo = ref({
@@ -98,7 +98,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="`theme-${gender}`">
+  <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
     <!-- 问候语区域 -->
     <view class="greeting-section">
       <view class="greeting-text">

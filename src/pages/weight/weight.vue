@@ -23,7 +23,7 @@ const { safeAreaInsets } = useSafeArea();
 
 // 主题管理
 const themeStore = useThemeStore();
-const { gender } = storeToRefs(themeStore);
+const { themeClassName } = storeToRefs(themeStore);
 
 // 当前体重数据
 const currentWeight = ref({
@@ -114,7 +114,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="weight-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="`theme-${gender}`">
+  <view class="weight-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
     <!-- 页面标题 -->
     <view class="page-header">
       <text class="page-title">

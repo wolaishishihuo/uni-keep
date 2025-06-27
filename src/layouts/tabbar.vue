@@ -6,12 +6,12 @@ import FgTabbar from './fg-tabbar/fg-tabbar.vue';
 
 // 主题管理
 const themeStore = useThemeStore();
-const { primaryColor } = storeToRefs(themeStore);
+const { themeColor } = storeToRefs(themeStore);
 
 // 动态主题变量
 const themeVars = computed<ConfigProviderThemeVars>(() => ({
-  colorTheme: primaryColor.value,
-  tabbarItemActiveColor: primaryColor.value,
+  colorTheme: themeColor.value,
+  tabbarItemActiveColor: themeColor.value,
   tabbarItemInactiveColor: '#999999'
 }));
 </script>

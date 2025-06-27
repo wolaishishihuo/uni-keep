@@ -1,118 +1,128 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import { getDarkerColor, getLighterColor } from '@/utils/colorUtils';
+import { computed, ref } from 'vue';
 import { applyThemeToMiniProgram } from '@/utils/theme';
 
 // 主题配置
 const THEME_CONFIG = {
   male: {
-    color: '#4195e1', // 清新蓝
-    name: '清新蓝'
+    name: '清新蓝',
+    className: 'theme-male',
+    color: '#4195e1'
   },
   female: {
-    color: '#ff6b9d', // 少女粉
-    name: '少女粉'
+    name: '少女粉',
+    className: 'theme-female',
+    color: '#ff6b9d'
   }
 } as const;
 
-type Gender = keyof typeof THEME_CONFIG;
+type GenderTheme = keyof typeof THEME_CONFIG;
 
 // 从缓存获取性别主题
-function getGenderTheme(): Gender {
+function getCachedGenderTheme(): GenderTheme {
   const savedGender = uni.getStorageSync('genderTheme');
   return (savedGender && savedGender in THEME_CONFIG) ? savedGender : 'male';
 }
 
-// 从缓存获取主题色
-function getThemeColor(): string {
-  const gender = getGenderTheme();
-  const savedColor = uni.getStorageSync('themeColor');
-  return savedColor || THEME_CONFIG[gender].color;
-}
-
-// 保存主题色到缓存
-function setThemeColorCache(color: string) {
-  uni.setStorageSync('themeColor', color);
-}
-
-// 保存性别主题到缓存
-function setGenderThemeCache(gender: Gender) {
+// 缓存性别主题
+function setCachedGenderTheme(gender: GenderTheme) {
   uni.setStorageSync('genderTheme', gender);
 }
 
 export const useThemeStore = defineStore('theme', () => {
-  // 性别主题
-  const gender = ref<Gender>(getGenderTheme());
-  // 主题色
-  const primaryColor = ref<string>(getThemeColor());
+  // 当前性别主题
+  const genderTheme = ref<GenderTheme>(getCachedGenderTheme());
 
-  // 设置主题色
-  const setPrimaryColor = (color: string) => {
-    primaryColor.value = color;
-    setThemeColorCache(color);
+  // 计算属性：主题信息
+  const themeInfo = computed(() => THEME_CONFIG[genderTheme.value]);
 
-    // 检测运行环境，区分处理
+  // 计算属性：主题类名
+  const themeClassName = computed(() => themeInfo.value.className);
+
+  // 计算属性：主题颜色
+  const themeColor = computed(() => themeInfo.value.color);
+
+  // 计算属性：主题名称
+  const themeName = computed(() => themeInfo.value.name);
+
+  // 应用主题类名到页面根元素
+  const applyThemeClass = () => {
+    // #ifdef H5
     if (typeof document !== 'undefined') {
-    // H5环境
-      document.documentElement.style.setProperty('--keep-primary', color);
+      const html = document.documentElement;
+      // 移除所有主题类名
+      Object.values(THEME_CONFIG).forEach((config) => {
+        html.classList.remove(config.className);
+      });
+      // 添加当前主题类名
+      html.classList.add(themeClassName.value);
+    }
+    // #endif
 
-      // 计算衍生色
-      const lighterColor = getLighterColor(color, 0.8);
-      const darkerColor = getDarkerColor(color, 0.8);
-      document.documentElement.style.setProperty('--keep-primary-light', lighterColor);
-      document.documentElement.style.setProperty('--keep-primary-dark', darkerColor);
-    }
-    else {
-      // 小程序环境
-      applyThemeToMiniProgram(color);
-    }
+    // #ifdef MP-WEIXIN
+    // 小程序端通过全局类名处理
+    applyThemeToMiniProgram(themeColor.value);
+    // #endif
   };
 
   // 设置性别主题
-  const setGender = (newGender: Gender) => {
-    gender.value = newGender;
-    setGenderThemeCache(newGender);
+  const setGenderTheme = (gender: GenderTheme) => {
+    genderTheme.value = gender;
+    setCachedGenderTheme(gender);
 
-    // 自动设置对应的主题色
-    const themeColor = THEME_CONFIG[newGender].color;
-    setPrimaryColor(themeColor);
+    // 应用主题
+    applyThemeClass();
 
+    // 显示切换提示
     uni.showToast({
-      title: `已切换至${THEME_CONFIG[newGender].name}主题`,
+      title: `已切换至${THEME_CONFIG[gender].name}主题`,
       icon: 'none',
       duration: 1500
     });
   };
 
-  // 切换主题（在男女主题之间切换）
-  const toggleTheme = () => {
-    const newGender = gender.value === 'male' ? 'female' : 'male';
-    setGender(newGender);
+  // 切换性别主题（在男女主题间切换）
+  const toggleGenderTheme = () => {
+    const newGender = genderTheme.value === 'male' ? 'female' : 'male';
+    setGenderTheme(newGender);
   };
 
-  // 初始化，应用主题色
+  // 初始化主题
   const initTheme = () => {
-    console.log('initTheme', primaryColor.value, gender.value);
-    setPrimaryColor(primaryColor.value);
+    console.log('初始化主题:', genderTheme.value);
+    applyThemeClass();
   };
 
-  // 获取当前主题信息
-  const getCurrentThemeInfo = () => {
-    return {
-      gender: gender.value,
-      color: primaryColor.value,
-      name: THEME_CONFIG[gender.value].name
-    };
+  // 检查是否为指定性别主题
+  const isGenderTheme = (gender: GenderTheme) => {
+    return genderTheme.value === gender;
   };
+
+  // 检查是否为男性主题
+  const isMaleTheme = computed(() => genderTheme.value === 'male');
+
+  // 检查是否为女性主题
+  const isFemaleTheme = computed(() => genderTheme.value === 'female');
 
   return {
-    gender,
-    primaryColor,
-    setGender,
-    setPrimaryColor,
-    toggleTheme,
+    // 状态
+    genderTheme,
+
+    // 计算属性
+    themeInfo,
+    themeClassName,
+    themeColor,
+    themeName,
+    isMaleTheme,
+    isFemaleTheme,
+
+    // 方法
+    setGenderTheme,
+    toggleGenderTheme,
     initTheme,
-    getCurrentThemeInfo,
+    isGenderTheme,
+
+    // 常量
     THEME_CONFIG
   };
 });

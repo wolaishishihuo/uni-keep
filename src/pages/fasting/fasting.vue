@@ -23,7 +23,7 @@ const { safeAreaInsets } = useSafeArea();
 
 // 主题管理
 const themeStore = useThemeStore();
-const { gender } = storeToRefs(themeStore);
+const { themeClassName } = storeToRefs(themeStore);
 
 // 断食计划配置
 const fastingPlan = ref({
@@ -93,7 +93,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="fasting-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="`theme-${gender}`">
+  <view class="fasting-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
     <!-- 页面标题 -->
     <view class="page-header">
       <text class="page-title">
