@@ -50,6 +50,33 @@
           color: var(--keep-text-secondary);
         }
       }
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 20rpx;
+      }
+
+      .theme-btn {
+        width: 60rpx;
+        height: 60rpx;
+        background: var(--keep-bg-tertiary);
+        border-radius: 30rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        .theme-icon {
+          font-size: 32rpx;
+          transition: transform 0.3s ease;
+        }
+        &:active {
+          transform: scale(0.95);
+          .theme-icon {
+            transform: scale(1.1);
+          }
+        }
+      }
+
       .edit-btn {
         width: 60rpx;
         height: 60rpx;

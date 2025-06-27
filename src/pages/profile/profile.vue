@@ -9,14 +9,20 @@
 </route>
 
 <script lang="ts" setup>
-import { useSafeArea } from '@/hooks/useSafeArea'
+import { storeToRefs } from 'pinia';
+import { useSafeArea } from '@/hooks/useSafeArea';
+import { useThemeStore } from '@/store/theme';
 
 defineOptions({
-  name: 'Profile',
-})
+  name: 'Profile'
+});
 
 // 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = useSafeArea()
+const { safeAreaInsets } = useSafeArea();
+
+// 主题管理
+const themeStore = useThemeStore();
+const { currentTheme, currentThemeInfo } = storeToRefs(themeStore);
 
 // 用户信息
 const userInfo = ref({
@@ -26,19 +32,19 @@ const userInfo = ref({
   continuousDays: 7,
   totalDays: 25,
   partner: '小红',
-  isConnected: true,
-})
+  isConnected: true
+});
 
 // 成就数据
 const achievements = ref([
   { icon: '🏆', title: '坚持达人', description: '连续坚持7天', unlocked: true },
   { icon: '💪', title: '减重英雄', description: '成功减重5kg', unlocked: true },
   { icon: '❤️', title: '情侣冠军', description: '与伴侣共同坚持30天', unlocked: false },
-  { icon: '🌟', title: '完美主义', description: '100%完成率', unlocked: false },
-])
+  { icon: '🌟', title: '完美主义', description: '100%完成率', unlocked: false }
+]);
 
 // 菜单项
-const menuSections = ref([
+const menuSections = computed(() => [
   {
     title: '数据统计',
     items: [
@@ -46,64 +52,85 @@ const menuSections = ref([
         icon: '📊',
         title: '我的数据',
         description: '查看详细统计',
-        route: '/pages/stats/overview',
+        route: '/pages/stats/overview'
       },
       { icon: '📈', title: '进度报告', description: '周月年度报告', route: '/pages/stats/report' },
       {
         icon: '🏆',
         title: '成就中心',
         description: '查看所有成就',
-        route: '/pages/achievements/list',
-      },
-    ],
+        route: '/pages/achievements/list'
+      }
+    ]
   },
   {
     title: '情侣互动',
     items: [
       { icon: '❤️', title: '情侣状态', description: '查看对方进度', route: '/pages/couple/status' },
       { icon: '🎯', title: '共同目标', description: '设置情侣目标', route: '/pages/couple/goals' },
-      { icon: '💌', title: '互动记录', description: '鼓励与支持', route: '/pages/couple/messages' },
-    ],
+      { icon: '💌', title: '互动记录', description: '鼓励与支持', route: '/pages/couple/messages' }
+    ]
   },
   {
     title: '设置',
     items: [
+      {
+        icon: currentThemeInfo.value.icon,
+        title: '主题设置',
+        description: `当前：${currentThemeInfo.value.name}`,
+        action: 'theme'
+      },
       { icon: '⚙️', title: '应用设置', description: '通知提醒等', route: '/pages/settings/app' },
       {
         icon: '👤',
         title: '个人资料',
         description: '编辑个人信息',
-        route: '/pages/settings/profile',
+        route: '/pages/settings/profile'
       },
       {
         icon: '🔒',
         title: '隐私设置',
         description: '数据与隐私',
-        route: '/pages/settings/privacy',
+        route: '/pages/settings/privacy'
       },
-      { icon: '📞', title: '联系我们', description: '意见反馈', route: '/pages/settings/contact' },
-    ],
-  },
-])
+      { icon: '📞', title: '联系我们', description: '意见反馈', route: '/pages/settings/contact' }
+    ]
+  }
+]);
 
 // 处理菜单点击
-function handleMenuClick(route: string) {
+function handleMenuClick(route?: string, action?: string) {
+  if (action === 'theme') {
+    handleThemeToggle();
+    return;
+  }
+
   if (route) {
     uni.navigateTo({
       url: route,
       fail: () => {
-        uni.showToast({ title: '功能开发中', icon: 'none' })
-      },
-    })
+        uni.showToast({ title: '功能开发中', icon: 'none' });
+      }
+    });
   }
   else {
-    uni.showToast({ title: '功能开发中', icon: 'none' })
+    uni.showToast({ title: '功能开发中', icon: 'none' });
   }
 }
 
 // 编辑资料
 function editProfile() {
-  uni.navigateTo({ url: '/pages/profile/edit' })
+  uni.navigateTo({ url: '/pages/profile/edit' });
+}
+
+// 切换主题
+function handleThemeToggle() {
+  themeStore.toggleTheme();
+  uni.showToast({
+    title: `已切换至${currentThemeInfo.value.name}`,
+    icon: 'none',
+    duration: 1500
+  });
 }
 
 // 查看成就详情
@@ -111,13 +138,13 @@ function viewAchievement(achievement: any) {
   uni.showModal({
     title: achievement.title,
     content: achievement.description,
-    showCancel: false,
-  })
+    showCancel: false
+  });
 }
 
 onLoad(() => {
-  console.log('个人中心页面加载完成')
-})
+  console.log('个人中心页面加载完成');
+});
 </script>
 
 <template>
@@ -139,10 +166,17 @@ onLoad(() => {
             {{ userInfo.isConnected ? `与${userInfo.partner}携手坚持` : '单独坚持中' }}
           </text>
         </view>
-        <view class="edit-btn" @click="editProfile">
-          <text class="edit-icon">
-            ✏️
-          </text>
+        <view class="user-actions">
+          <view class="theme-btn" @click="handleThemeToggle">
+            <text class="theme-icon" :style="{ color: currentThemeInfo.color }">
+              {{ currentThemeInfo.icon }}
+            </text>
+          </view>
+          <view class="edit-btn" @click="editProfile">
+            <text class="edit-icon">
+              ✏️
+            </text>
+          </view>
         </view>
       </view>
 
@@ -217,7 +251,7 @@ onLoad(() => {
           v-for="item in section.items"
           :key="item.title"
           class="menu-item"
-          @click="handleMenuClick(item.route)"
+          @click="handleMenuClick(item.route, item.action)"
         >
           <view class="menu-left">
             <view class="menu-icon">
