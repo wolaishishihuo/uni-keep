@@ -61,14 +61,6 @@
       }
     },
     {
-      "path": "pages/about/about",
-      "type": "page",
-      "layout": "tabbar",
-      "style": {
-        "navigationBarTitleText": "关于"
-      }
-    },
-    {
       "path": "pages/fasting/fasting",
       "type": "page",
       "layout": "tabbar",
