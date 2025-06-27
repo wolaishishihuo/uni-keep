@@ -9,7 +9,9 @@
 </route>
 
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia';
 import { useSafeArea } from '@/hooks/useSafeArea';
+import { useThemeStore } from '@/store/theme';
 import { formatTime } from '@/utils/time';
 
 defineOptions({
@@ -18,6 +20,10 @@ defineOptions({
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = useSafeArea();
+
+// 主题管理
+const themeStore = useThemeStore();
+const { gender } = storeToRefs(themeStore);
 
 // 当前体重数据
 const currentWeight = ref({
@@ -108,7 +114,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="weight-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }">
+  <view class="weight-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="`theme-${gender}`">
     <!-- 页面标题 -->
     <view class="page-header">
       <text class="page-title">

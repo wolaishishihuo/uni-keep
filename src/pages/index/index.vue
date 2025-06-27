@@ -12,8 +12,10 @@
 
 <script lang="ts" setup>
 import dayjs from 'dayjs';
+import { storeToRefs } from 'pinia';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useFastingTimer } from '@/pages/index/hooks/useFastingTimer';
+import { useThemeStore } from '@/store/theme';
 
 defineOptions({
   name: 'Home'
@@ -21,6 +23,10 @@ defineOptions({
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = useSafeArea();
+
+// 主题管理
+const themeStore = useThemeStore();
+const { gender } = storeToRefs(themeStore);
 
 // 用户信息
 const userInfo = ref({
@@ -92,7 +98,7 @@ onLoad(() => {
 </script>
 
 <template>
-  <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }">
+  <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="`theme-${gender}`">
     <!-- 问候语区域 -->
     <view class="greeting-section">
       <view class="greeting-text">

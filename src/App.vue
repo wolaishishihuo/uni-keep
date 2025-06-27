@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
 import { usePageAuth } from '@/hooks/usePageAuth';
+import { useThemeStore } from '@/store/theme';
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
+
+const themeStore = useThemeStore();
 
 usePageAuth();
 
 onLaunch(() => {
   console.log('App Launch');
+  themeStore.initTheme();
 });
 onShow(() => {
   console.log('App Show');

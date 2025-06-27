@@ -30,6 +30,4 @@ export function applyThemeOnPageShow(primaryColor: string) {
   // 各平台小程序可能需要不同处理
   const platform = uni.getSystemInfoSync().platform;
   console.log(`当前平台: ${platform}, 应用主题色: ${primaryColor}`);
-
-  // 某些平台可能需要特定处理
 }
