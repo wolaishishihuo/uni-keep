@@ -12,6 +12,7 @@
 import { storeToRefs } from 'pinia';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
+import { useUserStore } from '@/store/user';
 
 defineOptions({
   name: 'Profile'
@@ -23,17 +24,9 @@ const { safeAreaInsets } = useSafeArea();
 // 主题管理
 const themeStore = useThemeStore();
 const { themeColor, themeClassName, themeName } = storeToRefs(themeStore);
-
-// 用户信息
-const userInfo = ref({
-  nickname: '小明',
-  avatar: '/static/images/default-avatar.png',
-  level: 5,
-  continuousDays: 7,
-  totalDays: 25,
-  partner: '小红',
-  isConnected: true
-});
+const userStore = useUserStore();
+const { userInfo, isLoggedIn } = storeToRefs(userStore);
+const { wxLogin } = userStore;
 
 // 成就数据
 const achievements = ref([
@@ -118,11 +111,6 @@ function handleMenuClick(route?: string, action?: string) {
   }
 }
 
-// 编辑资料
-function editProfile() {
-  uni.navigateTo({ url: '/pages/profile/edit' });
-}
-
 // 切换主题
 function handleThemeToggle() {
   themeStore.toggleGenderTheme();
@@ -147,29 +135,31 @@ onLoad(() => {
     <!-- 用户信息卡片 -->
     <view class="user-card">
       <view class="user-info">
-        <view class="avatar-container" @click="editProfile">
+        <view class="avatar-container">
           <image :src="userInfo.avatar" class="user-avatar" mode="aspectFill" />
           <view class="level-badge">
-            Lv.{{ userInfo.level }}
+            Lv.{{ userInfo.level || 1 }}
           </view>
         </view>
         <view class="user-details">
-          <text class="user-name">
-            {{ userInfo.nickname }}
-          </text>
-          <text class="user-status">
-            {{ userInfo.isConnected ? `与${userInfo.partner}携手坚持` : '单独坚持中' }}
-          </text>
+          <view v-if="!isLoggedIn" class="login-btn" @click="wxLogin">
+            <text class="login-icon">
+              登录/注册
+            </text>
+          </view>
+          <view v-else class="user-info">
+            <text class="user-name">
+              {{ userInfo.username }}
+            </text>
+            <text class="user-status">
+              {{ userInfo.isConnected ? `与${userInfo.partner}携手坚持` : '单独坚持中' }}
+            </text>
+          </view>
         </view>
         <view class="user-actions">
           <view class="theme-btn" @click="handleThemeToggle">
             <text class="theme-icon" :style="{ color: themeColor }">
               🎨
-            </text>
-          </view>
-          <view class="edit-btn" @click="editProfile">
-            <text class="edit-icon">
-              ✏️
             </text>
           </view>
         </view>
@@ -197,7 +187,7 @@ onLoad(() => {
         <view class="stat-divider" />
         <view class="stat-item">
           <text class="stat-value">
-            {{ Math.round((userInfo.continuousDays / userInfo.totalDays) * 100) }}%
+            {{ Math.round((userInfo.continuousDays / userInfo.totalDays) * 100) || 0 }}%
           </text>
           <text class="stat-label">
             成功率

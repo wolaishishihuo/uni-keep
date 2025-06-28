@@ -1,14 +1,14 @@
-import type { ICaptcha, IUpdateInfo, IUpdatePassword, IUserInfoVo, IUserLogin } from './login.typings'
-import { http } from '@/utils/http'
+import type { ICaptcha, IUpdateInfo, IUpdatePassword, IUserInfoVo, IUserLogin } from './login.typings';
+import { http } from '@/utils/http';
 
 /**
  * 登录表单
  */
 export interface ILoginForm {
-  username: string
-  password: string
-  code: string
-  uuid: string
+  username: string;
+  password: string;
+  code: string;
+  uuid: string;
 }
 
 /**
@@ -16,7 +16,7 @@ export interface ILoginForm {
  * @returns ICaptcha 验证码
  */
 export function getCode() {
-  return http.get<ICaptcha>('/user/getCode')
+  return http.get<ICaptcha>('/user/getCode');
 }
 
 /**
@@ -24,35 +24,35 @@ export function getCode() {
  * @param loginForm 登录表单
  */
 export function login(loginForm: ILoginForm) {
-  return http.post<IUserLogin>('/user/login', loginForm)
+  return http.post<IUserLogin>('/user/login', loginForm);
 }
 
 /**
  * 获取用户信息
  */
 export function getUserInfo() {
-  return http.get<IUserInfoVo>('/user/info')
+  return http.get<IUserInfoVo>('/user/info');
 }
 
 /**
  * 退出登录
  */
 export function logout() {
-  return http.get<void>('/user/logout')
+  return http.get<void>('/user/logout');
 }
 
 /**
  * 修改用户信息
  */
 export function updateInfo(data: IUpdateInfo) {
-  return http.post('/user/updateInfo', data)
+  return http.post('/user/updateInfo', data);
 }
 
 /**
  * 修改用户密码
  */
 export function updateUserPassword(data: IUpdatePassword) {
-  return http.post('/user/updatePassword', data)
+  return http.post('/user/updatePassword', data);
 }
 
 /**
@@ -64,9 +64,42 @@ export function getWxCode() {
     uni.login({
       provider: 'weixin',
       success: res => resolve(res),
-      fail: err => reject(new Error(err)),
-    })
-  })
+      fail: (err) => {
+        console.error('微信登录失败:', err);
+        reject(new Error(err.errMsg || '微信登录失败'));
+      }
+    });
+  });
+}
+
+/**
+ * 获取微信个人信息授权
+ * @returns Promise 包含微信用户信息
+ */
+export function getWxUserInfo() {
+  return new Promise<UniApp.GetUserProfileRes>((resolve, reject) => {
+    uni.getUserProfile({
+      desc: '用于完善个人信息',
+      success: res => resolve(res),
+      fail: (err) => {
+        console.error('获取用户信息失败:', err);
+        reject(new Error(err.errMsg || '获取用户信息失败'));
+      }
+    });
+  });
+}
+
+/**
+ * 微信授权
+ */
+export function getWxAuth() {
+  return new Promise<UniApp.GeneralCallbackResult>((resolve, reject) => {
+    uni.authorize({
+      scope: 'scope.userInfo',
+      success: res => resolve(res),
+      fail: err => reject(new Error(err))
+    });
+  });
 }
 
 /**
@@ -79,5 +112,5 @@ export function getWxCode() {
  * @returns Promise 包含登录结果
  */
 export function wxLogin(data: { code: string }) {
-  return http.post<IUserLogin>('/user/wxLogin', data)
+  return http.post<IUserLogin>('/user/wxLogin', data);
 }

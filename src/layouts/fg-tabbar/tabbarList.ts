@@ -54,7 +54,7 @@ export const tabbarList = [
 
 const _tabbar = {
   color: '#999999',
-  selectedColor: '#4ecdc4',
+  selectedColor: '#4195e1',
   backgroundColor: '#F8F8F8',
   borderStyle: 'black',
   height: '50px',
