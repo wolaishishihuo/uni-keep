@@ -86,6 +86,13 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "体重管理"
       }
+    },
+    {
+      "path": "pages/profile/edit/edit",
+      "type": "page",
+      "style": {
+        "navigationBarTitleText": "个人资料"
+      }
     }
   ],
   "subPackages": []

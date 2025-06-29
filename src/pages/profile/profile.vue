@@ -71,18 +71,12 @@ const menuSections = computed(() => [
   {
     title: '设置',
     items: [
-      {
-        icon: '🎨',
-        title: '主题设置',
-        description: `当前：${themeName}`,
-        action: 'theme'
-      },
       { icon: '⚙️', title: '应用设置', description: '通知提醒等', route: '/pages/settings/app' },
       {
         icon: '👤',
         title: '个人资料',
         description: '编辑个人信息',
-        route: '/pages/settings/profile'
+        route: '/pages/profile/edit/edit'
       },
       {
         icon: '🔒',
@@ -259,7 +253,7 @@ onLoad(() => {
           v-for="item in section.items"
           :key="item.title"
           class="menu-item"
-          @click="handleMenuClick(item.route, item.action)"
+          @click="handleMenuClick(item.route)"
         >
           <view class="menu-left">
             <view class="menu-icon">
