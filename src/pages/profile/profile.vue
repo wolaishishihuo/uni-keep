@@ -28,7 +28,6 @@ const themeStore = useThemeStore();
 const { themeColor, themeClassName, themeName } = storeToRefs(themeStore);
 const userStore = useUserStore();
 const { userInfo, isLoggedIn } = storeToRefs(userStore);
-const { setUserInfo } = userStore;
 
 // 授权弹框控制
 const showAuthModal = ref(false);
