@@ -9,7 +9,7 @@ export default uniHelper({
     semi: true,
     commaDangle: "none", // 多行时不要末尾逗号
   },
-  ignores: ["src/uni_modules/", "dist", "src/style/iconfont/"],
+  ignores: ["src/uni_modules/", "dist", "src/style/iconfont/**"],
   rules: {
     "no-console": "off",
     "no-unused-vars": "off",
