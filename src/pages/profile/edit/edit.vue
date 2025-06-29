@@ -1,5 +1,6 @@
 <route lang="json5">
 {
+  needLogin: true,
   style: {
     navigationBarTitleText: '个人资料',
 
@@ -11,8 +12,9 @@
 import type { Gender } from '@/models/user';
 import { onLoad } from '@dcloudio/uni-app';
 import { storeToRefs } from 'pinia';
-import { useThemeStore } from '@/store/theme';
+import { getUserInfo as getUserInfoApi, updateInfo } from '@/api/login';
 import { useUserStore } from '@/store/user';
+import { toast } from '@/utils/toast';
 
 defineOptions({
   name: 'ProfileEdit'
@@ -22,25 +24,36 @@ defineOptions({
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
 
-// 主题管理
-const themeStore = useThemeStore();
-const { themeColor, themeClassName } = storeToRefs(themeStore);
+// 更新用户信息到服务器
+async function updateUserInfo(updatedInfo: Partial<typeof userInfo.value>, tipText: string = '更新成功') {
+  try {
+    // 先更新本地状态
+    const newUserInfo = {
+      ...userInfo.value,
+      ...updatedInfo
+    };
+    userStore.setUserInfo(newUserInfo);
+
+    // 调用API更新到服务器
+    await updateInfo(newUserInfo);
+
+    toast.success(tipText);
+  }
+  catch (error) {
+    console.error('更新用户信息失败:', error);
+    toast.error('更新失败，请重试');
+
+    // 如果API调用失败，可以考虑回滚本地状态
+    // 这里选择不回滚，让用户可以重试
+  }
+}
 
 // 头像选择回调
-function onChooseAvatar(e: any) {
-  const { avatarUrl } = e.detail;
+async function onChooseAvatar({ avatarUrl }) {
+  console.log(avatarUrl);
   if (avatarUrl) {
-    // 更新用户头像
-    const updatedUserInfo = {
-      ...userInfo.value,
-      avatar: avatarUrl
-    };
-    userStore.setUserInfo(updatedUserInfo);
-
-    uni.showToast({
-      title: '头像更新成功',
-      icon: 'success'
-    });
+    // 更新用户头像到服务器
+    await updateUserInfo({ avatar: avatarUrl }, '头像更新成功');
   }
 }
 
@@ -59,37 +72,13 @@ function onChooseAvatarError(e: any) {
   });
 }
 
-// 获取用户信息回调 - 微信小程序 getUserInfo
-function onGetUserInfo(e: any) {
-  console.log('获取用户信息回调:', e);
-  // const wxUserInfo = e.userInfo;
-  // if (wxUserInfo && wxUserInfo.nickName) {
-  //   // 更新用户昵称
-  //   const updatedUserInfo = {
-  //     ...userInfo.value,
-  //     nickname: wxUserInfo.nickName
-  //   };
-  //   userStore.setUserInfo(updatedUserInfo);
-
-  //   uni.showToast({
-  //     title: '昵称更新成功',
-  //     icon: 'success'
-  //   });
-  // }
-}
-
 // 编辑性别
 function editGender() {
   uni.showActionSheet({
     itemList: ['👨 男', '👩 女'],
-    success: (res) => {
+    success: async (res) => {
       const gender: Gender = res.tapIndex === 0 ? 'male' : 'female';
-      const updatedUserInfo = {
-        ...userInfo.value,
-        gender
-      };
-      userStore.setUserInfo(updatedUserInfo);
-      uni.showToast({ title: '性别更新成功', icon: 'success' });
+      await updateUserInfo({ gender }, '性别更新成功');
     }
   });
 }
@@ -100,19 +89,14 @@ function editHeight() {
     title: '修改身高',
     editable: true,
     placeholderText: '请输入身高(cm)',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm && res.content) {
         const height = Number(res.content);
         if (height >= 100 && height <= 250) {
-          const updatedUserInfo = {
-            ...userInfo.value,
-            height
-          };
-          userStore.setUserInfo(updatedUserInfo);
-          uni.showToast({ title: '身高更新成功', icon: 'success' });
+          await updateUserInfo({ height }, '身高更新成功');
         }
         else {
-          uni.showToast({ title: '请输入有效的身高(100-250cm)', icon: 'none' });
+          toast.error('请输入有效的身高(100-250cm)');
         }
       }
     }
@@ -125,19 +109,14 @@ function editCurrentWeight() {
     title: '修改当前体重',
     editable: true,
     placeholderText: '请输入当前体重(kg)',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm && res.content) {
         const weight = Number(res.content);
         if (weight >= 20 && weight <= 500) {
-          const updatedUserInfo = {
-            ...userInfo.value,
-            currentWeight: weight
-          };
-          userStore.setUserInfo(updatedUserInfo);
-          uni.showToast({ title: '体重更新成功', icon: 'success' });
+          await updateUserInfo({ currentWeight: weight }, '体重更新成功');
         }
         else {
-          uni.showToast({ title: '请输入有效的体重(20-500kg)', icon: 'none' });
+          toast.error('请输入有效的体重(20-500kg)');
         }
       }
     }
@@ -150,32 +129,45 @@ function editTargetWeight() {
     title: '修改目标体重',
     editable: true,
     placeholderText: '请输入目标体重(kg)',
-    success: (res) => {
+    success: async (res) => {
       if (res.confirm && res.content) {
         const weight = Number(res.content);
         if (weight >= 20 && weight <= 500) {
-          const updatedUserInfo = {
-            ...userInfo.value,
-            targetWeight: weight
-          };
-          userStore.setUserInfo(updatedUserInfo);
-          uni.showToast({ title: '目标体重更新成功', icon: 'success' });
+          await updateUserInfo({ targetWeight: weight }, '目标体重更新成功');
         }
         else {
-          uni.showToast({ title: '请输入有效的目标体重(20-500kg)', icon: 'none' });
+          toast.error('请输入有效的目标体重(20-500kg)');
         }
       }
     }
   });
 }
+// 昵称失去焦点时保存
+async function onNicknameBlur() {
+  // 简单验证
+  if (!userInfo.value.nickname || userInfo.value.nickname.trim() === '') {
+    toast.error('昵称不能为空');
+    return;
+  }
+
+  await updateUserInfo({ nickname: userInfo.value.nickname.trim() }, '昵称更新成功');
+}
+
+// 获取用户信息
+async function getUserInfo() {
+  const res = await getUserInfoApi(userInfo.value.id);
+  userStore.setUserInfo(res.data[0]);
+  console.log(res.data[0]);
+}
 
 onLoad(() => {
   console.log('个人资料页面加载完成');
+  // getUserInfo();
 });
 </script>
 
 <template>
-  <view class="profile-container" :class="themeClassName">
+  <view class="profile-container">
     <!-- 头像 -->
     <wd-cell-group>
       <wd-cell title="头像" is-link>
@@ -198,7 +190,12 @@ onLoad(() => {
     <!-- 基本信息 -->
     <wd-cell-group>
       <wd-cell title="用户名" is-link>
-        <input v-model="userInfo.nickname" type="nickname" size="large">
+        <input
+          v-model="userInfo.nickname"
+          type="nickname"
+          size="large"
+          @blur="onNicknameBlur"
+        >
       </wd-cell>
 
       <wd-cell title="性别" is-link @click="editGender">

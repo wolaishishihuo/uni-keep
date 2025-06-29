@@ -11,7 +11,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
-import AuthModal from '@/components/auth-modal/index.vue';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
@@ -116,7 +115,7 @@ function handleThemeToggle() {
 
 // 处理登录
 function handleLogin() {
-  showAuthModal.value = true;
+  uni.navigateTo({ url: '/pages/login/login' });
 }
 
 // 查看成就详情
@@ -284,14 +283,6 @@ onLoad(() => {
         © 2024 健康管理应用
       </text>
     </view>
-
-    <!-- 授权弹框 -->
-    <AuthModal
-      v-model="showAuthModal"
-      @confirm="handleAuthConfirm"
-      @cancel="handleAuthCancel"
-      @close="closeAuthModal"
-    />
   </view>
 </template>
 

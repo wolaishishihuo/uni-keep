@@ -1,6 +1,8 @@
 import type { CustomRequestOptions } from '@/interceptors/request';
+import { useUserStore } from '@/store/user';
 
 export function http<T>(options: CustomRequestOptions) {
+  const userStore = useUserStore();
   // 1. 返回 Promise 对象
   return new Promise<IResData<T>>((resolve, reject) => {
     uni.request({
@@ -18,8 +20,8 @@ export function http<T>(options: CustomRequestOptions) {
         }
         else if (res.statusCode === 401) {
           // 401错误  -> 清理用户信息，跳转到登录页
-          // userStore.clearUserInfo()
-          // uni.navigateTo({ url: '/pages/login/login' })
+          userStore.clearUserInfo();
+          uni.navigateTo({ url: '/pages/login/login' });
           reject(res);
         }
         else {

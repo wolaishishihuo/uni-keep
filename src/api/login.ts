@@ -1,5 +1,5 @@
 import type { UserProfile } from '@/models/user';
-import { http, httpPost } from '@/utils/http';
+import { http } from '@/utils/http';
 
 /**
  * 登录表单
@@ -21,14 +21,14 @@ export interface UserLoginRes {
  * @param loginForm 登录表单
  */
 export function login(loginForm: ILoginForm) {
-  return httpPost<UserLoginRes>('/user/login', loginForm);
+  return http.post<UserLoginRes>('/user/login', loginForm);
 }
 
 /**
  * 获取用户信息
  */
-export function getUserInfo() {
-  return http.get<UserProfile>('/user/info');
+export function getUserInfo(id: string) {
+  return http.get<UserProfile>(`/user/info/${id}`);
 }
 
 /**

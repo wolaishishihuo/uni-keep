@@ -44,6 +44,12 @@ export const useUserStore = defineStore(
       userInfo.value = val;
     };
 
+    // 清除用户信息
+    const clearUserInfo = () => {
+      userInfo.value = { ...initialUserInfo };
+      token.value = '';
+    };
+
     // 微信授权登录
     const wxLogin = async () => {
       try {
@@ -82,10 +88,11 @@ export const useUserStore = defineStore(
     return {
       userInfo,
       wxUserInfo,
+      isLoggedIn,
       token,
       setUserInfo,
       wxLogin,
-      isLoggedIn
+      clearUserInfo
     };
   },
   {
