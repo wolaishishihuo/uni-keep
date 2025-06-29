@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  visible: boolean;
+  modelValue: boolean;
 }
 
 const props = defineProps<Props>();
@@ -16,7 +16,7 @@ const agreed = ref(false);
 
 const showModal = computed({
   get() {
-    return props.visible;
+    return props.modelValue;
   },
   set(value) {
     emit('close');

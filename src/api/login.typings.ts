@@ -17,9 +17,8 @@ export interface IUserInfoVo {
  * 登录返回的信息
  */
 export interface IUserLogin {
-  id: string;
-  username: string;
   token: string;
+  userInfo: IUserInfoVo;
 }
 
 /**

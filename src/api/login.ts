@@ -1,5 +1,5 @@
-import type { ICaptcha, IUpdateInfo, IUpdatePassword, IUserInfoVo, IUserLogin } from './login.typings';
-import { http } from '@/utils/http';
+import type { UserProfile } from '@/models/user';
+import { http, httpPost } from '@/utils/http';
 
 /**
  * 登录表单
@@ -9,11 +9,11 @@ export interface ILoginForm {
 }
 
 /**
- * 获取验证码
- * @returns ICaptcha 验证码
+ * 登录返回的信息
  */
-export function getCode() {
-  return http.get<ICaptcha>('/user/getCode');
+export interface UserLoginRes {
+  token: string;
+  userInfo: UserProfile;
 }
 
 /**
@@ -21,35 +21,21 @@ export function getCode() {
  * @param loginForm 登录表单
  */
 export function login(loginForm: ILoginForm) {
-  return http.post<IUserLogin>('/user/login', loginForm);
+  return httpPost<UserLoginRes>('/user/login', loginForm);
 }
 
 /**
  * 获取用户信息
  */
 export function getUserInfo() {
-  return http.get<IUserInfoVo>('/user/info');
-}
-
-/**
- * 退出登录
- */
-export function logout() {
-  return http.get<void>('/user/logout');
+  return http.get<UserProfile>('/user/info');
 }
 
 /**
  * 修改用户信息
  */
-export function updateInfo(data: IUpdateInfo) {
+export function updateInfo(data: UserProfile) {
   return http.post('/user/updateInfo', data);
-}
-
-/**
- * 修改用户密码
- */
-export function updateUserPassword(data: IUpdatePassword) {
-  return http.post('/user/updatePassword', data);
 }
 
 /**
@@ -84,17 +70,4 @@ export function getWxUserInfo() {
       }
     });
   });
-}
-
-/**
- * 微信登录参数
- */
-
-/**
- * 微信登录
- * @param params 微信登录参数，包含code
- * @returns Promise 包含登录结果
- */
-export function wxLogin(data: { code: string }) {
-  return http.post<IUserLogin>('/user/wxLogin', data);
 }

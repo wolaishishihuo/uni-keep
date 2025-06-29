@@ -164,9 +164,6 @@ onLoad(() => {
       <view class="user-info">
         <view class="avatar-container">
           <image :src="userInfo.avatar" class="user-avatar" mode="aspectFill" />
-          <view class="level-badge">
-            Lv.{{ userInfo.level || 1 }}
-          </view>
         </view>
         <view class="user-details">
           <view v-if="!isLoggedIn" class="login-btn" @click="handleLogin">
@@ -174,12 +171,12 @@ onLoad(() => {
               登录/注册
             </text>
           </view>
-          <view v-else class="user-info">
+          <view v-else>
             <text class="user-name">
-              {{ userInfo.username }}
+              {{ userInfo.nickname }}
             </text>
             <text class="user-status">
-              {{ userInfo.isConnected ? `与${userInfo.partner}携手坚持` : '单独坚持中' }}
+              {{ userInfo.coupleId ? `与${userInfo.coupleId}携手坚持` : '独自坚持中' }}
             </text>
           </view>
         </view>
@@ -196,7 +193,7 @@ onLoad(() => {
       <view class="stats-row">
         <view class="stat-item">
           <text class="stat-value">
-            {{ userInfo.continuousDays }}
+            {{ userInfo.currentWeight }}
           </text>
           <text class="stat-label">
             连续天数
@@ -205,7 +202,7 @@ onLoad(() => {
         <view class="stat-divider" />
         <view class="stat-item">
           <text class="stat-value">
-            {{ userInfo.totalDays }}
+            {{ userInfo.targetWeight }}
           </text>
           <text class="stat-label">
             总坚持天数
@@ -214,7 +211,7 @@ onLoad(() => {
         <view class="stat-divider" />
         <view class="stat-item">
           <text class="stat-value">
-            {{ Math.round((userInfo.continuousDays / userInfo.totalDays) * 100) || 0 }}%
+            {{ Math.round((userInfo.currentWeight / userInfo.targetWeight) * 100) || 0 }}%
           </text>
           <text class="stat-label">
             成功率
@@ -297,7 +294,7 @@ onLoad(() => {
 
     <!-- 授权弹框 -->
     <AuthModal
-      :visible="showAuthModal"
+      v-model="showAuthModal"
       @confirm="handleAuthConfirm"
       @cancel="handleAuthCancel"
       @close="closeAuthModal"

@@ -1,4 +1,4 @@
-import type { CustomRequestOptions } from '@/interceptors/request'
+import type { CustomRequestOptions } from '@/interceptors/request';
 
 export function http<T>(options: CustomRequestOptions) {
   // 1. 返回 Promise 对象
@@ -14,34 +14,34 @@ export function http<T>(options: CustomRequestOptions) {
         // 状态码 2xx，参考 axios 的设计
         if (res.statusCode >= 200 && res.statusCode < 300) {
           // 2.1 提取核心数据 res.data
-          resolve(res.data as IResData<T>)
+          resolve(res.data as IResData<T>);
         }
         else if (res.statusCode === 401) {
           // 401错误  -> 清理用户信息，跳转到登录页
           // userStore.clearUserInfo()
           // uni.navigateTo({ url: '/pages/login/login' })
-          reject(res)
+          reject(res);
         }
         else {
           // 其他错误 -> 根据后端错误信息轻提示
           !options.hideErrorToast
           && uni.showToast({
             icon: 'none',
-            title: (res.data as IResData<T>).msg || '请求错误',
-          })
-          reject(res)
+            title: (res.data as IResData<T>).msg || '请求错误'
+          });
+          reject(res);
         }
       },
       // 响应失败
       fail(err) {
         uni.showToast({
           icon: 'none',
-          title: '网络错误，换个网络试试',
-        })
-        reject(err)
-      },
-    })
-  })
+          title: '网络错误，换个网络试试'
+        });
+        reject(err);
+      }
+    });
+  });
 }
 
 /**
@@ -57,8 +57,8 @@ export function httpGet<T>(url: string, query?: Record<string, any>, header?: Re
     query,
     method: 'GET',
     header,
-    ...options,
-  })
+    ...options
+  });
 }
 
 /**
@@ -76,8 +76,8 @@ export function httpPost<T>(url: string, data?: Record<string, any>, query?: Rec
     data,
     method: 'POST',
     header,
-    ...options,
-  })
+    ...options
+  });
 }
 /**
  * PUT 请求
@@ -89,8 +89,8 @@ export function httpPut<T>(url: string, data?: Record<string, any>, query?: Reco
     query,
     method: 'PUT',
     header,
-    ...options,
-  })
+    ...options
+  });
 }
 
 /**
@@ -102,11 +102,11 @@ export function httpDelete<T>(url: string, query?: Record<string, any>, header?:
     query,
     method: 'DELETE',
     header,
-    ...options,
-  })
+    ...options
+  });
 }
 
-http.get = httpGet
-http.post = httpPost
-http.put = httpPut
-http.delete = httpDelete
+http.get = httpGet;
+http.post = httpPost;
+http.put = httpPut;
+http.delete = httpDelete;

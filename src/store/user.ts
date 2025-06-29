@@ -1,4 +1,4 @@
-import type { IUserInfoVo } from '@/api/login.typings';
+import type { UserProfile } from '@/models/user';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
@@ -9,40 +9,45 @@ import {
 import { toast } from '@/utils/toast';
 
 // 初始化用户信息
-const initialUserInfo: IUserInfoVo = {
-  id: 0,
-  username: '游客',
+const initialUserInfo: UserProfile = {
+  id: '0',
+  wxOpenId: '',
+  nickname: '游客',
   avatar: '/static/images/default-avatar.png',
-  token: '',
-  level: 1,
-  continuousDays: 0,
-  totalDays: 0,
-  partner: '',
-  isConnected: false
+  height: 0,
+  targetWeight: 0,
+  currentWeight: 0,
+  gender: 'male',
+  coupleId: '',
+  createdAt: '',
+  updatedAt: ''
 };
 
 export const useUserStore = defineStore(
   'user',
   () => {
     // 用户信息状态
-    const userInfo = ref<IUserInfoVo>({ ...initialUserInfo });
+    const userInfo = ref<UserProfile>({ ...initialUserInfo });
 
     // 微信用户信息
     const wxUserInfo = ref<UniApp.GetUserProfileRes | null>(null);
 
+    const token = ref('');
+
     // 是否登录
     const isLoggedIn = computed(() => {
-      return userInfo.value.token !== '';
+      return token.value !== '';
     });
 
     // 设置用户信息
-    const setUserInfo = (val: IUserInfoVo) => {
+    const setUserInfo = (val: UserProfile) => {
       userInfo.value = val;
     };
 
     // 微信授权登录
     const wxLogin = async () => {
       try {
+        toast.info('微信授权登录中...');
         // 1. 获取微信登录凭证
         // console.log('获取微信登录凭证');
         const wxCodeRes = await getWxCode();
@@ -54,26 +59,18 @@ export const useUserStore = defineStore(
         console.log('微信用户信息:', wxInfo);
 
         // 3. 登录
-        const loginRes = await login({
+        const { data } = await login({
           code: wxCodeRes.code
-
         });
-        console.log('登录结果:', loginRes);
-        // 3. 临时设置微信用户信息到userInfo
-        // setUserInfo({
-        //   id: 0,
-        //   username: wxInfo.userInfo.nickName,
-        //   avatar: wxInfo.userInfo.avatarUrl,
-        //   token: '',
-        //   level: 1,
-        //   continuousDays: 0,
-        //   totalDays: 0,
-        //   partner: '',
-        //   isConnected: false
-        // });
 
-        // toast.success('微信授权成功');
-        // return { wxInfo, code: wxCodeRes.code };
+        console.log('登录结果:', {
+          token: data.token,
+          userInfo: data.userInfo
+        });
+        // 3. 临时设置微信用户信息到userInfo
+        setUserInfo(data.userInfo);
+        token.value = data.token;
+        toast.success('授权登录成功!');
       }
       catch (error) {
         console.error('微信授权失败', error);
@@ -85,12 +82,17 @@ export const useUserStore = defineStore(
     return {
       userInfo,
       wxUserInfo,
+      token,
       setUserInfo,
       wxLogin,
       isLoggedIn
     };
   },
   {
-    persist: true
+    persist: {
+      key: 'user',
+      paths: ['userInfo', 'token'],
+      storage: localStorage
+    }
   }
 );
