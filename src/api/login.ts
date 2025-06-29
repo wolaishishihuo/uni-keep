@@ -5,10 +5,7 @@ import { http } from '@/utils/http';
  * 登录表单
  */
 export interface ILoginForm {
-  username: string;
-  password: string;
   code: string;
-  uuid: string;
 }
 
 /**
@@ -78,26 +75,13 @@ export function getWxCode() {
  */
 export function getWxUserInfo() {
   return new Promise<UniApp.GetUserProfileRes>((resolve, reject) => {
-    uni.getUserProfile({
-      desc: '用于完善个人信息',
+    uni.getUserInfo({
+      provider: 'weixin',
       success: res => resolve(res),
       fail: (err) => {
         console.error('获取用户信息失败:', err);
         reject(new Error(err.errMsg || '获取用户信息失败'));
       }
-    });
-  });
-}
-
-/**
- * 微信授权
- */
-export function getWxAuth() {
-  return new Promise<UniApp.GeneralCallbackResult>((resolve, reject) => {
-    uni.authorize({
-      scope: 'scope.userInfo',
-      success: res => resolve(res),
-      fail: err => reject(new Error(err))
     });
   });
 }

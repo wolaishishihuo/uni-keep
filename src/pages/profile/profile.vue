@@ -10,6 +10,8 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
+import { computed, ref } from 'vue';
+import AuthModal from '@/components/auth-modal/index.vue';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
@@ -26,7 +28,10 @@ const themeStore = useThemeStore();
 const { themeColor, themeClassName, themeName } = storeToRefs(themeStore);
 const userStore = useUserStore();
 const { userInfo, isLoggedIn } = storeToRefs(userStore);
-const { wxLogin } = userStore;
+const { setUserInfo } = userStore;
+
+// 授权弹框控制
+const showAuthModal = ref(false);
 
 // 成就数据
 const achievements = ref([
@@ -116,6 +121,11 @@ function handleThemeToggle() {
   themeStore.toggleGenderTheme();
 }
 
+// 处理登录
+function handleLogin() {
+  showAuthModal.value = true;
+}
+
 // 查看成就详情
 function viewAchievement(achievement: any) {
   uni.showModal({
@@ -123,6 +133,23 @@ function viewAchievement(achievement: any) {
     content: achievement.description,
     showCancel: false
   });
+}
+
+// 处理授权确认
+function handleAuthConfirm() {
+  console.log('用户授权确认');
+  userStore.wxLogin();
+}
+
+// 处理授权取消
+function handleAuthCancel() {
+  console.log('用户取消授权');
+  showAuthModal.value = false;
+}
+
+// 关闭授权弹框
+function closeAuthModal() {
+  showAuthModal.value = false;
 }
 
 onLoad(() => {
@@ -142,7 +169,7 @@ onLoad(() => {
           </view>
         </view>
         <view class="user-details">
-          <view v-if="!isLoggedIn" class="login-btn" @click="wxLogin">
+          <view v-if="!isLoggedIn" class="login-btn" @click="handleLogin">
             <text class="login-icon">
               登录/注册
             </text>
@@ -267,6 +294,14 @@ onLoad(() => {
         © 2024 健康管理应用
       </text>
     </view>
+
+    <!-- 授权弹框 -->
+    <AuthModal
+      :visible="showAuthModal"
+      @confirm="handleAuthConfirm"
+      @cancel="handleAuthCancel"
+      @close="closeAuthModal"
+    />
   </view>
 </template>
 

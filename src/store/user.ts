@@ -2,7 +2,9 @@ import type { IUserInfoVo } from '@/api/login.typings';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
-  getWxAuth
+  getWxCode,
+  getWxUserInfo,
+  login
 } from '@/api/login';
 import { toast } from '@/utils/toast';
 
@@ -41,18 +43,22 @@ export const useUserStore = defineStore(
     // 微信授权登录
     const wxLogin = async () => {
       try {
-        // 1. 获取微信授权
-        const wxAuthRes = await getWxAuth();
-        console.log('微信授权结果:', wxAuthRes);
-        // 2. 获取微信登录凭证
+        // 1. 获取微信登录凭证
         // console.log('获取微信登录凭证');
-        // const wxCodeRes = await getWxCode();
-        // console.log('微信登录code:', wxCodeRes.code);
+        const wxCodeRes = await getWxCode();
+        console.log('微信登录code:', wxCodeRes.code);
         // // 2. 获取用户信息授权
         // console.log('开始微信用户信息授权');
-        // const wxInfo = await getWxUserInfo();
-        // wxUserInfo.value = wxInfo;
+        const wxInfo = await getWxUserInfo();
+        wxUserInfo.value = wxInfo;
+        console.log('微信用户信息:', wxInfo);
 
+        // 3. 登录
+        const loginRes = await login({
+          code: wxCodeRes.code
+
+        });
+        console.log('登录结果:', loginRes);
         // 3. 临时设置微信用户信息到userInfo
         // setUserInfo({
         //   id: 0,
