@@ -52,6 +52,14 @@
   },
   "pages": [
     {
+      "path": "pages/login/index",
+      "type": "page",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "登录"
+      }
+    },
+    {
       "path": "pages/index/index",
       "type": "home",
       "layout": "tabbar",
@@ -97,14 +105,6 @@
       "needLogin": true,
       "style": {
         "navigationBarTitleText": "个人资料"
-      }
-    },
-    {
-      "path": "pages/login/index",
-      "type": "page",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "登录"
       }
     }
   ],

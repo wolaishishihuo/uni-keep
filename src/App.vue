@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
-import { usePageAuth } from '@/hooks/usePageAuth';
-import { useThemeStore } from '@/store/theme';
+import { useUserStore } from '@/store';
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only';
-
-const themeStore = useThemeStore();
-
-usePageAuth();
 
 onLaunch(() => {
   console.log('App Launch');
-  themeStore.initTheme();
+  // 检查登录状态
+  const userStore = useUserStore();
+  const isLoggedIn = !!userStore.token && userStore.isLoggedIn;
+
+  if (!isLoggedIn) {
+    // 未登录，跳转到登录页
+    uni.reLaunch({
+      url: '/pages/login/index'
+    });
+  }
 });
+
 onShow(() => {
   console.log('App Show');
 });

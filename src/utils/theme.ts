@@ -1,27 +1,30 @@
-/**
- * 小程序主题工具类
- * 用于解决小程序环境中CSS变量不能动态设置的问题
- */
+import { pages } from '@/pages.json';
+
+// 从 pages.json 读取配置（可以考虑做成配置文件）
+const TABBAR_PAGES = pages.filter(page => page.layout === 'tabbar').map(page => page.path);
+
+function isCurrentPageTabBar() {
+  const pages = getCurrentPages();
+  if (pages.length === 0)
+    return false;
+
+  const currentRoute = pages[pages.length - 1].route;
+  return TABBAR_PAGES.includes(currentRoute);
+}
 
 // 注入小程序环境的全局样式
 export function applyThemeToMiniProgram(primaryColor: string) {
-  // 确保在小程序环境中执行
   if (typeof document !== 'undefined')
     return;
 
-  try {
-    // 设置TabBar样式
+  if (isCurrentPageTabBar()) {
     uni.setTabBarStyle({
       color: '#000000',
       selectedColor: primaryColor,
       backgroundColor: '#ffffff',
       borderStyle: 'black'
     });
-
     console.log('小程序主题色已应用:', primaryColor);
-  }
-  catch (error) {
-    console.error('应用小程序主题色失败:', error);
   }
 }
 

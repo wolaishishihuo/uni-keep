@@ -90,7 +90,7 @@ export const useThemeStore = defineStore('theme', () => {
   // 初始化主题
   const initTheme = () => {
     console.log('初始化主题:', genderTheme.value);
-    applyThemeClass();
+    setGenderTheme(genderTheme.value);
   };
 
   // 检查是否为指定性别主题

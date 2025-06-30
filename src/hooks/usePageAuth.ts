@@ -12,10 +12,10 @@ function isLogined() {
 export function usePageAuth() {
   onLoad((options) => {
     // 获取当前页面路径
+    console.log('options', options);
     const pages = getCurrentPages();
     const currentPage = pages[pages.length - 1];
     const currentPath = `/${currentPage.route}`;
-
     // 获取需要登录的页面列表
     let needLoginPages: string[] = [];
     if (isDev) {
@@ -24,7 +24,6 @@ export function usePageAuth() {
     else {
       needLoginPages = _needLoginPages;
     }
-
     // 检查当前页面是否需要登录
     const isNeedLogin = needLoginPages.includes(currentPath);
     if (!isNeedLogin) {

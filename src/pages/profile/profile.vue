@@ -115,7 +115,7 @@ function handleThemeToggle() {
 
 // 处理登录
 function handleLogin() {
-  uni.navigateTo({ url: '/pages/login/login' });
+  uni.navigateTo({ url: '/pages/login/index' });
 }
 
 // 查看成就详情

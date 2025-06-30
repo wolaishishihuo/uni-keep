@@ -1,12 +1,12 @@
 import type { UserProfile } from '@/models/user';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 import {
   getWxCode,
   getWxUserInfo,
   login
 } from '@/api/login';
 import { toast } from '@/utils/toast';
+import { useThemeStore } from './theme';
 
 // 初始化用户信息
 const initialUserInfo: UserProfile = {
@@ -26,6 +26,8 @@ const initialUserInfo: UserProfile = {
 export const useUserStore = defineStore(
   'user',
   () => {
+    const themeStore = useThemeStore();
+
     // 用户信息状态
     const userInfo = ref<UserProfile>({ ...initialUserInfo });
 
@@ -76,6 +78,9 @@ export const useUserStore = defineStore(
         // 3. 临时设置微信用户信息到userInfo
         setUserInfo(data.userInfo);
         token.value = data.token;
+
+        // 4. 设置主题色
+        themeStore.setGenderTheme(userInfo.value.gender || 'male');
         toast.success('授权登录成功!');
       }
       catch (error) {
