@@ -71,6 +71,18 @@
   }
 }
 
+// 完成按钮区域
+.complete-section {
+  margin-top: 60rpx;
+  padding-bottom: 40rpx;
+
+  :deep(.wd-button) {
+    height: 88rpx !important;
+    font-size: 32rpx !important;
+    font-weight: 500;
+  }
+}
+
 // 女性主题
 .theme-female {
   .profile-container {

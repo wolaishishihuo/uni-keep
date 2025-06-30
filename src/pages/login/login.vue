@@ -58,20 +58,15 @@ function handleAuthCancel() {
 
 // 登录成功处理
 function handleLoginSuccess() {
-  // 登录成功后跳转
-  if (redirect.value) {
-    uni.redirectTo({
-      url: decodeURIComponent(redirect.value),
-      fail: () => {
-        // 如果跳转失败，则跳转到首页
-        uni.switchTab({ url: '/pages/index/index' });
-      }
-    });
-  }
-  else {
-    // 没有重定向地址，跳转到首页
-    uni.switchTab({ url: '/pages/index/index' });
-  }
+  // 登录成功后跳转到个人资料编辑页面
+  // 新用户需要完善个人信息
+  uni.redirectTo({
+    url: '/pages/profile/edit/edit?from=login',
+    fail: () => {
+      // 如果跳转失败，则跳转到首页
+      uni.switchTab({ url: '/pages/index/index' });
+    }
+  });
 }
 
 // 查看隐私政策
