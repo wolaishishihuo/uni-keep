@@ -3,9 +3,11 @@ import { defineStore } from 'pinia';
 import {
   getWxCode,
   getWxUserInfo,
-  login
+  login,
+  updateInfo
 } from '@/api/login';
 import { toast } from '@/utils/toast';
+import { isNewUser, isUserProfileComplete, validateUserUpdateData } from '@/utils/userProfile';
 import { useThemeStore } from './theme';
 
 // 初始化用户信息
@@ -41,6 +43,16 @@ export const useUserStore = defineStore(
       return token.value !== '';
     });
 
+    // 是否为新用户
+    const isNewUserFlag = computed(() => {
+      return isNewUser(userInfo.value);
+    });
+
+    // 用户信息是否完整
+    const isProfileComplete = computed(() => {
+      return isUserProfileComplete(userInfo.value);
+    });
+
     // 设置用户信息
     const setUserInfo = (val: UserProfile) => {
       userInfo.value = val;
@@ -50,6 +62,63 @@ export const useUserStore = defineStore(
     const clearUserInfo = () => {
       userInfo.value = { ...initialUserInfo };
       token.value = '';
+    };
+
+    // 批量更新用户信息
+    const updateUserInfo = async (updateData: Partial<UserProfile>) => {
+      try {
+        // 验证数据
+        const validation = validateUserUpdateData(updateData);
+        if (!validation.valid) {
+          toast.error(validation.message!);
+          return false;
+        }
+
+        // 先更新本地状态
+        const newUserInfo = {
+          ...userInfo.value,
+          ...updateData
+        };
+        setUserInfo(newUserInfo);
+
+        // 调用API更新到服务器
+        await updateInfo(newUserInfo);
+
+        toast.success('信息更新成功');
+        return true;
+      }
+      catch (error) {
+        console.error('更新用户信息失败:', error);
+        toast.error('更新失败，请重试');
+        return false;
+      }
+    };
+
+    // 快速设置用户信息（用于新用户引导）
+    const quickSetupProfile = async (setupData: {
+      height: number;
+      currentWeight: number;
+      targetWeight: number;
+      reminderSettings?: any;
+    }) => {
+      try {
+        const { reminderSettings, ...profileData } = setupData;
+
+        // 更新用户基础信息
+        const success = await updateUserInfo(profileData);
+
+        if (success && reminderSettings) {
+          // 保存提醒设置到本地存储
+          uni.setStorageSync('user_reminder_settings', reminderSettings);
+        }
+
+        return success;
+      }
+      catch (error) {
+        console.error('快速设置失败:', error);
+        toast.error('设置失败，请重试');
+        return false;
+      }
     };
 
     // 微信授权登录
@@ -94,8 +163,12 @@ export const useUserStore = defineStore(
       userInfo,
       wxUserInfo,
       isLoggedIn,
+      isNewUserFlag,
+      isProfileComplete,
       token,
       setUserInfo,
+      updateUserInfo,
+      quickSetupProfile,
       wxLogin,
       clearUserInfo
     };

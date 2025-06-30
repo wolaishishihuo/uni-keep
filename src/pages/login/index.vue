@@ -58,14 +58,9 @@ function handleAuthCancel() {
 
 // 登录成功处理
 function handleLoginSuccess() {
-  // 登录成功后跳转到个人资料编辑页面
-  // 新用户需要完善个人信息
-  uni.redirectTo({
-    url: '/pages/profile/edit/edit?from=login',
-    fail: () => {
-      // 如果跳转失败，则跳转到首页
-      uni.switchTab({ url: '/pages/index/index' });
-    }
+  // 直接切换到首页，让首页处理新用户引导
+  uni.switchTab({
+    url: '/pages/index/index'
   });
 }
 

@@ -13,7 +13,7 @@ import type { Gender } from '@/models/user';
 import { onLoad } from '@dcloudio/uni-app';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import { getUserInfo as getUserInfoApi, updateInfo } from '@/api/login';
+import { updateInfo } from '@/api/login';
 import { useUserStore } from '@/store/user';
 import { toast } from '@/utils/toast';
 
@@ -25,8 +25,7 @@ defineOptions({
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
 
-// 页面来源标识
-const fromLogin = ref(false);
+// 移除页面来源标识，因为不再从登录页面跳转
 
 // 偏好设置
 const reminderSettings = ref({
@@ -165,13 +164,6 @@ async function onNicknameBlur() {
   await updateUserInfo({ nickname: userInfo.value.nickname.trim() }, '昵称更新成功');
 }
 
-// 获取用户信息
-async function getUserInfo() {
-  const res = await getUserInfoApi(userInfo.value.id);
-  userStore.setUserInfo(res.data[0]);
-  console.log(res.data[0]);
-}
-
 // 编辑提醒时间
 function editReminderTime(type: 'fastingStart' | 'fastingEnd' | 'weightRecord') {
   const titles = {
@@ -235,43 +227,20 @@ function handleComplete() {
 
   toast.success('个人资料完善成功！');
 
-  // 根据来源决定跳转页面
+  // 保存完成后返回上一页
   setTimeout(() => {
-    if (fromLogin.value) {
-      // 从登录页面来的，跳转到首页
-      uni.switchTab({
-        url: '/pages/index/index'
-      });
-    }
-    else {
-      // 从其他页面来的，返回上一页
-      uni.navigateBack();
-    }
+    uni.navigateBack();
   }, 1500);
-}
-
-// 跳过设置
-function handleSkip() {
-  uni.switchTab({
-    url: '/pages/index/index'
-  });
 }
 
 onLoad((options) => {
   console.log('个人资料页面加载完成');
-
-  // 检查是否从登录页面跳转过来
-  if (options?.from === 'login') {
-    fromLogin.value = true;
-  }
 
   // 加载已保存的偏好设置
   const savedSettings = uni.getStorageSync('user_reminder_settings');
   if (savedSettings) {
     reminderSettings.value = { ...reminderSettings.value, ...savedSettings };
   }
-
-  // getUserInfo();
 });
 </script>
 
@@ -389,19 +358,7 @@ onLoad((options) => {
         custom-style="margin: 40rpx 32rpx; border-radius: 24rpx;"
         @click="handleComplete"
       >
-        {{ fromLogin ? '完成设置，开始使用' : '保存设置' }}
-      </wd-button>
-
-      <!-- 仅在从登录页面来时显示跳过按钮 -->
-      <wd-button
-        v-if="fromLogin"
-        type="info"
-        size="large"
-        plain
-        custom-style="margin: 0 32rpx 40rpx; border-radius: 24rpx;"
-        @click="handleSkip"
-      >
-        跳过，稍后设置
+        保存设置
       </wd-button>
     </view>
   </view>

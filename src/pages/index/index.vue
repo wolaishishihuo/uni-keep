@@ -13,9 +13,12 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
+import ProfileGuideCard from '@/components/profile-guide-card/index.vue';
+import QuickSetupModal from '@/components/quick-setup-modal/index.vue';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useFastingTimer } from '@/pages/index/hooks/useFastingTimer';
 import { useThemeStore } from '@/store/theme';
+import { useUserStore } from '@/store/user';
 
 defineOptions({
   name: 'Home'
@@ -28,9 +31,12 @@ const { safeAreaInsets } = useSafeArea();
 const themeStore = useThemeStore();
 const { themeClassName } = storeToRefs(themeStore);
 
-// 用户信息
-const userInfo = ref({
-  name: '小明',
+// 用户状态管理
+const userStore = useUserStore();
+const { userInfo, isNewUserFlag, isProfileComplete } = storeToRefs(userStore);
+
+// 模拟的情侣信息（后续可以从后端获取）
+const coupleInfo = ref({
   partner: '小红'
 });
 
@@ -91,22 +97,77 @@ function handleQuickAction(action: string) {
   }
 }
 
+// 快速设置弹窗状态
+const showQuickSetup = ref(false);
+
+// 处理快速设置完成
+async function handleQuickSetupComplete(setupData: any) {
+  const success = await userStore.quickSetupProfile(setupData);
+  if (success) {
+    showQuickSetup.value = false;
+  }
+}
+
+// 处理快速设置跳过
+function handleQuickSetupSkip() {
+  showQuickSetup.value = false;
+}
+
+// 处理引导卡片的快速设置按钮
+function handleGuideQuickSetup() {
+  showQuickSetup.value = true;
+}
+
+// 处理引导卡片的去完善按钮
+function handleGuideGoProfile() {
+  uni.navigateTo({
+    url: '/pages/profile/edit/edit'
+  });
+}
+
+// 处理引导卡片关闭
+function handleGuideDismiss() {
+  console.log('引导卡片已关闭');
+}
+
+// 检查是否需要显示新用户设置弹窗
+function checkNewUserSetup() {
+  // 如果是新用户且信息不完整，延迟显示快速设置弹窗
+  if (isNewUserFlag.value && !isProfileComplete.value) {
+    setTimeout(() => {
+      showQuickSetup.value = true;
+    }, 1000); // 延迟1秒显示，让用户先看到首页
+  }
+}
+
 // 页面加载
 onLoad(() => {
   console.log('首页加载完成');
+  // 检查新用户设置
+  nextTick(() => {
+    checkNewUserSetup();
+  });
 });
 </script>
 
 <template>
   <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
+    <!-- 个人信息引导卡片 -->
+    <ProfileGuideCard
+      :user-info="userInfo"
+      @quick-setup="handleGuideQuickSetup"
+      @go-profile="handleGuideGoProfile"
+      @dismiss="handleGuideDismiss"
+    />
+
     <!-- 问候语区域 -->
     <view class="greeting-section">
       <view class="greeting-text">
         <text class="greeting-main">
-          {{ greeting }}，{{ userInfo.name }} ❤️
+          {{ greeting }}，{{ userInfo.nickname }} ❤️
         </text>
         <text class="greeting-sub">
-          今天也要和{{ userInfo.partner }}一起坚持哦
+          今天也要和{{ coupleInfo.partner }}一起坚持哦
         </text>
       </view>
     </view>
@@ -171,7 +232,7 @@ onLoad(() => {
     <view class="keep-glass-card-light couple-status">
       <view class="couple-header">
         <text class="couple-title">
-          {{ userInfo.partner }}的状态
+          {{ coupleInfo.partner }}的状态
         </text>
       </view>
       <view class="couple-info">
@@ -194,6 +255,13 @@ onLoad(() => {
       </view>
     </view>
   </view>
+
+  <!-- 快速设置弹窗 -->
+  <QuickSetupModal
+    v-model="showQuickSetup"
+    @complete="handleQuickSetupComplete"
+    @skip="handleQuickSetupSkip"
+  />
 </template>
 
 <style lang="scss">
