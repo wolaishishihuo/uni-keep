@@ -55,6 +55,7 @@
       "path": "pages/index/index",
       "type": "home",
       "layout": "tabbar",
+      "needLogin": true,
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "坚持有你"
@@ -64,6 +65,7 @@
       "path": "pages/fasting/fasting",
       "type": "page",
       "layout": "tabbar",
+      "needLogin": true,
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "断食计划"
@@ -73,6 +75,7 @@
       "path": "pages/profile/profile",
       "type": "page",
       "layout": "tabbar",
+      "needLogin": true,
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "我的"
@@ -82,6 +85,7 @@
       "path": "pages/weight/weight",
       "type": "page",
       "layout": "tabbar",
+      "needLogin": true,
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "体重管理"
@@ -90,12 +94,13 @@
     {
       "path": "pages/profile/edit/edit",
       "type": "page",
+      "needLogin": true,
       "style": {
         "navigationBarTitleText": "个人资料"
       }
     },
     {
-      "path": "pages/login/login",
+      "path": "pages/login/index",
       "type": "page",
       "style": {
         "navigationStyle": "custom",
