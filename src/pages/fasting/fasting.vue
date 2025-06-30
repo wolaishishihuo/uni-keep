@@ -1,6 +1,7 @@
 <route lang="json5">
 {
   layout: 'tabbar',
+  needLogin: true,
   style: {
     navigationStyle: 'custom',
     navigationBarTitleText: '断食计划'

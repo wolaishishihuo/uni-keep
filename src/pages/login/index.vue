@@ -1,3 +1,12 @@
+<route lang="json5">
+{
+  style: {
+    navigationStyle: 'custom',
+    navigationBarTitleText: '登录'
+  }
+}
+</route>
+
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
 import { ref } from 'vue';

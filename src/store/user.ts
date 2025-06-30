@@ -121,6 +121,23 @@ export const useUserStore = defineStore(
       }
     };
 
+    // 处理登录后的页面导航
+    const handlePostLoginNavigation = () => {
+      if (isNewUser(userInfo.value) || !isUserProfileComplete(userInfo.value)) {
+        console.log('用户信息不完整，跳转到设置页面');
+        uni.reLaunch({
+          url: '/pages/setup/index'
+        });
+      }
+      else {
+        // 用户信息完整 → 跳转到首页
+        console.log('用户信息完整，跳转到首页');
+        uni.reLaunch({
+          url: '/pages/index/index'
+        });
+      }
+    };
+
     // 微信授权登录
     const wxLogin = async () => {
       try {
@@ -151,6 +168,9 @@ export const useUserStore = defineStore(
         // 4. 设置主题色
         themeStore.setGenderTheme(userInfo.value.gender || 'male');
         toast.success('授权登录成功!');
+
+        // 5. 根据用户信息完整性决定跳转页面
+        handlePostLoginNavigation();
       }
       catch (error) {
         console.error('微信授权失败', error);
@@ -170,6 +190,7 @@ export const useUserStore = defineStore(
       updateUserInfo,
       quickSetupProfile,
       wxLogin,
+      handlePostLoginNavigation,
       clearUserInfo
     };
   },

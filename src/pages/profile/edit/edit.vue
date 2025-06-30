@@ -2,8 +2,7 @@
 {
   needLogin: true,
   style: {
-    navigationBarTitleText: '个人资料',
-
+    navigationBarTitleText: '个人资料'
   }
 }
 </route>
