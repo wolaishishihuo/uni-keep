@@ -11,10 +11,12 @@
 <script setup lang="ts">
 import { onLoad } from '@dcloudio/uni-app';
 import { storeToRefs } from 'pinia';
+import MessageDisplay from '@/components/message-display/index.vue';
+import TimePicker from '@/components/time-picker/index.vue';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
-import { toast } from '@/utils/toast';
+import { useSetupForm } from './hooks/useSetupForm';
 
 defineOptions({
   name: 'Setup'
@@ -31,206 +33,53 @@ const { themeClassName } = storeToRefs(themeStore);
 const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
 
-// 步骤相关
-const currentStep = ref(1);
-const totalSteps = 3;
-const saving = ref(false);
+// 设置表单逻辑
+const setupForm = useSetupForm();
+const {
+  currentStep,
+  totalSteps,
+  saving,
+  formData,
+  bmiStatus,
+  nextStep,
+  prevStep,
+  skipSetup,
+  initFormData,
+  messages,
+  hideMessage
+} = setupForm;
 
-// 表单数据
-const formData = ref({
-  height: '',
-  currentWeight: '',
-  targetWeight: '',
-  enableNotification: true,
-  fastingStart: '08:00',
-  fastingEnd: '18:00',
-  weightRecord: '07:00'
-});
-
-// 时间选择器
+// 时间选择器状态
 const showTimePicker = ref(false);
-const timePickerValue = ref('08:00');
 const currentTimeField = ref('');
-
-// 格式化时间显示
-function formatTimeDisplay(time: string) {
-  if (!time)
-    return '08:00';
-  return time;
-}
 
 // 选择时间
 function selectTime(field: string) {
   currentTimeField.value = field;
-  timePickerValue.value = formData.value[field] || '08:00';
   showTimePicker.value = true;
 }
 
-// 时间确认
-function onTimeConfirm({ value }) {
-  if (value && currentTimeField.value) {
-    formData.value[currentTimeField.value] = value;
+// 处理时间确认
+function onTimeConfirm(value: string) {
+  if (currentTimeField.value) {
+    (formData as any)[currentTimeField.value] = value;
   }
   showTimePicker.value = false;
 }
 
-// 时间取消
+// 取消时间选择
 function onTimeCancel() {
   showTimePicker.value = false;
 }
 
-// 下一步
-async function nextStep() {
-  try {
-    if (currentStep.value === 1) {
-      if (!validateStep1())
-        return;
-      uni.vibrateShort({ type: 'light' });
-      currentStep.value++;
-    }
-    else if (currentStep.value === 2) {
-      uni.vibrateShort({ type: 'light' });
-      currentStep.value++;
-    }
-    else {
-      await completeSetup();
-    }
-  }
-  catch (error) {
-    console.error('步骤处理失败:', error);
-    toast.error('操作失败，请重试');
-  }
+// 格式化时间显示
+function formatTimeDisplay(time: string) {
+  return time || '08:00';
 }
-
-// 上一步
-function prevStep() {
-  if (currentStep.value > 1) {
-    uni.vibrateShort({ type: 'light' });
-    currentStep.value--;
-  }
-}
-
-// 验证第一步
-function validateStep1() {
-  const { height, currentWeight, targetWeight } = formData.value;
-
-  if (!height || Number(height) < 100 || Number(height) > 250) {
-    toast.error('请输入有效的身高 (100-250cm)');
-    return false;
-  }
-
-  if (!currentWeight || Number(currentWeight) < 20 || Number(currentWeight) > 500) {
-    toast.error('请输入有效的当前体重 (20-500kg)');
-    return false;
-  }
-
-  if (!targetWeight || Number(targetWeight) < 20 || Number(targetWeight) > 500) {
-    toast.error('请输入有效的目标体重 (20-500kg)');
-    return false;
-  }
-
-  if (Math.abs(Number(targetWeight) - Number(currentWeight)) < 0.1) {
-    toast.error('目标体重应与当前体重有所不同');
-    return false;
-  }
-
-  return true;
-}
-
-// 完成设置
-async function completeSetup() {
-  try {
-    saving.value = true;
-
-    const setupData = {
-      height: Number(formData.value.height),
-      currentWeight: Number(formData.value.currentWeight),
-      targetWeight: Number(formData.value.targetWeight),
-      reminderSettings: {
-        enableNotification: formData.value.enableNotification,
-        fastingStart: formData.value.fastingStart,
-        fastingEnd: formData.value.fastingEnd,
-        weightRecord: formData.value.weightRecord
-      }
-    };
-
-    const success = await userStore.quickSetupProfile(setupData);
-
-    if (success) {
-      uni.vibrateShort({ type: 'heavy' });
-      toast.success('设置完成！欢迎使用坚持有你');
-
-      setTimeout(() => {
-        uni.reLaunch({ url: '/pages/index/index' });
-      }, 2000);
-    }
-  }
-  catch (error) {
-    console.error('设置失败:', error);
-    toast.error('设置失败，请重试');
-  }
-  finally {
-    saving.value = false;
-  }
-}
-
-// 跳过设置
-function skipSetup() {
-  uni.showModal({
-    title: '确认跳过设置',
-    content: '跳过设置将无法使用完整功能，您可以随时在个人中心完善信息',
-    cancelText: '继续设置',
-    confirmText: '跳过',
-    confirmColor: '#fa5151',
-    success: (res) => {
-      if (res.confirm) {
-        uni.vibrateShort({ type: 'light' });
-        uni.reLaunch({ url: '/pages/index/index' });
-      }
-    }
-  });
-}
-
-// 计算BMI显示状态
-const bmiStatus = computed(() => {
-  const { height, currentWeight } = formData.value;
-  if (!height || !currentWeight)
-    return null;
-
-  const h = Number(height) / 100;
-  const w = Number(currentWeight);
-  const bmi = w / (h * h);
-
-  if (bmi < 18.5)
-    return { text: '偏瘦', color: '#74b9ff' };
-  if (bmi < 24)
-    return { text: '正常', color: '#00b894' };
-  if (bmi < 28)
-    return { text: '超重', color: '#fdcb6e' };
-  return { text: '肥胖', color: '#e17055' };
-});
 
 // 页面加载
 onLoad(() => {
-  console.log('设置引导页面加载完成');
-
-  if (userInfo.value?.height && userInfo.value?.currentWeight && userInfo.value?.targetWeight) {
-    toast.success('您已完成初始设置');
-    setTimeout(() => {
-      uni.reLaunch({ url: '/pages/index/index' });
-    }, 1000);
-    return;
-  }
-
-  if (userInfo.value?.height) {
-    formData.value.height = userInfo.value.height.toString();
-  }
-  if (userInfo.value?.currentWeight) {
-    formData.value.currentWeight = userInfo.value.currentWeight.toString();
-  }
-  if (userInfo.value?.targetWeight) {
-    formData.value.targetWeight = userInfo.value.targetWeight.toString();
-  }
+  initFormData(userInfo.value);
 });
 </script>
 
@@ -264,6 +113,9 @@ onLoad(() => {
         </text>
       </view>
     </view>
+
+    <!-- 消息提示区域 -->
+    <MessageDisplay :messages="messages" @close="hideMessage" />
 
     <!-- 内容区域 -->
     <view class="content">
@@ -467,12 +319,13 @@ onLoad(() => {
     </view>
 
     <!-- 时间选择器 -->
-    <wd-datetime-picker
+    <TimePicker
       v-if="showTimePicker"
-      v-model="timePickerValue"
+      v-model="formData[currentTimeField]"
       :show="showTimePicker"
       type="time"
       title="选择时间"
+      @update:show="showTimePicker = $event"
       @confirm="onTimeConfirm"
       @cancel="onTimeCancel"
     />
