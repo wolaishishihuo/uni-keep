@@ -119,61 +119,124 @@ onLoad(() => {
 
     <!-- 内容区域 -->
     <view class="content">
-      <!-- 步骤1：身体数据 -->
+      <!-- 步骤1：个人信息 -->
       <view v-if="currentStep === 1" key="step1" class="step-content">
         <view class="step-header">
           <view class="step-icon">
-            📊
+            👤
           </view>
           <text class="step-title">
-            身体数据
+            个人信息
           </text>
         </view>
 
-        <view class="form-section">
-          <view class="form-item">
-            <text class="label">
-              身高 (cm)
+        <view class="form-section" :class="{ scrollable: currentStep === 1 }">
+          <!-- 基础信息分组 -->
+          <view class="info-group">
+            <text class="group-title">
+              📝 基础信息
             </text>
-            <wd-input
-              v-model="formData.height"
-              type="number"
-              placeholder="如：170"
-              :maxlength="3"
-            />
+
+            <view class="form-item">
+              <text class="label">
+                昵称
+              </text>
+              <wd-input
+                v-model="formData.nickname"
+                placeholder="请输入您的昵称"
+                :maxlength="20"
+              />
+            </view>
+
+            <view class="form-item">
+              <text class="label">
+                性别
+              </text>
+              <view class="gender-selector">
+                <wd-button
+                  :type="formData.gender === 'male' ? 'primary' : 'info'"
+                  :plain="formData.gender !== 'male'"
+                  size="small"
+                  custom-style="flex: 1; margin-right: 8rpx;"
+                  @click="formData.gender = 'male'"
+                >
+                  👨 男
+                </wd-button>
+                <wd-button
+                  :type="formData.gender === 'female' ? 'primary' : 'info'"
+                  :plain="formData.gender !== 'female'"
+                  size="small"
+                  custom-style="flex: 1; margin-left: 8rpx;"
+                  @click="formData.gender = 'female'"
+                >
+                  👩 女
+                </wd-button>
+              </view>
+            </view>
+
+            <view class="form-item">
+              <text class="label">
+                年龄
+              </text>
+              <wd-input
+                v-model="formData.age"
+                type="number"
+                placeholder="如：25"
+                :maxlength="2"
+              />
+            </view>
           </view>
 
-          <view class="form-item">
-            <text class="label">
-              当前体重 (kg)
+          <!-- 身体数据分组 -->
+          <view class="info-group">
+            <text class="group-title">
+              📊 身体数据
             </text>
-            <wd-input
-              v-model="formData.currentWeight"
-              type="digit"
-              placeholder="如：65.5"
-              :maxlength="5"
-            />
-          </view>
 
-          <view class="form-item">
-            <text class="label">
-              目标体重 (kg)
-            </text>
-            <wd-input
-              v-model="formData.targetWeight"
-              type="digit"
-              placeholder="如：60.0"
-              :maxlength="5"
-            />
-          </view>
+            <view class="form-item">
+              <text class="label">
+                身高 (cm)
+              </text>
+              <wd-input
+                v-model="formData.height"
+                type="number"
+                placeholder="如：170"
+                :maxlength="3"
+              />
+            </view>
 
-          <view v-if="bmiStatus" class="bmi-tip">
-            <text class="bmi-label">
-              BMI 状态：
-            </text>
-            <text class="bmi-value" :style="{ color: bmiStatus.color }">
-              {{ bmiStatus.text }}
-            </text>
+            <view class="form-item">
+              <text class="label">
+                当前体重 (kg)
+              </text>
+              <wd-input
+                v-model="formData.currentWeight"
+                type="digit"
+                placeholder="如：65.5"
+                :maxlength="5"
+              />
+            </view>
+
+            <view class="form-item">
+              <text class="label">
+                目标体重 (kg)
+              </text>
+              <wd-input
+                v-model="formData.targetWeight"
+                type="digit"
+                placeholder="如：60.0"
+                :maxlength="5"
+              />
+            </view>
+
+            <view v-if="bmiStatus" class="bmi-tip">
+              <text class="bmi-label">
+                BMI 状态：
+              </text>
+              <text class="bmi-value" :style="{ color: bmiStatus.color }">
+                {{ bmiStatus.text }}
+              </text>
+            </view>
           </view>
         </view>
       </view>

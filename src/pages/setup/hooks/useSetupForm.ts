@@ -1,12 +1,19 @@
+import type { Gender } from '@/models/user';
 import { computed, reactive, ref } from 'vue';
 import { useMessage } from '@/hooks/useMessage';
 import { useUserStore } from '@/store/user';
 
 // 表单数据接口
 export interface SetupFormData {
+  // 基础信息
+  nickname: string;
+  gender: Gender | '';
+  age: string;
+  // 身体数据
   height: string;
   currentWeight: string;
   targetWeight: string;
+  // 提醒设置
   enableNotification: boolean;
   fastingStart: string;
   fastingEnd: string;
@@ -15,9 +22,15 @@ export interface SetupFormData {
 
 // 默认表单数据
 const defaultFormData: SetupFormData = {
+  // 基础信息
+  nickname: '',
+  gender: '',
+  age: '',
+  // 身体数据
   height: '',
   currentWeight: '',
   targetWeight: '',
+  // 提醒设置
   enableNotification: true,
   fastingStart: '08:00',
   fastingEnd: '18:00',
@@ -57,8 +70,30 @@ export function useSetupForm() {
 
   // 验证第一步表单
   const validateStep1 = (): boolean => {
-    const { height, currentWeight, targetWeight } = formData;
+    const { nickname, gender, age, height, currentWeight, targetWeight } = formData;
 
+    // 验证基础信息
+    if (!nickname || nickname.trim().length < 2) {
+      message.error('请输入至少2个字符的昵称');
+      return false;
+    }
+
+    if (nickname.trim().length > 20) {
+      message.error('昵称不能超过20个字符');
+      return false;
+    }
+
+    if (!gender) {
+      message.error('请选择性别');
+      return false;
+    }
+
+    if (!age || Number(age) < 10 || Number(age) > 100) {
+      message.error('请输入有效的年龄 (10-100岁)');
+      return false;
+    }
+
+    // 验证身体数据
     if (!height || Number(height) < 100 || Number(height) > 250) {
       message.error('请输入有效的身高 (100-250cm)');
       return false;
@@ -88,9 +123,15 @@ export function useSetupForm() {
       saving.value = true;
 
       const setupData = {
+        // 基础信息
+        nickname: formData.nickname.trim(),
+        gender: formData.gender as Gender,
+        age: Number(formData.age),
+        // 身体数据
         height: Number(formData.height),
         currentWeight: Number(formData.currentWeight),
         targetWeight: Number(formData.targetWeight),
+        // 提醒设置
         reminderSettings: {
           enableNotification: formData.enableNotification,
           fastingStart: formData.fastingStart,
@@ -99,7 +140,7 @@ export function useSetupForm() {
         }
       };
 
-      const success = await userStore.quickSetupProfile(setupData);
+      const success = await userStore.updateUserInfo(setupData);
 
       if (success) {
         uni.vibrateShort({ type: 'heavy' });
@@ -177,6 +218,18 @@ export function useSetupForm() {
       return;
     }
 
+    // 初始化基础信息
+    if (userInfo?.nickname) {
+      formData.nickname = userInfo.nickname;
+    }
+    if (userInfo?.gender) {
+      formData.gender = userInfo.gender;
+    }
+    if (userInfo?.age) {
+      formData.age = userInfo.age.toString();
+    }
+
+    // 初始化身体数据
     if (userInfo?.height) {
       formData.height = userInfo.height.toString();
     }

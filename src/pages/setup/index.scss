@@ -58,33 +58,38 @@
 // 内容区域 - 主要表单内容
 .content {
   flex: 1;
-  padding: 0 32rpx;
+  padding: 24rpx 32rpx 32rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 0;
+  overflow: hidden;
 
   .step-content {
     width: 100%;
     max-width: 640rpx;
+    max-height: calc(100% - 24rpx);
     background: #fff;
     border-radius: 24rpx;
-    padding: 40rpx 32rpx;
     box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.15);
     animation: slideIn 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
     .step-header {
       text-align: center;
-      margin-bottom: 32rpx;
+      padding: 32rpx 32rpx 20rpx;
+      flex-shrink: 0;
 
       .step-icon {
-        font-size: 48rpx;
-        margin-bottom: 16rpx;
+        font-size: 44rpx;
+        margin-bottom: 12rpx;
         display: block;
       }
 
       .step-title {
-        font-size: 32rpx;
+        font-size: 30rpx;
         font-weight: 700;
         color: #333;
         display: block;
@@ -92,15 +97,85 @@
     }
 
     .form-section {
+      flex: 1;
+      padding: 0 32rpx 24rpx;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch; // iOS 滑动滚动优化
+
+      // 信息分组样式
+      .info-group {
+        margin-bottom: 28rpx;
+
+        &:last-child {
+          margin-bottom: 12rpx; // 底部留一点空间
+        }
+
+        .group-title {
+          font-size: 24rpx;
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 18rpx;
+          display: block;
+          padding-bottom: 8rpx;
+          border-bottom: 2rpx solid #f0f0f0;
+          position: sticky;
+          top: 0;
+          background: #fff;
+          z-index: 1;
+        }
+      }
+
       .form-item {
-        margin-bottom: 24rpx;
+        margin-bottom: 20rpx;
 
         .label {
           display: block;
           font-size: 26rpx;
           font-weight: 600;
           color: #333;
-          margin-bottom: 12rpx;
+          margin-bottom: 10rpx;
+        }
+
+        // 性别选择器样式
+        .gender-selector {
+          display: flex;
+          gap: 16rpx;
+
+          :deep(.wd-button) {
+            border-radius: 12rpx !important;
+            font-size: 26rpx !important;
+            height: 70rpx !important;
+            transition: all 0.3s ease !important;
+
+            &.wd-button--primary {
+              background: linear-gradient(
+                135deg,
+                #667eea 0%,
+                #764ba2 100%
+              ) !important;
+              border: none !important;
+              box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3) !important;
+            }
+
+            &.wd-button--info {
+              background: #f8f9fa !important;
+              border: 2rpx solid #e9ecef !important;
+              color: #666 !important;
+
+              &.wd-button--plain {
+                background: #fff !important;
+                color: #999 !important;
+                border-color: #e9ecef !important;
+
+                &:hover {
+                  border-color: #667eea !important;
+                  color: #667eea !important;
+                }
+              }
+            }
+          }
         }
 
         :deep(.wd-input) {
@@ -166,6 +241,20 @@
             line-height: 1.4;
           }
         }
+      }
+
+      // 第一步滚动样式
+      &.scrollable {
+        position: relative;
+      }
+
+      // 第二、三步内容较少时的处理
+      &:not(.scrollable) {
+        overflow: visible;
+        min-height: 400rpx;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       .time-settings {
