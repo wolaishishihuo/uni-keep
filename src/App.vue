@@ -27,12 +27,10 @@ onHide(() => {
 
 <style lang="scss">
 // 全局隐藏滚动条 - 小程序项目通用设置
-* {
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-  }
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 ::-webkit-scrollbar {
