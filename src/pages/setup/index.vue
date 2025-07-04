@@ -1,6 +1,5 @@
 <route lang="json5">
 {
-  needLogin: true,
   style: {
     navigationStyle: 'custom',
     navigationBarTitleText: '完善个人信息'

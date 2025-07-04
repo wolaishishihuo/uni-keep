@@ -92,7 +92,6 @@
     {
       "path": "pages/setup/index",
       "type": "page",
-      "needLogin": true,
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "完善个人信息"
@@ -110,7 +109,11 @@
     },
     {
       "path": "pages/welcome/index",
-      "type": "page"
+      "type": "page",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "欢迎使用"
+      }
     },
     {
       "path": "pages/profile/edit/edit",

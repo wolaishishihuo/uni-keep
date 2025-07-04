@@ -13,137 +13,41 @@
 :root,
 page {
   // ========== 默认主题（男主题 - 清新蓝系） ==========
+  /* 主色调 */
+  --primary-gradient: linear-gradient(45deg, #4195e1, #667eea);
+  --primary-color: #4195e1;
+  --primary-light: #e8f4ff;
+  --primary-dark: #3a85c8;
 
-  // 主题基础色
-  --keep-primary: #4195e1; // 主色 - 清新蓝
-  --keep-primary-light: #7bb3e8; // 浅色变体
-  --keep-primary-dark: #2e7bc6; // 深色变体
-  --keep-primary-ultra-light: #e8f4ff; // 超浅色
+  /* 文字颜色 */
+  --text-primary: #262626;
+  --text-secondary: #595959;
+  --text-light: #ffffff;
 
-  // 透明度变体
-  --keep-primary-alpha-10: rgba(65, 149, 225, 0.1);
-  --keep-primary-alpha-20: rgba(65, 149, 225, 0.2);
-  --keep-primary-alpha-30: rgba(65, 149, 225, 0.3);
-  --keep-primary-alpha-50: rgba(65, 149, 225, 0.5);
+  /* 背景色 */
+  --bg-gradient: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
+  --bg-primary: #f8fbff;
+  --bg-secondary: #ffffff;
 
-  // 玻璃态效果变体（用于渐变背景上）
-  --keep-glass-white-light: rgba(255, 255, 255, 0.1);
-  --keep-glass-white-medium: rgba(255, 255, 255, 0.15);
-  --keep-glass-white-strong: rgba(255, 255, 255, 0.25);
-  --keep-glass-dark-light: rgba(0, 0, 0, 0.1);
-  --keep-glass-dark-medium: rgba(0, 0, 0, 0.15);
-  --keep-glass-dark-strong: rgba(0, 0, 0, 0.25);
-
-  // 辅助色
-  --keep-secondary: #667eea; // 辅助色
-
-  // 强调色系统（优化对比度）
-  --keep-accent: #00d9ff; // 主强调色 - 青色（在蓝色背景上突出）
-  --keep-accent-warm: #ffb74d; // 暖色强调 - 橙色（温暖感）
-  --keep-accent-success: #4caf50; // 成功强调 - 绿色
-  --keep-accent-active: #ffd54f; // 活跃状态 - 亮黄色（高对比）
-  --keep-accent-special: #e91e63; // 特殊强调 - 粉红色
-
-  // 功能色
-  --keep-success: #52c41a; // 成功色
-  --keep-warning: #faad14; // 警告色
-  --keep-error: #ff4d4f; // 错误色
-  --keep-info: --keep-primary; // 信息色（使用主色）
-
-  // 中性色系
-  --keep-text-primary: #262626; // 主要文字
-  --keep-text-secondary: #595959; // 次要文字
-  --keep-text-disabled: #bfbfbf; // 禁用文字
-  --keep-text-white: #ffffff; // 白色文字
-
-  // 背景色
-  --keep-bg-primary: #ffffff; // 主背景
-  --keep-bg-secondary: #fafafa; // 次背景
-  --keep-bg-tertiary: #f5f5f5; // 三级背景
-  --keep-bg-dark: #001529; // 深色背景
-
-  // 边框色
-  --keep-border-light: #f0f0f0; // 浅边框
-  --keep-border-base: #d9d9d9; // 基础边框
-  --keep-border-dark: #434343; // 深色边框
-  --keep-border-glass: rgba(255, 255, 255, 0.2); // 玻璃态边框
-
-  // 阴影色
-  --keep-shadow-light: rgba(65, 149, 225, 0.08);
-  --keep-shadow-base: rgba(65, 149, 225, 0.15);
-  --keep-shadow-dark: rgba(65, 149, 225, 0.25);
-  --keep-shadow-glass: rgba(0, 0, 0, 0.1);
-
-  // 渐变色
-  --keep-gradient-primary: linear-gradient(135deg, #4195e1 0%, #667eea 100%);
-  --keep-gradient-secondary: linear-gradient(135deg, #7bb3e8 0%, #4195e1 100%);
-  --keep-gradient-bg: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
-  --keep-gradient-card: linear-gradient(
-    135deg,
-    rgba(65, 149, 225, 0.05) 0%,
-    rgba(102, 126, 234, 0.05) 100%
-  );
-
-  // 玻璃态渐变（用于渐变背景上）
-  --keep-gradient-glass-light: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 100%
-  );
-  --keep-gradient-glass-medium: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  --keep-gradient-glass-strong: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0.15) 100%
-  );
+  /* 交互元素 */
+  --button-shadow: rgba(65, 149, 225, 0.3);
+  --button-shadow-hover: rgba(65, 149, 225, 0.4);
 }
 
 // ========== 女主题（少女粉系） ==========
 .theme-female {
-  // 主题基础色
-  --keep-primary: #ff6b9d; // 主色 - 少女粉
-  --keep-primary-light: #ff8fb3; // 浅色变体
-  --keep-primary-dark: #e55a8a; // 深色变体
-  --keep-primary-ultra-light: #fff0f5; // 超浅色
+  /* 主色调 */
+  --primary-gradient: linear-gradient(45deg, #ff6b9d, #ff85a1);
+  --primary-color: #ff6b9d;
+  --primary-light: #fff0f5;
+  --primary-dark: #e55c8a;
 
-  // 透明度变体
-  --keep-primary-alpha-10: rgba(255, 107, 157, 0.1);
-  --keep-primary-alpha-20: rgba(255, 107, 157, 0.2);
-  --keep-primary-alpha-30: rgba(255, 107, 157, 0.3);
-  --keep-primary-alpha-50: rgba(255, 107, 157, 0.5);
+  /* 背景色 */
+  --bg-gradient: linear-gradient(180deg, #fff9fb 0%, #fff0f5 100%);
 
-  // 辅助色
-  --keep-secondary: #ff85a1; // 辅助色
-
-  // 强调色系统（女主题适配）
-  --keep-accent: #00e5ff; // 主强调色 - 亮青色（在粉色背景上突出）
-  --keep-accent-warm: #ffb74d; // 暖色强调保持
-  --keep-accent-success: #4caf50; // 成功强调保持
-  --keep-accent-active: #ffd54f; // 活跃状态保持
-  --keep-accent-special: #9c27b0; // 特殊强调 - 紫色（与粉色搭配）
-
-  // 功能色保持一致
-  // --keep-success, --keep-warning, --keep-error 保持不变
-  --keep-info: var(--keep-primary); // 信息色使用粉色主题
-
-  // 阴影色（粉色系）
-  --keep-shadow-light: rgba(255, 107, 157, 0.08);
-  --keep-shadow-base: rgba(255, 107, 157, 0.15);
-  --keep-shadow-dark: rgba(255, 107, 157, 0.25);
-
-  // 渐变色（粉色系）
-  --keep-gradient-primary: linear-gradient(135deg, #ff6b9d 0%, #ff85a1 100%);
-  --keep-gradient-secondary: linear-gradient(135deg, #ff8fb3 0%, #ff6b9d 100%);
-  --keep-gradient-bg: linear-gradient(180deg, #fff8fa 0%, #fff0f5 100%);
-  --keep-gradient-card: linear-gradient(
-    135deg,
-    rgba(255, 107, 157, 0.05) 0%,
-    rgba(255, 133, 161, 0.05) 100%
-  );
+  /* 交互元素 */
+  --button-shadow: rgba(255, 107, 157, 0.3);
+  --button-shadow-hover: rgba(255, 107, 157, 0.4);
 }
 
 // ========== 常用组合样式 ==========
