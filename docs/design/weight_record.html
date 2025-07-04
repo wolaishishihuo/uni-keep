@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>坚持有你 - 体重管理记录页</title>
+    <style>
+      /* 主题色变量 - 男性主题（蓝色系） */
+      :root {
+        /* 主色调 */
+        --primary-gradient: linear-gradient(45deg, #4195e1, #667eea);
+        --primary-color: #4195e1;
+        --primary-light: #e8f4ff;
+        --primary-dark: #3a85c8;
+
+        /* 文字颜色 */
+        --text-primary: #262626;
+        --text-secondary: #595959;
+        --text-light: #ffffff;
+
+        /* 背景色 */
+        --bg-gradient: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
+        --bg-primary: #f8fbff;
+        --bg-secondary: #ffffff;
+
+        /* 交互元素 */
+        --button-shadow: rgba(65, 149, 225, 0.3);
+        --button-shadow-hover: rgba(65, 149, 225, 0.4);
+
+        /* 图表颜色 */
+        --chart-primary: #4195e1;
+        --chart-secondary: #a8d5ff;
+        --chart-partner: #ff6b9d;
+        --chart-grid: #e8f4ff;
+        --chart-text: #595959;
+      }
+
+      /* 女性主题（粉色系）- 切换时应用 */
+      .theme-female-vars {
+        /* 主色调 */
+        --primary-gradient: linear-gradient(45deg, #ff6b9d, #ff85a1);
+        --primary-color: #ff6b9d;
+        --primary-light: #fff0f5;
+        --primary-dark: #e55c8a;
+
+        /* 背景色 */
+        --bg-gradient: linear-gradient(180deg, #fff9fb 0%, #fff0f5 100%);
+
+        /* 交互元素 */
+        --button-shadow: rgba(255, 107, 157, 0.3);
+        --button-shadow-hover: rgba(255, 107, 157, 0.4);
+
+        /* 图表颜色 */
+        --chart-primary: #ff6b9d;
+        --chart-secondary: #ffb6c1;
+        --chart-partner: #4195e1;
+        --chart-grid: #fff0f5;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      body {
+        background: var(--bg-primary);
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .design-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .design-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .design-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: var(--primary-gradient); /* 主题色：标题渐变 */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+      }
+
+      .design-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 30px;
+      }
+
+      .theme-selector {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .theme-item {
+        text-align: center;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.3s;
+      }
+
+      .theme-item.active {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      .theme-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        border: 3px solid white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .theme-male {
+        background: linear-gradient(45deg, #4195e1, #667eea); /* 男性主题色 */
+      }
+
+      .theme-female {
+        background: linear-gradient(45deg, #ff6b9d, #ff85a1); /* 女性主题色 */
+      }
+
+      .theme-label {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .phone-frame {
+        width: 320px;
+        height: 650px;
+        margin: 20px auto;
+        border: 10px solid #333;
+        border-radius: 40px;
+        background: #000;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      }
+
+      .phone-screen {
+        width: 100%;
+        height: 100%;
+        background: var(--bg-primary);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .weight-screen {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .weight-header {
+        padding: 15px;
+        background: var(--bg-secondary);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+      }
+
+      .header-back {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        color: var(--text-primary);
+        cursor: pointer;
+      }
+
+      .header-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+        color: var(--text-primary);
+        flex: 1;
+      }
+
+      .weight-content {
+        flex: 1;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .weight-summary {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .weight-data {
+        text-align: center;
+      }
+
+      .weight-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 5px;
+      }
+
+      .weight-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .weight-unit {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      .weight-goal {
+        color: var(--primary-color);
+      }
+
+      .weight-change {
+        font-size: 0.8rem;
+        margin-top: 3px;
+      }
+
+      .weight-down {
+        color: #4caf50;
+      }
+
+      .weight-up {
+        color: #f44336;
+      }
+
+      .weight-chart {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .chart-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .chart-tabs {
+        display: flex;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--primary-light);
+      }
+
+      .chart-tab {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        border: none;
+        cursor: pointer;
+      }
+
+      .chart-tab.active {
+        background: var(--primary-light);
+        color: var(--primary-color);
+        font-weight: 500;
+      }
+
+      .chart-container {
+        height: 180px;
+        position: relative;
+        margin-top: 10px;
+      }
+
+      .chart-svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .chart-legend {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 10px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        margin-right: 5px;
+      }
+
+      .legend-self {
+        background: var(--chart-primary);
+      }
+
+      .legend-partner {
+        background: var(--chart-partner);
+      }
+
+      .weight-add {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .add-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 15px;
+      }
+
+      .add-form {
+        display: flex;
+        gap: 10px;
+      }
+
+      .weight-input {
+        flex: 1;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        color: var(--text-primary);
+      }
+
+      .add-btn {
+        padding: 12px 20px;
+        background: var(--primary-gradient);
+        color: var(--text-light);
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 15px var(--button-shadow);
+      }
+
+      .weight-history {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .history-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 15px;
+      }
+
+      .history-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .history-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 15px;
+        background: var(--primary-light);
+        border-radius: 10px;
+      }
+
+      .history-date {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      .history-weight {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .history-change {
+        font-size: 0.8rem;
+        margin-left: 5px;
+      }
+
+      .bmi-card {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .bmi-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 15px;
+      }
+
+      .bmi-meter {
+        height: 40px;
+        background: linear-gradient(90deg, #4caf50, #ffeb3b, #ff9800, #f44336);
+        border-radius: 20px;
+        position: relative;
+        margin: 10px 0 20px;
+      }
+
+      .bmi-indicator {
+        width: 12px;
+        height: 30px;
+        background: var(--text-primary);
+        position: absolute;
+        top: -15px;
+        left: 40%;
+        border-radius: 3px;
+      }
+
+      .bmi-labels {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .bmi-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      .bmi-status {
+        font-size: 0.9rem;
+        text-align: center;
+        color: #ff9800;
+      }
+
+      .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        padding: 15px 10px;
+        background: var(--bg-secondary);
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 0.7rem;
+        color: var(--text-secondary);
+      }
+
+      .nav-item.active {
+        color: var(--primary-color);
+      }
+
+      .nav-icon {
+        font-size: 1.3rem;
+        margin-bottom: 3px;
+      }
+
+      .feature-list {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .feature-list-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .feature-list-item:last-child {
+        border-bottom: none;
+      }
+
+      .feature-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        margin-right: 12px;
+      }
+
+      .feature-text {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .nav-btn {
+        display: inline-block;
+        font-size: 1rem;
+        border: none;
+        background: var(--primary-gradient);
+        color: var(--text-light);
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 4px 15px var(--button-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px var(--button-shadow-hover);
+      }
+
+      .theme-switch-note {
+        margin-top: 30px;
+        padding: 15px;
+        background: #fffde7;
+        border-left: 4px solid #ffd600;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      /* 返回索引按钮 */
+      .back-to-index {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 15px var(--button-shadow);
+        text-decoration: none;
+        z-index: 100;
+        transition: all 0.3s ease;
+      }
+
+      .back-to-index:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 7px 20px var(--button-shadow-hover);
+      }
+
+      /* 主题切换按钮 */
+      .theme-toggle {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-5px);
+      }
+
+      /* 添加简单的切换动画 */
+      body {
+        transition: background-color 0.3s ease;
+      }
+
+      * {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+    </style>
+    <!-- 引入公共主题脚本 -->
+    <script src="js/theme.js"></script>
+    <script>
+      // 图表数据和初始化
+      document.addEventListener("DOMContentLoaded", function () {
+        // 图表数据
+        const weightData = [
+          { date: "11-01", self: 75.5, partner: 55.2 },
+          { date: "11-05", self: 74.8, partner: 54.9 },
+          { date: "11-10", self: 74.2, partner: 54.5 },
+          { date: "11-15", self: 73.9, partner: 54.3 },
+          { date: "11-20", self: 73.5, partner: 54.0 },
+          { date: "11-25", self: 73.0, partner: 53.8 },
+          { date: "11-30", self: 72.5, partner: 53.5 },
+        ];
+
+        // 渲染图表
+        renderWeightChart(weightData);
+      });
+
+      // 渲染体重图表
+      function renderWeightChart(data) {
+        const svg = document.querySelector("svg");
+        const width = 320;
+        const height = 200;
+        const padding = { top: 20, right: 20, bottom: 30, left: 40 };
+
+        // 清空SVG
+        svg.innerHTML = "";
+
+        // 计算坐标轴范围
+        const xMin = 0;
+        const xMax = data.length - 1;
+        const yMin =
+          Math.min(...data.map((d) => d.self), ...data.map((d) => d.partner)) -
+          2;
+        const yMax =
+          Math.max(...data.map((d) => d.self), ...data.map((d) => d.partner)) +
+          2;
+
+        // 坐标转换函数
+        const xScale = (x) =>
+          ((x - xMin) / (xMax - xMin)) *
+            (width - padding.left - padding.right) +
+          padding.left;
+        const yScale = (y) =>
+          height -
+          padding.bottom -
+          ((y - yMin) / (yMax - yMin)) *
+            (height - padding.top - padding.bottom);
+
+        // 绘制坐标轴
+        const xAxis = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        xAxis.setAttribute(
+          "d",
+          `M${padding.left},${height - padding.bottom} L${width - padding.right},${height - padding.bottom}`,
+        );
+        xAxis.setAttribute("stroke", "#ccc");
+        xAxis.setAttribute("stroke-width", "1");
+        svg.appendChild(xAxis);
+
+        const yAxis = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        yAxis.setAttribute(
+          "d",
+          `M${padding.left},${padding.top} L${padding.left},${height - padding.bottom}`,
+        );
+        yAxis.setAttribute("stroke", "#ccc");
+        yAxis.setAttribute("stroke-width", "1");
+        svg.appendChild(yAxis);
+
+        // 绘制X轴刻度和标签
+        data.forEach((d, i) => {
+          const x = xScale(i);
+          const y = height - padding.bottom;
+
+          // 刻度线
+          const tick = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          tick.setAttribute("d", `M${x},${y} L${x},${y + 5}`);
+          tick.setAttribute("stroke", "#ccc");
+          tick.setAttribute("stroke-width", "1");
+          svg.appendChild(tick);
+
+          // 标签
+          const label = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text",
+          );
+          label.setAttribute("x", x);
+          label.setAttribute("y", y + 15);
+          label.setAttribute("text-anchor", "middle");
+          label.setAttribute("font-size", "10");
+          label.setAttribute("fill", "#666");
+          label.textContent = d.date;
+          svg.appendChild(label);
+        });
+
+        // 绘制Y轴刻度和标签
+        for (let y = Math.ceil(yMin); y <= Math.floor(yMax); y += 5) {
+          const x = padding.left;
+          const yPos = yScale(y);
+
+          // 刻度线
+          const tick = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          tick.setAttribute("d", `M${x},${yPos} L${x - 5},${yPos}`);
+          tick.setAttribute("stroke", "#ccc");
+          tick.setAttribute("stroke-width", "1");
+          svg.appendChild(tick);
+
+          // 标签
+          const label = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text",
+          );
+          label.setAttribute("x", x - 10);
+          label.setAttribute("y", yPos + 3);
+          label.setAttribute("text-anchor", "end");
+          label.setAttribute("font-size", "10");
+          label.setAttribute("fill", "#666");
+          label.textContent = y;
+          svg.appendChild(label);
+
+          // 网格线
+          const grid = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          grid.setAttribute(
+            "d",
+            `M${x},${yPos} L${width - padding.right},${yPos}`,
+          );
+          grid.setAttribute("stroke", "#eee");
+          grid.setAttribute("stroke-width", "1");
+          grid.setAttribute("stroke-dasharray", "3,3");
+          svg.appendChild(grid);
+        }
+
+        // 绘制自己的体重线
+        const selfPath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        let selfPathD = `M${xScale(0)},${yScale(data[0].self)}`;
+        for (let i = 1; i < data.length; i++) {
+          selfPathD += ` L${xScale(i)},${yScale(data[i].self)}`;
+        }
+        selfPath.setAttribute("d", selfPathD);
+        selfPath.setAttribute("stroke", "#4195e1");
+        selfPath.setAttribute("stroke-width", "2");
+        selfPath.setAttribute("fill", "none");
+        svg.appendChild(selfPath);
+
+        // 绘制伴侣的体重线
+        const partnerPath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        let partnerPathD = `M${xScale(0)},${yScale(data[0].partner)}`;
+        for (let i = 1; i < data.length; i++) {
+          partnerPathD += ` L${xScale(i)},${yScale(data[i].partner)}`;
+        }
+        partnerPath.setAttribute("d", partnerPathD);
+        partnerPath.setAttribute("stroke", "#ff6b9d");
+        partnerPath.setAttribute("stroke-width", "2");
+        partnerPath.setAttribute("fill", "none");
+        svg.appendChild(partnerPath);
+
+        // 绘制数据点
+        data.forEach((d, i) => {
+          // 自己的数据点
+          const selfCircle = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle",
+          );
+          selfCircle.setAttribute("cx", xScale(i));
+          selfCircle.setAttribute("cy", yScale(d.self));
+          selfCircle.setAttribute("r", "3");
+          selfCircle.setAttribute("fill", "#4195e1");
+          svg.appendChild(selfCircle);
+
+          // 伴侣的数据点
+          const partnerCircle = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle",
+          );
+          partnerCircle.setAttribute("cx", xScale(i));
+          partnerCircle.setAttribute("cy", yScale(d.partner));
+          partnerCircle.setAttribute("r", "3");
+          partnerCircle.setAttribute("fill", "#ff6b9d");
+          svg.appendChild(partnerCircle);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="design-container">
+      <div class="design-header">
+        <h1 class="design-title">坚持有你</h1>
+        <p class="design-subtitle">健康管理情侣小程序 · 体重管理记录页</p>
+
+        <div class="theme-selector">
+          <div class="theme-item active">
+            <div class="theme-circle theme-male"></div>
+            <div class="theme-label">清新蓝（男性）</div>
+          </div>
+          <div class="theme-item">
+            <div class="theme-circle theme-female"></div>
+            <div class="theme-label">少女粉（女性）</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="weight-screen">
+              <!-- 顶部标题栏 -->
+              <div class="weight-header">
+                <div class="header-back">←</div>
+                <div class="header-title">体重管理</div>
+              </div>
+
+              <!-- 内容区域 -->
+              <div class="weight-content">
+                <!-- 体重数据概览 -->
+                <div class="weight-summary">
+                  <div class="weight-data">
+                    <div class="weight-label">当前体重</div>
+                    <div class="weight-value">
+                      68.5<span class="weight-unit">kg</span>
+                    </div>
+                    <div class="weight-change weight-down">-0.5kg</div>
+                  </div>
+                  <div class="weight-data">
+                    <div class="weight-label">目标体重</div>
+                    <div class="weight-value weight-goal">
+                      65<span class="weight-unit">kg</span>
+                    </div>
+                    <div class="weight-change">还差3.5kg</div>
+                  </div>
+                  <div class="weight-data">
+                    <div class="weight-label">BMI指数</div>
+                    <div class="weight-value">23.7</div>
+                    <div class="weight-change">正常范围</div>
+                  </div>
+                </div>
+
+                <!-- 体重变化图表 -->
+                <div class="weight-chart">
+                  <div class="chart-header">
+                    <div class="chart-title">体重变化趋势</div>
+                    <div class="chart-tabs">
+                      <button class="chart-tab">周</button>
+                      <button class="chart-tab active">月</button>
+                      <button class="chart-tab">年</button>
+                    </div>
+                  </div>
+                  <div class="chart-container">
+                    <svg class="chart-svg" viewBox="0 0 280 180">
+                      <!-- 网格线 -->
+                      <line
+                        x1="30"
+                        y1="20"
+                        x2="30"
+                        y2="150"
+                        stroke="#e0e0e0"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="30"
+                        y1="150"
+                        x2="270"
+                        y2="150"
+                        stroke="#e0e0e0"
+                        stroke-width="1"
+                      />
+                      <line
+                        x1="30"
+                        y1="50"
+                        x2="270"
+                        y2="50"
+                        stroke="#e0e0e0"
+                        stroke-width="1"
+                        stroke-dasharray="3,3"
+                      />
+                      <line
+                        x1="30"
+                        y1="100"
+                        x2="270"
+                        y2="100"
+                        stroke="#e0e0e0"
+                        stroke-width="1"
+                        stroke-dasharray="3,3"
+                      />
+
+                      <!-- X轴标签 -->
+                      <text
+                        x="30"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        1
+                      </text>
+                      <text
+                        x="70"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        5
+                      </text>
+                      <text
+                        x="110"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        10
+                      </text>
+                      <text
+                        x="150"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        15
+                      </text>
+                      <text
+                        x="190"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        20
+                      </text>
+                      <text
+                        x="230"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        25
+                      </text>
+                      <text
+                        x="270"
+                        y="170"
+                        font-size="10"
+                        text-anchor="middle"
+                        fill="#595959"
+                      >
+                        30
+                      </text>
+
+                      <!-- Y轴标签 -->
+                      <text
+                        x="20"
+                        y="150"
+                        font-size="10"
+                        text-anchor="end"
+                        fill="#595959"
+                      >
+                        65
+                      </text>
+                      <text
+                        x="20"
+                        y="100"
+                        font-size="10"
+                        text-anchor="end"
+                        fill="#595959"
+                      >
+                        70
+                      </text>
+                      <text
+                        x="20"
+                        y="50"
+                        font-size="10"
+                        text-anchor="end"
+                        fill="#595959"
+                      >
+                        75
+                      </text>
+
+                      <!-- 自己的体重线 -->
+                      <path
+                        d="M30,130 L70,120 L110,125 L150,115 L190,110 L230,100 L270,90"
+                        fill="none"
+                        stroke="#4195e1"
+                        stroke-width="2"
+                      />
+
+                      <!-- 伴侣的体重线 -->
+                      <path
+                        d="M30,80 L70,85 L110,75 L150,70 L190,65 L230,60 L270,55"
+                        fill="none"
+                        stroke="#ff6b9d"
+                        stroke-width="2"
+                        stroke-dasharray="3,2"
+                      />
+
+                      <!-- 数据点 - 自己 -->
+                      <circle cx="30" cy="130" r="3" fill="#4195e1" />
+                      <circle cx="70" cy="120" r="3" fill="#4195e1" />
+                      <circle cx="110" cy="125" r="3" fill="#4195e1" />
+                      <circle cx="150" cy="115" r="3" fill="#4195e1" />
+                      <circle cx="190" cy="110" r="3" fill="#4195e1" />
+                      <circle cx="230" cy="100" r="3" fill="#4195e1" />
+                      <circle cx="270" cy="90" r="3" fill="#4195e1" />
+
+                      <!-- 数据点 - 伴侣 -->
+                      <circle cx="30" cy="80" r="3" fill="#ff6b9d" />
+                      <circle cx="70" cy="85" r="3" fill="#ff6b9d" />
+                      <circle cx="110" cy="75" r="3" fill="#ff6b9d" />
+                      <circle cx="150" cy="70" r="3" fill="#ff6b9d" />
+                      <circle cx="190" cy="65" r="3" fill="#ff6b9d" />
+                      <circle cx="230" cy="60" r="3" fill="#ff6b9d" />
+                      <circle cx="270" cy="55" r="3" fill="#ff6b9d" />
+                    </svg>
+                  </div>
+                  <div class="chart-legend">
+                    <div class="legend-item">
+                      <div class="legend-color legend-self"></div>
+                      <span>我的体重</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color legend-partner"></div>
+                      <span>伴侣体重</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 添加体重记录 -->
+                <div class="weight-add">
+                  <div class="add-title">添加今日体重</div>
+                  <div class="add-form">
+                    <input
+                      type="number"
+                      class="weight-input"
+                      placeholder="输入体重 (kg)"
+                      value="68.5"
+                    />
+                    <button class="add-btn">记录</button>
+                  </div>
+                </div>
+
+                <!-- BMI指数计算 -->
+                <div class="bmi-card">
+                  <div class="bmi-title">BMI指数</div>
+                  <div class="bmi-meter">
+                    <div class="bmi-indicator"></div>
+                  </div>
+                  <div class="bmi-labels">
+                    <span>偏瘦</span>
+                    <span>正常</span>
+                    <span>超重</span>
+                    <span>肥胖</span>
+                  </div>
+                  <div class="bmi-value">23.7</div>
+                  <div class="bmi-status">正常范围（18.5-24.9）</div>
+                </div>
+
+                <!-- 历史记录 -->
+                <div class="weight-history">
+                  <div class="history-title">历史记录</div>
+                  <div class="history-list">
+                    <div class="history-item">
+                      <div class="history-date">今天 08:30</div>
+                      <div class="history-weight">
+                        68.5kg
+                        <span class="history-change weight-down">-0.5kg</span>
+                      </div>
+                    </div>
+                    <div class="history-item">
+                      <div class="history-date">昨天 07:45</div>
+                      <div class="history-weight">
+                        69.0kg
+                        <span class="history-change weight-up">+0.2kg</span>
+                      </div>
+                    </div>
+                    <div class="history-item">
+                      <div class="history-date">12月6日 08:15</div>
+                      <div class="history-weight">
+                        68.8kg
+                        <span class="history-change weight-down">-0.3kg</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 底部导航 -->
+              <div class="bottom-nav">
+                <div class="nav-item">
+                  <div class="nav-icon">🏠</div>
+                  <div>首页</div>
+                </div>
+                <div class="nav-item active">
+                  <div class="nav-icon">⚖️</div>
+                  <div>体重</div>
+                </div>
+                <div class="nav-item">
+                  <div class="nav-icon">⏱️</div>
+                  <div>断食</div>
+                </div>
+                <div class="nav-item">
+                  <div class="nav-icon">👤</div>
+                  <div>我的</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="theme-switch-note">
+        <strong>主题色切换说明：</strong><br />
+        1. 男性主题（蓝色系）：主色 #4195e1，图表颜色 #4195e1（自己）,
+        #ff6b9d（伴侣）<br />
+        2. 女性主题（粉色系）：主色 #ff6b9d，图表颜色 #ff6b9d（自己）,
+        #4195e1（伴侣）<br />
+        3.
+        图表颜色需要根据性别主题自动切换，确保用户和伴侣的数据线颜色始终对应各自的主题色
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            清晰展示当前体重、目标体重和BMI指数，一目了然
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            体重变化趋势图表，支持周/月/年三种视图切换
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            与伴侣体重变化对比功能，增强互动性和激励性
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            便捷的体重记录功能，支持快速添加当日体重
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            直观的BMI指数计算和范围展示，帮助用户了解健康状况
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">历史记录展示，方便回顾体重变化</div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="index.html" class="nav-btn">← 返回索引</a>
+        <a href="profile.html" class="nav-btn">个人中心页面 →</a>
+      </div>
+    </div>
+
+    <!-- 返回索引按钮 -->
+    <a href="index.html" class="back-to-index">🏠</a>
+
+    <!-- 主题切换按钮 -->
+    <div class="theme-toggle">👩</div>
+  </body>
+</html>

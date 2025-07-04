@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>坚持有你 - 系统设置页面</title>
+    <style>
+      /* 主题色变量 - 男性主题（蓝色系） */
+      :root {
+        /* 主色调 */
+        --primary-gradient: linear-gradient(45deg, #4195e1, #667eea);
+        --primary-color: #4195e1;
+        --primary-light: #e8f4ff;
+        --primary-dark: #3a85c8;
+
+        /* 文字颜色 */
+        --text-primary: #262626;
+        --text-secondary: #595959;
+        --text-light: #ffffff;
+
+        /* 背景色 */
+        --bg-gradient: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
+        --bg-primary: #f8fbff;
+        --bg-secondary: #ffffff;
+
+        /* 交互元素 */
+        --button-shadow: rgba(65, 149, 225, 0.3);
+        --button-shadow-hover: rgba(65, 149, 225, 0.4);
+
+        /* 开关颜色 */
+        --switch-active: #4195e1;
+        --switch-inactive: #e0e0e0;
+      }
+
+      /* 女性主题（粉色系）- 切换时应用 */
+      .theme-female-vars {
+        /* 主色调 */
+        --primary-gradient: linear-gradient(45deg, #ff6b9d, #ff85a1);
+        --primary-color: #ff6b9d;
+        --primary-light: #fff0f5;
+        --primary-dark: #e55c8a;
+
+        /* 背景色 */
+        --bg-gradient: linear-gradient(180deg, #fff9fb 0%, #fff0f5 100%);
+
+        /* 交互元素 */
+        --button-shadow: rgba(255, 107, 157, 0.3);
+        --button-shadow-hover: rgba(255, 107, 157, 0.4);
+
+        /* 开关颜色 */
+        --switch-active: #ff6b9d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      body {
+        background: var(--bg-primary);
+        padding: 20px;
+        min-height: 100vh;
+        transition: background-color 0.3s ease;
+      }
+
+      .design-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .design-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .design-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        background: var(--primary-gradient); /* 主题色：标题渐变 */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+      }
+
+      .design-subtitle {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 30px;
+      }
+
+      .theme-selector {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .theme-item {
+        text-align: center;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.3s;
+      }
+
+      .theme-item.active {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      .theme-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+        border: 3px solid white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .theme-male {
+        background: linear-gradient(45deg, #4195e1, #667eea); /* 男性主题色 */
+      }
+
+      .theme-female {
+        background: linear-gradient(45deg, #ff6b9d, #ff85a1); /* 女性主题色 */
+      }
+
+      .theme-label {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .phone-frame {
+        width: 320px;
+        height: 650px;
+        margin: 20px auto;
+        border: 10px solid #333;
+        border-radius: 40px;
+        background: #000;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      }
+
+      .phone-screen {
+        width: 100%;
+        height: 100%;
+        background: var(--bg-primary);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .settings-screen {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .settings-header {
+        padding: 15px;
+        background: var(--bg-secondary);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+      }
+
+      .header-back {
+        font-size: 1.2rem;
+        margin-right: 10px;
+        color: var(--text-primary);
+      }
+
+      .header-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: center;
+        flex: 1;
+        color: var(--text-primary);
+      }
+
+      .settings-content {
+        flex: 1;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .settings-section {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 5px 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .section-header {
+        padding: 15px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .settings-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .settings-item:last-child {
+        border-bottom: none;
+      }
+
+      .item-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 10px;
+        background: var(--primary-light);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        margin-right: 15px;
+      }
+
+      .item-content {
+        flex: 1;
+      }
+
+      .item-title {
+        font-size: 0.95rem;
+        color: var(--text-primary);
+        margin-bottom: 3px;
+      }
+
+      .item-description {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+
+      .item-control {
+        display: flex;
+        align-items: center;
+      }
+
+      .item-value {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-right: 10px;
+      }
+
+      .item-arrow {
+        color: #bdbdbd;
+        font-size: 0.9rem;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--switch-inactive);
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 22px;
+        width: 22px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--switch-active);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 10px;
+      }
+
+      .radio-option {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        background: var(--primary-light);
+        color: var(--text-secondary);
+        border: 1px solid transparent;
+      }
+
+      .radio-option.selected {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .logout-button {
+        margin-top: 10px;
+        background: #f44336;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+      }
+
+      .version-info {
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      .feature-list {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .feature-list-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .feature-list-item:last-child {
+        border-bottom: none;
+      }
+
+      .feature-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        margin-right: 12px;
+      }
+
+      .feature-text {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .nav-btn {
+        display: inline-block;
+        font-size: 1rem;
+        border: none;
+        background: var(--primary-gradient);
+        color: var(--text-light);
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        box-shadow: 0 4px 15px var(--button-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .nav-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px var(--button-shadow-hover);
+      }
+
+      .theme-switch-note {
+        margin-top: 30px;
+        padding: 15px;
+        background: #fffde7;
+        border-left: 4px solid #ffd600;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      /* 返回索引按钮 */
+      .back-to-index {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--primary-gradient);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 15px var(--button-shadow);
+        text-decoration: none;
+        z-index: 100;
+        transition: all 0.3s ease;
+      }
+
+      .back-to-index:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 7px 20px var(--button-shadow-hover);
+      }
+
+      /* 主题切换按钮 */
+      .theme-toggle {
+        position: fixed;
+        bottom: 100px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        z-index: 100;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-5px);
+      }
+
+      /* 添加简单的切换动画 */
+      * {
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease,
+          border-color 0.3s ease,
+          box-shadow 0.3s ease;
+      }
+    </style>
+    <!-- 引入公共主题脚本 -->
+    <script src="js/theme.js"></script>
+    <script>
+      // 页面初始化
+      document.addEventListener("DOMContentLoaded", function () {
+        // 在这里可以添加页面特定的初始化代码
+      });
+    </script>
+  </head>
+  <body>
+    <div class="design-container">
+      <div class="design-header">
+        <h1 class="design-title">坚持有你</h1>
+        <p class="design-subtitle">健康管理情侣小程序 · 系统设置页面</p>
+
+        <div class="theme-selector">
+          <div class="theme-item active">
+            <div class="theme-circle theme-male"></div>
+            <div class="theme-label">清新蓝（男性）</div>
+          </div>
+          <div class="theme-item">
+            <div class="theme-circle theme-female"></div>
+            <div class="theme-label">少女粉（女性）</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: center">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="settings-screen">
+              <!-- 顶部标题栏 -->
+              <div class="settings-header">
+                <div class="header-back">←</div>
+                <div class="header-title">系统设置</div>
+              </div>
+
+              <!-- 内容区域 -->
+              <div class="settings-content">
+                <!-- 账号与安全 -->
+                <div class="settings-section">
+                  <div class="section-header">账号与安全</div>
+                  <div class="settings-item">
+                    <div class="item-icon">👤</div>
+                    <div class="item-content">
+                      <div class="item-title">账号信息</div>
+                      <div class="item-description">
+                        修改昵称、头像等个人信息
+                      </div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🔒</div>
+                    <div class="item-content">
+                      <div class="item-title">密码修改</div>
+                      <div class="item-description">修改登录密码</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🔐</div>
+                    <div class="item-content">
+                      <div class="item-title">隐私设置</div>
+                      <div class="item-description">管理数据共享和隐私选项</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 断食计划设置 -->
+                <div class="settings-section">
+                  <div class="section-header">断食计划设置</div>
+                  <div class="settings-item">
+                    <div class="item-icon">⏱️</div>
+                    <div class="item-content">
+                      <div class="item-title">断食模式</div>
+                      <div class="item-description">选择适合你的断食方案</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">16:8</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🕒</div>
+                    <div class="item-content">
+                      <div class="item-title">断食时间段</div>
+                      <div class="item-description">
+                        设置每日断食的开始和结束时间
+                      </div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">12:00-20:00</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🔔</div>
+                    <div class="item-content">
+                      <div class="item-title">提醒通知</div>
+                      <div class="item-description">断食开始和结束前提醒</div>
+                    </div>
+                    <div class="item-control">
+                      <label class="switch">
+                        <input type="checkbox" checked />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🔄</div>
+                    <div class="item-content">
+                      <div class="item-title">自动/手动模式</div>
+                      <div class="item-description">设置断食计时器模式</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="radio-group">
+                        <div class="radio-option selected">自动</div>
+                        <div class="radio-option">手动</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 伴侣关联 -->
+                <div class="settings-section">
+                  <div class="section-header">伴侣关联</div>
+                  <div class="settings-item">
+                    <div class="item-icon">👫</div>
+                    <div class="item-content">
+                      <div class="item-title">伴侣管理</div>
+                      <div class="item-description">邀请或解绑伴侣</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">已绑定</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">📊</div>
+                    <div class="item-content">
+                      <div class="item-title">数据共享范围</div>
+                      <div class="item-description">
+                        设置与伴侣共享的数据类型
+                      </div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">💬</div>
+                    <div class="item-content">
+                      <div class="item-title">互动提醒</div>
+                      <div class="item-description">伴侣活动通知</div>
+                    </div>
+                    <div class="item-control">
+                      <label class="switch">
+                        <input type="checkbox" checked />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 健康目标 -->
+                <div class="settings-section">
+                  <div class="section-header">健康目标</div>
+                  <div class="settings-item">
+                    <div class="item-icon">⚖️</div>
+                    <div class="item-content">
+                      <div class="item-title">体重目标</div>
+                      <div class="item-description">设置你的理想体重</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">65kg</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">📅</div>
+                    <div class="item-content">
+                      <div class="item-title">断食计划目标</div>
+                      <div class="item-description">设置连续断食天数目标</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">30天</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 应用设置 -->
+                <div class="settings-section">
+                  <div class="section-header">应用设置</div>
+                  <div class="settings-item">
+                    <div class="item-icon">🎨</div>
+                    <div class="item-content">
+                      <div class="item-title">主题设置</div>
+                      <div class="item-description">选择应用主题色</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">男性主题</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🔊</div>
+                    <div class="item-content">
+                      <div class="item-title">声音与振动</div>
+                      <div class="item-description">通知提示音和振动设置</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🌐</div>
+                    <div class="item-content">
+                      <div class="item-title">语言</div>
+                      <div class="item-description">设置应用显示语言</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-value">简体中文</div>
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 数据管理 -->
+                <div class="settings-section">
+                  <div class="section-header">数据管理</div>
+                  <div class="settings-item">
+                    <div class="item-icon">📤</div>
+                    <div class="item-content">
+                      <div class="item-title">数据导出</div>
+                      <div class="item-description">导出你的健康数据</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">☁️</div>
+                    <div class="item-content">
+                      <div class="item-title">云备份设置</div>
+                      <div class="item-description">自动备份数据到云端</div>
+                    </div>
+                    <div class="item-control">
+                      <label class="switch">
+                        <input type="checkbox" checked />
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">🗑️</div>
+                    <div class="item-content">
+                      <div class="item-title">清除缓存</div>
+                      <div class="item-description">清除本地缓存数据</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 帮助与反馈 -->
+                <div class="settings-section">
+                  <div class="section-header">帮助与反馈</div>
+                  <div class="settings-item">
+                    <div class="item-icon">📖</div>
+                    <div class="item-content">
+                      <div class="item-title">使用指南</div>
+                      <div class="item-description">查看应用使用教程</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">❓</div>
+                    <div class="item-content">
+                      <div class="item-title">常见问题</div>
+                      <div class="item-description">查看常见问题解答</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">📝</div>
+                    <div class="item-content">
+                      <div class="item-title">意见反馈</div>
+                      <div class="item-description">向我们提交问题或建议</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                  <div class="settings-item">
+                    <div class="item-icon">ℹ️</div>
+                    <div class="item-content">
+                      <div class="item-title">关于我们</div>
+                      <div class="item-description">应用信息和开发团队</div>
+                    </div>
+                    <div class="item-control">
+                      <div class="item-arrow">›</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 退出登录 -->
+                <button class="logout-button">退出登录</button>
+
+                <!-- 版本信息 -->
+                <div class="version-info">坚持有你 v1.0.0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="theme-switch-note">
+        <strong>主题色切换说明：</strong><br />
+        1. 男性主题（蓝色系）：主色 #4195e1，开关激活色 #4195e1<br />
+        2. 女性主题（粉色系）：主色 #ff6b9d，开关激活色 #ff6b9d<br />
+        3. 设置页面中的图标背景色、开关颜色等需要根据性别主题自动切换
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">分类清晰的设置项，按功能模块进行分组</div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">账号与安全设置，保护用户隐私和数据安全</div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">断食计划设置，支持自定义断食模式和时间</div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">伴侣关联设置，管理情侣互动和数据共享</div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            健康目标设置，帮助用户设定明确的健康目标
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            主题切换功能，满足不同性别用户的审美需求
+          </div>
+        </div>
+        <div class="feature-list-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            数据管理功能，支持导出和备份重要健康数据
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <a href="profile.html" class="nav-btn">← 个人中心页面</a>
+        <a href="index.html" class="nav-btn">返回索引 →</a>
+      </div>
+    </div>
+
+    <!-- 返回索引按钮 -->
+    <a href="index.html" class="back-to-index">🏠</a>
+
+    <!-- 主题切换按钮 -->
+    <div class="theme-toggle">👩</div>
+  </body>
+</html>

@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>坚持有你 - 设计页面索引</title>
+    <style>
+      :root {
+        /* 男性主题变量 - 蓝色系 */
+        --primary-color: #4195e1;
+        --primary-color-light: #6fb0ea;
+        --primary-color-dark: #2a7bc9;
+        --secondary-color: #ff6b9d;
+        --background-color: #f8fcff;
+        --text-color: #333333;
+        --text-color-light: #666666;
+        --border-color: #e0e0e0;
+        --button-shadow: rgba(65, 149, 225, 0.3);
+        --primary-gradient: linear-gradient(135deg, #4195e1, #2a7bc9);
+      }
+
+      /* 女性主题CSS变量 */
+      .theme-female-vars {
+        --primary-color: #ff6b9d;
+        --primary-color-light: #ff8fb3;
+        --primary-color-dark: #e54d7f;
+        --secondary-color: #4195e1;
+        --button-shadow: rgba(255, 107, 157, 0.3);
+        --primary-gradient: linear-gradient(135deg, #ff6b9d, #e54d7f);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        padding: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
+
+      h1 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 28px;
+      }
+
+      .page-list {
+        list-style: none;
+      }
+
+      .page-item {
+        margin-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 15px;
+      }
+
+      .page-item:last-child {
+        border-bottom: none;
+      }
+
+      .page-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: var(--text-color);
+        font-weight: 500;
+        font-size: 18px;
+        padding: 10px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      .page-link:hover {
+        background-color: rgba(65, 149, 225, 0.1);
+        transform: translateX(5px);
+      }
+
+      .page-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        color: white;
+        font-size: 20px;
+      }
+
+      .page-info {
+        flex: 1;
+      }
+
+      .page-title {
+        margin-bottom: 5px;
+        color: var(--primary-color);
+      }
+
+      .page-desc {
+        font-size: 14px;
+        color: var(--text-color-light);
+      }
+
+      .theme-switcher {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .theme-toggle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--primary-color);
+        background-color: white;
+        transition: all 0.3s ease;
+      }
+
+      .theme-toggle:hover {
+        transform: scale(1.1);
+      }
+
+      .theme-options {
+        display: flex;
+        margin-top: 10px;
+      }
+
+      .theme-item {
+        margin: 0 10px;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 14px;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+      }
+
+      .theme-item.active {
+        opacity: 1;
+        font-weight: bold;
+      }
+    </style>
+    <!-- 引入公共主题脚本 -->
+    <script src="js/theme.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>坚持有你 - 设计页面索引</h1>
+
+      <ul class="page-list">
+        <li class="page-item">
+          <a href="01_index.html" class="page-link">
+            <div class="page-icon">🏠</div>
+            <div class="page-info">
+              <div class="page-title">欢迎页面</div>
+              <div class="page-desc">应用首页，展示欢迎信息和登录入口</div>
+            </div>
+          </a>
+        </li>
+
+        <li class="page-item">
+          <a href="08_home_screen.html" class="page-link">
+            <div class="page-icon">⏱️</div>
+            <div class="page-info">
+              <div class="page-title">主页面</div>
+              <div class="page-desc">显示断食计时器和当前状态</div>
+            </div>
+          </a>
+        </li>
+
+        <li class="page-item">
+          <a href="02_fasting.html" class="page-link">
+            <div class="page-icon">🍽️</div>
+            <div class="page-info">
+              <div class="page-title">断食方案</div>
+              <div class="page-desc">选择不同的断食方案</div>
+            </div>
+          </a>
+        </li>
+
+        <li class="page-item">
+          <a href="weight_record.html" class="page-link">
+            <div class="page-icon">⚖️</div>
+            <div class="page-info">
+              <div class="page-title">体重记录</div>
+              <div class="page-desc">查看和记录体重变化</div>
+            </div>
+          </a>
+        </li>
+
+        <li class="page-item">
+          <a href="profile.html" class="page-link">
+            <div class="page-icon">👤</div>
+            <div class="page-info">
+              <div class="page-title">个人中心</div>
+              <div class="page-desc">用户资料和成就展示</div>
+            </div>
+          </a>
+        </li>
+
+        <li class="page-item">
+          <a href="settings.html" class="page-link">
+            <div class="page-icon">⚙️</div>
+            <div class="page-info">
+              <div class="page-title">系统设置</div>
+              <div class="page-desc">应用设置和偏好</div>
+            </div>
+          </a>
+        </li>
+      </ul>
+
+      <div class="theme-switcher">
+        <div class="theme-toggle">👩</div>
+      </div>
+
+      <div class="theme-options">
+        <div class="theme-item active">男性主题</div>
+        <div class="theme-item">女性主题</div>
+      </div>
+    </div>
+  </body>
+</html>
