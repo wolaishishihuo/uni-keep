@@ -6,7 +6,6 @@ import { getWxCode, getWxUserInfo, login } from '@/api/login';
 import { getUserInfo } from '@/api/user';
 import { formatTime } from '@/utils';
 import { toast } from '@/utils/toast';
-import { isNewUser, isUserProfileComplete } from '@/utils/userProfile';
 import { useThemeStore } from './theme';
 
 // 初始化用户信息
@@ -41,8 +40,6 @@ export const useUserStore = defineStore(
 
     // 计算属性
     const isLoggedIn = computed(() => token.value !== '');
-    const isNewUserFlag = computed(() => isNewUser(userInfo.value));
-    const isProfileComplete = computed(() => isUserProfileComplete(userInfo.value));
 
     // 设置用户信息
     const setUserInfo = (val: UserProfile) => {
@@ -87,7 +84,7 @@ export const useUserStore = defineStore(
 
     // 登录后页面跳转
     const navigateAfterLogin = () => {
-      if (isNewUserFlag.value || !isProfileComplete.value) {
+      if (!userInfo.value.isSetup) {
         uni.reLaunch({ url: '/pages/setup/index' });
       }
       else {
@@ -132,12 +129,8 @@ export const useUserStore = defineStore(
       fastingPlan,
       token,
       loading,
-
       // 计算属性
       isLoggedIn,
-      isNewUserFlag,
-      isProfileComplete,
-
       // 方法
       setUserInfo,
       clearUserInfo,

@@ -109,6 +109,10 @@
       }
     },
     {
+      "path": "pages/welcome/index",
+      "type": "page"
+    },
+    {
       "path": "pages/profile/edit/edit",
       "type": "page",
       "needLogin": true,
