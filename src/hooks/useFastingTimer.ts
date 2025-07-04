@@ -1,10 +1,21 @@
 import dayjs from 'dayjs';
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '@/store/user';
+import { formatDuration } from '@/utils/time';
 
 /**
  * 断食计时器 Hook
- * @param eatingWindow 进食窗口，格式: "08:00 - 16:00"
+ * 自动获取用户的断食计划并处理计时逻辑
  */
-export function useFastingTimer(eatingWindow: string) {
+export function useFastingTimer() {
+  // 获取用户断食计划
+  const { fastingPlan } = storeToRefs(useUserStore());
+
+  // 获取当前活跃的断食计划
+  const activePlan = computed(() =>
+    fastingPlan.value.find(plan => plan.isActive === '1')
+  );
+
   const now = ref(dayjs());
   let timer: any;
 
@@ -18,6 +29,13 @@ export function useFastingTimer(eatingWindow: string) {
   startTimer();
   onUnmounted(() => clearInterval(timer));
 
+  // 获取进食窗口时间
+  const eatingWindow = computed(() => {
+    if (!activePlan.value)
+      return '08:00 - 16:00'; // 默认进食窗口
+    return `${activePlan.value.startTime} - ${activePlan.value.endTime}`;
+  });
+
   // 解析进食窗口
   const parseEatingWindow = (window: string) => {
     const [startTime, endTime] = window.split('-').map(time => time.trim());
@@ -26,7 +44,7 @@ export function useFastingTimer(eatingWindow: string) {
 
   // 获取今日进食时间段
   const getTodayEatingPeriod = () => {
-    const { startTime, endTime } = parseEatingWindow(eatingWindow);
+    const { startTime, endTime } = parseEatingWindow(eatingWindow.value);
     const today = now.value.format('YYYY-MM-DD');
 
     let eatingStart = dayjs(`${today} ${startTime}`);
@@ -35,11 +53,9 @@ export function useFastingTimer(eatingWindow: string) {
     // 处理跨天情况（如 22:00 - 06:00）
     if (eatingEnd.isBefore(eatingStart)) {
       if (now.value.isBefore(eatingEnd)) {
-        // 当前时间在结束时间之前，说明是昨天开始的进食窗口
         eatingStart = eatingStart.subtract(1, 'day');
       }
       else {
-        // 当前时间在开始时间之后，进食窗口延续到明天
         eatingEnd = eatingEnd.add(1, 'day');
       }
     }
@@ -53,7 +69,7 @@ export function useFastingTimer(eatingWindow: string) {
     return now.value.isAfter(eatingStart) && now.value.isBefore(eatingEnd);
   });
 
-  // 获取当前周期信息（进食周期或断食周期）
+  // 获取当前周期信息
   const currentPeriod = computed(() => {
     const { eatingStart, eatingEnd } = getTodayEatingPeriod();
 
@@ -73,12 +89,10 @@ export function useFastingTimer(eatingWindow: string) {
       let fastingEnd: dayjs.Dayjs;
 
       if (now.value.isBefore(eatingStart)) {
-        // 当前时间在今日进食开始前，断食窗口是昨天结束到今天开始
         fastingStart = eatingEnd.subtract(1, 'day');
         fastingEnd = eatingStart;
       }
       else {
-        // 当前时间在今日进食结束后，断食窗口是今天结束到明天开始
         fastingStart = eatingEnd;
         fastingEnd = eatingStart.add(1, 'day');
       }
@@ -95,6 +109,8 @@ export function useFastingTimer(eatingWindow: string) {
 
   // 计算进度百分比
   const percent = computed(() => {
+    if (!activePlan.value)
+      return 0;
     const { start, end } = currentPeriod.value;
     const totalSeconds = end.diff(start, 'second');
     const passedSeconds = now.value.diff(start, 'second');
@@ -103,23 +119,27 @@ export function useFastingTimer(eatingWindow: string) {
 
   // 计算剩余时间文本
   const remainingText = computed(() => {
+    if (!activePlan.value)
+      return '0小时0分';
     const remainingSeconds = currentPeriod.value.end.diff(now.value, 'second');
-    const hours = Math.floor(remainingSeconds / 3600);
-    const minutes = Math.floor((remainingSeconds % 3600) / 60);
-    return `${hours}小时${minutes}分`;
+    return formatDuration(remainingSeconds);
   });
 
-  // 完整的描述文本（包含剩余时间）
-  const fullDescText = computed(() => {
-    return `${currentPeriod.value.descText}${remainingText.value}`;
+  // 计算已坚持时间文本
+  const elapsedText = computed(() => {
+    if (!activePlan.value)
+      return '0小时0分';
+    const elapsedSeconds = now.value.diff(currentPeriod.value.start, 'second');
+    return formatDuration(elapsedSeconds);
   });
 
   return {
     // 状态数据
     percent,
     remainingText,
-    statusText: computed(() => currentPeriod.value.statusText),
-    descText: fullDescText, // 使用完整的描述文本
+    elapsedText,
+    statusText: computed(() => activePlan.value ? currentPeriod.value.statusText : '暂无计划'),
+    descText: computed(() => activePlan.value ? `${currentPeriod.value.descText}${remainingText.value}` : '请设置断食计划'),
 
     // 布尔状态
     isFasting: computed(() => !isInEatingWindow.value),
@@ -130,6 +150,9 @@ export function useFastingTimer(eatingWindow: string) {
       type: currentPeriod.value.type,
       start: currentPeriod.value.start,
       end: currentPeriod.value.end
-    }))
+    })),
+
+    // 当前活跃计划
+    activePlan: readonly(activePlan)
   };
 }

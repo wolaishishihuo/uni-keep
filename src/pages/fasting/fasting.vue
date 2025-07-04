@@ -11,9 +11,9 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
+import { useFastingTimer } from '@/hooks/useFastingTimer';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
-import { formatDuration, formatTime } from '@/utils/time';
 
 defineOptions({
   name: 'Fasting'
@@ -26,37 +26,10 @@ const { safeAreaInsets } = useSafeArea();
 const themeStore = useThemeStore();
 const { themeClassName } = storeToRefs(themeStore);
 
-// 断食计划配置
-const fastingPlan = ref({
-  type: '168',
-  name: '168 间歇性断食',
-  description: '16小时禁食 · 8小时进食',
-  eatingWindow: {
-    start: '10:00',
-    end: '18:00'
-  },
-  fastingWindow: {
-    start: '18:00',
-    end: '10:00'
-  },
-  startDate: '2024-12-19'
-});
+// 使用断食计时器 Hook（内部处理所有逻辑）
+const { isFasting, statusText, elapsedText, remainingText, descText, activePlan } = useFastingTimer();
 
-// 当前状态
-const currentStatus = ref({
-  isFasting: true,
-  elapsedTime: 5 * 3600 + 32 * 60, // 已坚持5小时32分钟
-  remainingTime: 10 * 3600 + 28 * 60, // 剩余10小时28分钟
-  phase: 'fasting' // fasting 或 eating
-});
-
-// 计算已坚持时间显示
-const elapsedTimeDisplay = computed(() => formatDuration(currentStatus.value.elapsedTime));
-
-// 计算剩余时间显示
-const remainingTimeDisplay = computed(() => formatDuration(currentStatus.value.remainingTime));
-
-// 历史记录数据
+// 历史记录数据（后续可以从后端获取）
 const historyStats = ref({
   totalDays: 25,
   successDays: 22,
@@ -103,17 +76,17 @@ onLoad(() => {
     </view>
 
     <!-- 计划信息 -->
-    <view class="plan-info">
+    <view v-if="activePlan" class="plan-info">
       <view class="plan-type">
-        {{ fastingPlan.name }}
+        {{ activePlan.name }}
       </view>
       <text class="plan-description">
-        {{ fastingPlan.description }}
+        {{ activePlan.fastingHours }}小时禁食 · {{ activePlan.eatingHours }}小时进食
       </text>
     </view>
 
     <!-- 时间安排 -->
-    <view class="schedule-card">
+    <view v-if="activePlan" class="schedule-card">
       <view class="schedule-item">
         <view class="schedule-info">
           <text class="schedule-icon">
@@ -124,7 +97,7 @@ onLoad(() => {
           </text>
         </view>
         <view class="time-badge eating">
-          {{ fastingPlan.eatingWindow.start }} - {{ fastingPlan.eatingWindow.end }}
+          {{ activePlan.startTime }} - {{ activePlan.endTime }}
         </view>
       </view>
       <view class="schedule-item">
@@ -137,26 +110,13 @@ onLoad(() => {
           </text>
         </view>
         <view class="time-badge fasting">
-          {{ fastingPlan.fastingWindow.start }} - {{ fastingPlan.fastingWindow.end }}
+          {{ activePlan.fastingHours }} 小时
         </view>
-      </view>
-      <view class="schedule-item">
-        <view class="schedule-info">
-          <text class="schedule-icon">
-            📅
-          </text>
-          <text class="schedule-label">
-            开始日期
-          </text>
-        </view>
-        <text class="schedule-value">
-          {{ formatTime(fastingPlan.startDate, 'YYYY-MM-DD') }}
-        </text>
       </view>
     </view>
 
     <!-- 当前状态 -->
-    <view class="current-status">
+    <view v-if="activePlan" class="current-status">
       <view class="status-header">
         <text class="status-title">
           当前状态
@@ -164,8 +124,8 @@ onLoad(() => {
       </view>
       <view class="status-content">
         <view class="status-phase">
-          <text class="phase-text" :class="{ active: currentStatus.isFasting }">
-            {{ currentStatus.isFasting ? '禁食中' : '进食中' }}
+          <text class="phase-text" :class="{ active: isFasting }">
+            {{ statusText }}
           </text>
         </view>
         <view class="status-time">
@@ -173,15 +133,15 @@ onLoad(() => {
             已坚持
           </text>
           <text class="time-value">
-            {{ elapsedTimeDisplay }}
+            {{ elapsedText }}
           </text>
         </view>
         <view class="remaining-time">
           <text class="remaining-label">
-            {{ currentStatus.isFasting ? '距离进食还有' : '距离禁食还有' }}
+            {{ descText }}
           </text>
           <text class="remaining-value">
-            {{ remainingTimeDisplay }}
+            {{ remainingText }}
           </text>
         </view>
       </view>
@@ -237,6 +197,16 @@ onLoad(() => {
     <view class="bottom-actions">
       <button class="adjust-btn" @click="adjustPlan">
         调整计划
+      </button>
+    </view>
+
+    <!-- 无计划提示 -->
+    <view v-if="!activePlan" class="no-plan-tip">
+      <text class="tip-text">
+        暂无活跃的断食计划
+      </text>
+      <button class="create-plan-btn" @click="adjustPlan">
+        创建计划
       </button>
     </view>
   </view>

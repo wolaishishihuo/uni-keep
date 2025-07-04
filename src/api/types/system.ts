@@ -1,5 +1,6 @@
+import type { SystemConfigKey } from '@/models/system';
+
 export interface SystemConfig {
-  key: string;
+  key: SystemConfigKey;
   value: string;
-  [property: string]: any;
 }

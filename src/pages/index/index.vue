@@ -14,8 +14,8 @@
 <script lang="ts" setup>
 import dayjs from 'dayjs';
 import { storeToRefs } from 'pinia';
+import { useFastingTimer } from '@/hooks/useFastingTimer';
 import { useSafeArea } from '@/hooks/useSafeArea';
-import { useFastingTimer } from '@/pages/index/hooks/useFastingTimer';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
 
@@ -36,23 +36,21 @@ const { userInfo } = storeToRefs(userStore);
 
 // 模拟的情侣信息（后续可以从后端获取）
 const coupleInfo = ref({
-  partner: '小红'
-});
-
-// 断食状态配置
-const fastingState = ref({
-  fastingHours: 16,
-  eatingHours: 8,
-  eatingWindow: '08:00 - 16:00'
+  partner: ''
 });
 
 // 进度条颜色配置
 const gradientColor = { 0: '#ff9800', 100: '#ff5722' };
 
-// 使用断食计时器 Hook（统一的数据源）
-const { percent, statusText, descText } = useFastingTimer(
-  fastingState.value.eatingWindow
-);
+// 使用断食计时器 Hook（内部处理所有逻辑）
+const { percent, statusText, descText, activePlan } = useFastingTimer();
+
+// 获取进食窗口显示文本
+const eatingWindow = computed(() => {
+  if (!activePlan.value)
+    return '未设置';
+  return `${activePlan.value.startTime} - ${activePlan.value.endTime}`;
+});
 
 // 获取问候语
 function getGreeting() {
@@ -118,7 +116,7 @@ function handleClick() {
         <text class="greeting-main">
           {{ greeting }}，{{ userInfo.nickname }} ❤️
         </text>
-        <text class="greeting-sub">
+        <text v-show="coupleInfo.partner" class="greeting-sub">
           今天也要和{{ coupleInfo.partner }}一起坚持哦
         </text>
       </view>
@@ -145,7 +143,7 @@ function handleClick() {
           进食窗口
         </text>
         <text class="overview-value">
-          {{ fastingState.eatingWindow }}
+          {{ eatingWindow }}
         </text>
       </view>
       <view class="overview-item keep-glass-card-light">

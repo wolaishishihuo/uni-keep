@@ -25,13 +25,6 @@ export function login(loginForm: ILoginForm) {
 }
 
 /**
- * 获取用户信息
- */
-export function getUserInfo(id: string) {
-  return http.get<UserProfile>(`/user/info/${id}`);
-}
-
-/**
  * 修改用户信息
  */
 export function updateInfo(data: UserProfile) {

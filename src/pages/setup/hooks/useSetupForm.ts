@@ -1,6 +1,8 @@
 import type { Gender } from '@/models/user';
 import { computed, reactive, ref } from 'vue';
+import { completeSetupApi } from '@/api/user';
 import { useMessage } from '@/hooks/useMessage';
+import { SystemConfigKey } from '@/models/system';
 import { useUserStore } from '@/store/user';
 
 // 表单数据接口
@@ -38,8 +40,8 @@ const defaultFormData: SetupFormData = {
 };
 
 export function useSetupForm() {
-  const userStore = useUserStore();
   const message = useMessage();
+  const userStore = useUserStore();
 
   // 步骤相关
   const currentStep = ref(1);
@@ -122,34 +124,45 @@ export function useSetupForm() {
     try {
       saving.value = true;
 
-      const setupData = {
-        // 基础信息
-        nickname: formData.nickname.trim(),
-        gender: formData.gender as Gender,
-        birthday: formData.birthday,
-        // 身体数据
-        height: Number(formData.height),
-        currentWeight: Number(formData.currentWeight),
-        targetWeight: Number(formData.targetWeight),
-        // 提醒设置
-        reminderSettings: {
-          enableNotification: formData.enableNotification,
-          fastingStart: formData.fastingStart,
-          fastingEnd: formData.fastingEnd,
-          weightRecord: formData.weightRecord
+      const { code } = await completeSetupApi({
+        fastingPlan: {
+          startTime: formData.fastingStart,
+          endTime: formData.fastingEnd,
+          isActive: '1'
+        },
+        systemConfig: [
+          {
+            key: SystemConfigKey.ENABLE_PUSH_NOTIFICATIONS,
+            value: formData.enableNotification ? '1' : '0'
+          },
+          {
+            key: SystemConfigKey.DEFAULT_FASTING_REMINDER,
+            value: formData.fastingStart
+          },
+          {
+            key: SystemConfigKey.DEFAULT_WEIGHT_REMINDER_TIME,
+            value: formData.weightRecord
+          }
+        ],
+        userId: userStore.userInfo.id,
+        userInfo: {
+          nickname: formData.nickname,
+          birthday: formData.birthday,
+          gender: formData.gender as Gender,
+          height: Number(formData.height),
+          currentWeight: Number(formData.currentWeight),
+          targetWeight: Number(formData.targetWeight)
         }
-      };
+      });
 
-      // const success = await userStore.updateUserInfo(setupData);
-
-      // if (success) {
-      //   uni.vibrateShort({ type: 'heavy' });
-      //   message.success('设置完成！欢迎使用坚持有你', 2000);
-
-      //   setTimeout(() => {
-      //     uni.reLaunch({ url: '/pages/index/index' });
-      //   }, 2000);
-      // }
+      if (code === 1) {
+        await userStore.fetchUserData();
+        uni.vibrateShort({ type: 'heavy' });
+        message.success('设置完成！欢迎使用坚持有你', 2000);
+        setTimeout(() => {
+          uni.reLaunch({ url: '/pages/index/index' });
+        }, 2000);
+      }
     }
     catch (error) {
       console.error('设置失败:', error);
@@ -217,7 +230,6 @@ export function useSetupForm() {
       }, 1000);
       return;
     }
-    console.log(userInfo);
     if (userInfo?.nickname) {
       formData.nickname = userInfo.nickname;
     }

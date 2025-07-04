@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import type { Reactive } from 'vue';
 import { formatTimeToHHMM } from '@/utils/time';
 
 export interface TimePickerResult {
@@ -6,7 +6,7 @@ export interface TimePickerResult {
   value: string;
 }
 
-export function useTimePicker(defaultTime = '08:00') {
+export function useTimePicker(formData: Reactive<any>, defaultTime = '08:00') {
   const showTimePicker = ref(false);
   const timePickerValue = ref(defaultTime);
   const currentField = ref('');
@@ -26,16 +26,9 @@ export function useTimePicker(defaultTime = '08:00') {
   };
 
   // 时间确认
-  const onTimeConfirm = ({ value }: { value: string }): TimePickerResult | null => {
+  const onTimeConfirm = (value) => {
+    formData[currentField.value] = value;
     showTimePicker.value = false;
-
-    if (value && currentField.value) {
-      return {
-        field: currentField.value,
-        value
-      };
-    }
-    return null;
   };
 
   // 时间取消

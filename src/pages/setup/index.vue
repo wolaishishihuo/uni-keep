@@ -48,28 +48,7 @@ const {
   hideMessage
 } = useSetupForm();
 
-// 时间选择器状态
-const showTimePicker = ref(false);
-const currentTimeField = ref('');
-
-// 选择时间
-function selectTime(field: string) {
-  currentTimeField.value = field;
-  showTimePicker.value = true;
-}
-
-// 处理时间确认
-function onTimeConfirm(value: string) {
-  if (currentTimeField.value) {
-    (formData as any)[currentTimeField.value] = value;
-  }
-  showTimePicker.value = false;
-}
-
-// 取消时间选择
-function onTimeCancel() {
-  showTimePicker.value = false;
-}
+const { showTimePicker, currentField, openTimePicker: selectTime, onTimeConfirm, onTimeCancel } = useTimePicker(formData);
 
 // 格式化时间显示
 function formatTimeDisplay(time: string) {
@@ -375,10 +354,10 @@ onLoad(() => {
     <!-- 时间选择器 -->
     <TimePicker
       v-if="showTimePicker"
-      v-model="formData[currentTimeField]"
+      v-model="formData[currentField]"
       :show="showTimePicker"
-      :type="currentTimeField === 'birthday' ? 'date' : 'time'"
-      :title="currentTimeField === 'birthday' ? '选择出壳日' : '选择时间'"
+      :type="currentField === 'birthday' ? 'date' : 'time'"
+      :title="currentField === 'birthday' ? '选择出壳日' : '选择时间'"
       @update:show="showTimePicker = $event"
       @confirm="onTimeConfirm"
       @cancel="onTimeCancel"

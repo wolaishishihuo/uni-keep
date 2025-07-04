@@ -77,7 +77,7 @@ declare global {
   const useAttrs: typeof import('vue')['useAttrs']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
-  const useFastingTimer: typeof import('../pages/index/hooks/useFastingTimer')['useFastingTimer']
+  const useFastingTimer: typeof import('../hooks/useFastingTimer')['useFastingTimer']
   const useId: typeof import('vue')['useId']
   const useMessage: typeof import('../hooks/useMessage')['useMessage']
   const useModel: typeof import('vue')['useModel']
@@ -179,6 +179,7 @@ declare module 'vue' {
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useFastingTimer: UnwrapRef<typeof import('../hooks/useFastingTimer')['useFastingTimer']>
     readonly useId: UnwrapRef<typeof import('vue')['useId']>
     readonly useMessage: UnwrapRef<typeof import('../hooks/useMessage')['useMessage']>
     readonly useModel: UnwrapRef<typeof import('vue')['useModel']>
@@ -188,7 +189,6 @@ declare module 'vue' {
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTimePicker: UnwrapRef<typeof import('../hooks/useTimePicker')['useTimePicker']>
-    readonly useTimePickerValue: UnwrapRef<typeof import('../hooks/useTimePickerValue')['useTimePickerValue']>
     readonly useUpload: UnwrapRef<typeof import('../hooks/useUpload')['default']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
