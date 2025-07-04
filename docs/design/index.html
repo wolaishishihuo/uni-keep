@@ -4,31 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>坚持有你 - 设计页面索引</title>
+    <link rel="stylesheet" href="js/theme-variables.css">
     <style>
-      :root {
-        /* 男性主题变量 - 蓝色系 */
-        --primary-color: #4195e1;
-        --primary-color-light: #6fb0ea;
-        --primary-color-dark: #2a7bc9;
-        --secondary-color: #ff6b9d;
-        --background-color: #f8fcff;
-        --text-color: #333333;
-        --text-color-light: #666666;
-        --border-color: #e0e0e0;
-        --button-shadow: rgba(65, 149, 225, 0.3);
-        --primary-gradient: linear-gradient(135deg, #4195e1, #2a7bc9);
-      }
-
-      /* 女性主题CSS变量 */
-      .theme-female-vars {
-        --primary-color: #ff6b9d;
-        --primary-color-light: #ff8fb3;
-        --primary-color-dark: #e54d7f;
-        --secondary-color: #4195e1;
-        --button-shadow: rgba(255, 107, 157, 0.3);
-        --primary-gradient: linear-gradient(135deg, #ff6b9d, #e54d7f);
-      }
-
       * {
         margin: 0;
         padding: 0;
@@ -38,132 +15,199 @@
       body {
         font-family:
           "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
         line-height: 1.6;
         padding: 20px;
         transition: all 0.3s ease;
       }
 
       .container {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        padding: 30px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 20px;
       }
 
       h1 {
-        color: var(--primary-color);
-        text-align: center;
-        margin-bottom: 30px;
-        font-size: 28px;
-      }
-
-      .page-list {
-        list-style: none;
-      }
-
-      .page-item {
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--border-color);
-        padding-bottom: 15px;
-      }
-
-      .page-item:last-child {
-        border-bottom: none;
-      }
-
-      .page-link {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: var(--text-color);
-        font-weight: 500;
-        font-size: 18px;
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.2s ease;
-      }
-
-      .page-link:hover {
-        background-color: rgba(65, 149, 225, 0.1);
-        transform: translateX(5px);
-      }
-
-      .page-icon {
-        width: 40px;
-        height: 40px;
+        font-size: 2.2rem;
+        font-weight: 800;
         background: var(--primary-gradient);
-        border-radius: 50%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+      }
+      
+      .section {
+        margin-bottom: 50px;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 25px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-color);
+        position: relative;
+      }
+      
+      .section-title::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 80px;
+        height: 2px;
+        background: var(--primary-color);
+      }
+
+      .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+      }
+
+      .card {
+        background: var(--bg-secondary);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 14px 28px var(--button-shadow);
+      }
+
+      .card-header {
+        background: var(--primary-gradient);
+        height: 100px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 15px;
-        color: white;
-        font-size: 20px;
       }
 
-      .page-info {
+      .card-icon {
+        font-size: 2.5rem;
+        color: white;
+      }
+
+      .card-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--text-primary);
+        text-align: center;
+      }
+
+      .card-desc {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        text-align: center;
+        min-height: 50px;
         flex: 1;
       }
 
-      .page-title {
-        margin-bottom: 5px;
-        color: var(--primary-color);
+      .card-link {
+        display: block;
+        background: var(--primary-color);
+        color: white;
+        text-align: center;
+        padding: 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        margin-top: auto;
+        box-shadow: 0 4px 10px var(--button-shadow);
       }
 
-      .page-desc {
-        font-size: 14px;
-        color: var(--text-color-light);
+      .card-link:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px var(--button-shadow-hover);
+      }
+      
+      .card.onboarding .card-header {
+        background: linear-gradient(135deg, var(--primary-color), #667eea);
+      }
+      
+      .card.core-feature .card-header {
+        background: linear-gradient(135deg, #43a047, #66bb6a);
+      }
+      
+      .card.setup .card-header {
+        background: linear-gradient(135deg, #fb8c00, #ffa726);
       }
 
       .theme-switcher {
         display: flex;
-        justify-content: center;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 1px solid var(--border-color);
-      }
-
-      .theme-toggle {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: 2px solid var(--primary-color);
-        display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--primary-color);
-        background-color: white;
-        transition: all 0.3s ease;
+        margin: 50px auto 20px;
+        max-width: 300px;
       }
 
-      .theme-toggle:hover {
-        transform: scale(1.1);
+      .theme-label {
+        color: var(--text-secondary);
+        margin-bottom: 15px;
+        font-weight: 500;
       }
 
       .theme-options {
         display: flex;
-        margin-top: 10px;
+        background: var(--bg-secondary);
+        border-radius: 50px;
+        padding: 6px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
       }
 
       .theme-item {
-        margin: 0 10px;
-        padding: 5px 15px;
-        border-radius: 15px;
-        font-size: 14px;
+        flex: 1;
+        text-align: center;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-size: 0.9rem;
         cursor: pointer;
-        opacity: 0.5;
         transition: all 0.3s ease;
+        font-weight: 500;
       }
 
       .theme-item.active {
-        opacity: 1;
-        font-weight: bold;
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: 0 3px 10px var(--button-shadow);
+      }
+      
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
       }
     </style>
     <!-- 引入公共主题脚本 -->
@@ -171,78 +215,188 @@
   </head>
   <body>
     <div class="container">
-      <h1>坚持有你 - 设计页面索引</h1>
+      <div class="header">
+        <h1>坚持有你</h1>
+        <div class="subtitle">健康管理情侣小程序 · 页面设计索引</div>
+      </div>
 
-      <ul class="page-list">
-        <li class="page-item">
-          <a href="01_index.html" class="page-link">
-            <div class="page-icon">🏠</div>
-            <div class="page-info">
-              <div class="page-title">欢迎页面</div>
-              <div class="page-desc">应用首页，展示欢迎信息和登录入口</div>
+      <!-- 欢迎页和引导设置页面 -->
+      <div class="section">
+        <h2 class="section-title">欢迎和引导设置页面</h2>
+        <div class="cards-container">
+          <!-- 欢迎页面 -->
+          <div class="card onboarding">
+            <div class="card-header">
+              <div class="card-icon">🏠</div>
             </div>
-          </a>
-        </li>
+            <div class="card-body">
+              <h3 class="card-title">欢迎页面</h3>
+              <p class="card-desc">应用首页，展示欢迎信息和登录入口</p>
+              <a href="01_index.html" class="card-link">查看设计</a>
+            </div>
+          </div>
 
-        <li class="page-item">
-          <a href="08_home_screen.html" class="page-link">
-            <div class="page-icon">⏱️</div>
-            <div class="page-info">
-              <div class="page-title">主页面</div>
-              <div class="page-desc">显示断食计时器和当前状态</div>
+          <!-- 引导设置1 -->
+          <div class="card onboarding">
+            <div class="card-header">
+              <div class="card-icon">1️⃣</div>
             </div>
-          </a>
-        </li>
+            <div class="card-body">
+              <h3 class="card-title">引导设置 - 第1步</h3>
+              <p class="card-desc">完善个人信息，定制健康计划</p>
+              <a href="04_setup_guide.html" class="card-link">查看设计</a>
+            </div>
+          </div>
 
-        <li class="page-item">
-          <a href="02_fasting.html" class="page-link">
-            <div class="page-icon">🍽️</div>
-            <div class="page-info">
-              <div class="page-title">断食方案</div>
-              <div class="page-desc">选择不同的断食方案</div>
+          <!-- 引导设置2 -->
+          <div class="card onboarding">
+            <div class="card-header">
+              <div class="card-icon">2️⃣</div>
             </div>
-          </a>
-        </li>
+            <div class="card-body">
+              <h3 class="card-title">引导设置 - 第2步</h3>
+              <p class="card-desc">智能提醒设置，不错过重要时刻</p>
+              <a href="05_setup_guide_step2.html" class="card-link">查看设计</a>
+            </div>
+          </div>
 
-        <li class="page-item">
-          <a href="weight_record.html" class="page-link">
-            <div class="page-icon">⚖️</div>
-            <div class="page-info">
-              <div class="page-title">体重记录</div>
-              <div class="page-desc">查看和记录体重变化</div>
+          <!-- 引导设置3 -->
+          <div class="card onboarding">
+            <div class="card-header">
+              <div class="card-icon">3️⃣</div>
             </div>
-          </a>
-        </li>
+            <div class="card-body">
+              <h3 class="card-title">引导设置 - 第3步</h3>
+              <p class="card-desc">断食计划设置，选择合适的断食方案</p>
+              <a href="06_setup_guide_step3.html" class="card-link">查看设计</a>
+            </div>
+          </div>
 
-        <li class="page-item">
-          <a href="profile.html" class="page-link">
-            <div class="page-icon">👤</div>
-            <div class="page-info">
-              <div class="page-title">个人中心</div>
-              <div class="page-desc">用户资料和成就展示</div>
+          <!-- 引导设置4 -->
+          <div class="card onboarding">
+            <div class="card-header">
+              <div class="card-icon">4️⃣</div>
             </div>
-          </a>
-        </li>
+            <div class="card-body">
+              <h3 class="card-title">引导设置 - 第4步</h3>
+              <p class="card-desc">情侣绑定（可选），与伴侣一起坚持</p>
+              <a href="07_setup_guide_step4.html" class="card-link">查看设计</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 主要业务功能页面 -->
+      <div class="section">
+        <h2 class="section-title">主要业务功能页面</h2>
+        <div class="cards-container">
+          <!-- 主页面 -->
+          <div class="card core-feature">
+            <div class="card-header">
+              <div class="card-icon">⏱️</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">主页面</h3>
+              <p class="card-desc">显示断食计时器、当前状态和统计信息</p>
+              <a href="08_home_screen.html" class="card-link">查看设计</a>
+            </div>
+          </div>
 
-        <li class="page-item">
-          <a href="settings.html" class="page-link">
-            <div class="page-icon">⚙️</div>
-            <div class="page-info">
-              <div class="page-title">系统设置</div>
-              <div class="page-desc">应用设置和偏好</div>
+          <!-- 断食方案 -->
+          <div class="card core-feature">
+            <div class="card-header">
+              <div class="card-icon">🍽️</div>
             </div>
-          </a>
-        </li>
-      </ul>
+            <div class="card-body">
+              <h3 class="card-title">断食方案</h3>
+              <p class="card-desc">查看当前断食计划和断食状态</p>
+              <a href="02_fasting.html" class="card-link">查看设计</a>
+            </div>
+          </div>
+
+          <!-- 选择断食计划 -->
+          <div class="card core-feature">
+            <div class="card-header">
+              <div class="card-icon">📋</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">选择断食计划</h3>
+              <p class="card-desc">选择不同的断食方案和设置进食窗口</p>
+              <a href="03_plan_select.html" class="card-link">查看设计</a>
+            </div>
+          </div>
+
+          <!-- 体重记录 -->
+          <div class="card core-feature">
+            <div class="card-header">
+              <div class="card-icon">⚖️</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">体重记录</h3>
+              <p class="card-desc">查看和记录体重变化趋势</p>
+              <a href="weight_record.html" class="card-link">查看设计</a>
+            </div>
+          </div>
+
+          <!-- 个人中心 -->
+          <div class="card core-feature">
+            <div class="card-header">
+              <div class="card-icon">👤</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">个人中心</h3>
+              <p class="card-desc">用户资料和成就展示页面</p>
+              <a href="profile.html" class="card-link">查看设计</a>
+            </div>
+          </div>
+
+          <!-- 系统设置 -->
+          <div class="card core-feature">
+            <div class="card-header">
+              <div class="card-icon">⚙️</div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">系统设置</h3>
+              <p class="card-desc">应用设置和个人偏好配置</p>
+              <a href="settings.html" class="card-link">查看设计</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="theme-switcher">
-        <div class="theme-toggle">👩</div>
+        <div class="theme-label">切换主题颜色</div>
+        <div class="theme-options">
+          <div class="theme-item active">男性主题</div>
+          <div class="theme-item">女性主题</div>
+        </div>
       </div>
-
-      <div class="theme-options">
-        <div class="theme-item active">男性主题</div>
-        <div class="theme-item">女性主题</div>
+      
+      <div class="footer">
+        坚持有你 © 2023 - 让健康管理更有温度
       </div>
     </div>
+    
+    <script>
+      // 主题切换逻辑
+      document.addEventListener("DOMContentLoaded", function() {
+        const themeOptions = document.querySelectorAll(".theme-item");
+        
+        themeOptions.forEach((option, index) => {
+          option.addEventListener("click", function() {
+            // 切换active类
+            document.querySelector(".theme-item.active").classList.remove("active");
+            this.classList.add("active");
+            
+            // 根据选择的选项切换主题
+            if (index === 0) { // 男性主题
+              document.body.classList.remove("theme-female-vars");
+            } else { // 女性主题
+              document.body.classList.add("theme-female-vars");
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

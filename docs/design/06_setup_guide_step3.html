@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>坚持有你 - 断食计划设置</title>
+    <link rel="stylesheet" href="js/theme-variables.css">
     <style>
+      
       * {
         margin: 0;
         padding: 0;
@@ -14,7 +16,7 @@
       }
 
       body {
-        background: #f8fbff;
+        background: var(--bg-primary);
         padding: 20px;
         min-height: 100vh;
       }
@@ -32,7 +34,7 @@
       .design-title {
         font-size: 2.2rem;
         font-weight: 800;
-        background: linear-gradient(45deg, #4195e1, #667eea);
+        background: var(--primary-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 10px;
@@ -40,7 +42,7 @@
 
       .design-subtitle {
         font-size: 1.1rem;
-        color: #595959;
+        color: var(--text-secondary);
         margin-bottom: 30px;
       }
 
@@ -73,7 +75,7 @@
       }
 
       .theme-male {
-        background: linear-gradient(45deg, #4195e1, #667eea);
+        background: var(--primary-gradient);
       }
 
       .theme-female {
@@ -82,7 +84,7 @@
 
       .theme-label {
         font-weight: 600;
-        color: #333;
+        color: var(--text-primary);
       }
 
       .phone-frame {
@@ -106,8 +108,8 @@
       }
 
       .setup-screen {
-        background: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
-        color: #262626;
+        background: var(--bg-gradient);
+        color: var(--text-primary);
         padding: 20px;
         height: 100%;
         display: flex;
@@ -124,14 +126,14 @@
         font-size: 1.7rem;
         font-weight: 700;
         margin-bottom: 10px;
-        background: linear-gradient(45deg, #4195e1, #667eea);
+        background: var(--primary-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
 
       .subtitle {
         font-size: 1rem;
-        color: #595959;
+        color: var(--text-secondary);
       }
 
       .progress-area {
@@ -155,7 +157,7 @@
       }
 
       .step-line.completed {
-        background: #4195e1;
+        background: var(--primary-color);
       }
 
       .step-text {
@@ -183,12 +185,12 @@
       .step-icon {
         width: 40px;
         height: 40px;
-        background: #4195e1;
+        background: var(--primary-color);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
+        color: var(--text-light);
         font-size: 1.2rem;
         margin-right: 15px;
       }
@@ -196,7 +198,7 @@
       .step-title {
         font-size: 1.3rem;
         font-weight: 600;
-        color: #262626;
+        color: var(--text-primary);
       }
 
       .form-section {
@@ -502,6 +504,8 @@
         border-radius: 4px;
       }
     </style>
+    <!-- 引入公共主题脚本 -->
+    <script src="js/theme.js"></script>
   </head>
   <body>
     <div class="design-container">

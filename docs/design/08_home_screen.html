@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>坚持有你 - 首页</title>
+    <link rel="stylesheet" href="js/theme-variables.css">
     <style>
       * {
         margin: 0;
@@ -14,7 +15,7 @@
       }
 
       body {
-        background: #f8fbff;
+        background: var(--bg-primary);
         padding: 20px;
         min-height: 100vh;
         transition: background-color 0.3s ease;
@@ -33,7 +34,7 @@
       .design-title {
         font-size: 2.2rem;
         font-weight: 800;
-        background: linear-gradient(45deg, #4195e1, #667eea);
+        background: var(--primary-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 10px;
@@ -41,7 +42,7 @@
 
       .design-subtitle {
         font-size: 1.1rem;
-        color: #595959;
+        color: var(--text-secondary);
         margin-bottom: 30px;
       }
 
@@ -74,7 +75,7 @@
       }
 
       .theme-male {
-        background: linear-gradient(45deg, #4195e1, #667eea);
+        background: var(--primary-gradient);
       }
 
       .theme-female {
@@ -83,7 +84,7 @@
 
       .theme-label {
         font-weight: 600;
-        color: #333;
+        color: var(--text-primary);
       }
 
       .phone-frame {
@@ -110,7 +111,7 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
+        background: var(--bg-gradient);
       }
 
       .top-navbar {
@@ -123,15 +124,15 @@
       .app-name {
         font-weight: 600;
         font-size: 1.2rem;
-        color: #262626;
+        color: var(--text-primary);
       }
 
       .user-avatar {
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        background: #4195e1;
-        color: white;
+        background: var(--primary-color);
+        color: var(--text-light);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -622,18 +623,41 @@
       }
 
       /* 添加主题变量 */
+      /* 主题色变量 - 男性主题（蓝色系） */
       :root {
+        /* 主色调 */
         --primary-gradient: linear-gradient(45deg, #4195e1, #667eea);
         --primary-color: #4195e1;
         --primary-light: #e8f4ff;
+        --primary-dark: #3a85c8;
+
+        /* 文字颜色 */
+        --text-primary: #262626;
+        --text-secondary: #595959;
+        --text-light: #ffffff;
+
+        /* 背景色 */
+        --bg-gradient: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
+        --bg-primary: #f8fbff;
+        --bg-secondary: #ffffff;
+
+        /* 交互元素 */
         --button-shadow: rgba(65, 149, 225, 0.3);
         --button-shadow-hover: rgba(65, 149, 225, 0.4);
       }
 
+      /* 女性主题（粉色系）- 切换时应用 */
       .theme-female-vars {
+        /* 主色调 */
         --primary-gradient: linear-gradient(45deg, #ff6b9d, #ff85a1);
         --primary-color: #ff6b9d;
         --primary-light: #fff0f5;
+        --primary-dark: #e55c8a;
+
+        /* 背景色 */
+        --bg-gradient: linear-gradient(180deg, #fff9fb 0%, #fff0f5 100%);
+
+        /* 交互元素 */
         --button-shadow: rgba(255, 107, 157, 0.3);
         --button-shadow-hover: rgba(255, 107, 157, 0.4);
       }
