@@ -186,6 +186,7 @@ declare module 'vue' {
     readonly usePageAuth: UnwrapRef<typeof import('../hooks/usePageAuth')['usePageAuth']>
     readonly useRequest: UnwrapRef<typeof import('../hooks/useRequest')['default']>
     readonly useSafeArea: UnwrapRef<typeof import('../hooks/useSafeArea')['useSafeArea']>
+    readonly useSetupForm: UnwrapRef<typeof import('../hooks/useSetupForm')['useSetupForm']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTimePicker: UnwrapRef<typeof import('../hooks/useTimePicker')['useTimePicker']>

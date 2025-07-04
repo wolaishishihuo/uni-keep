@@ -1,3 +1,4 @@
+import type { Message } from '@/hooks/useMessage';
 import type { Gender } from '@/models/user';
 import { computed, reactive, ref } from 'vue';
 import { completeSetupApi } from '@/api/user';
@@ -15,6 +16,8 @@ export interface SetupFormData {
   height: string;
   currentWeight: string;
   targetWeight: string;
+  // 断食计划
+  fastingPlanId: string;
   // 提醒设置
   enableNotification: boolean;
   fastingStart: string;
@@ -26,30 +29,37 @@ export interface SetupFormData {
 const defaultFormData: SetupFormData = {
   // 基础信息
   nickname: '',
-  gender: '',
+  gender: 'male',
   birthday: '',
   // 身体数据
   height: '',
   currentWeight: '',
   targetWeight: '',
+  // 断食计划
+  fastingPlanId: 'plan16_8',
   // 提醒设置
   enableNotification: true,
-  fastingStart: '08:00',
-  fastingEnd: '18:00',
-  weightRecord: '07:00'
+  fastingStart: '20:00',
+  fastingEnd: '12:00',
+  weightRecord: '08:00'
 };
 
+/**
+ * 设置表单数据管理Hook
+ * 职责：管理表单数据、表单验证、数据保存
+ */
 export function useSetupForm() {
   const message = useMessage();
   const userStore = useUserStore();
 
-  // 步骤相关
-  const currentStep = ref(1);
-  const totalSteps = 3;
-  const saving = ref(false);
-
   // 表单数据
   const formData = reactive<SetupFormData>({ ...defaultFormData });
+
+  // 保存中状态
+  const saving = ref(false);
+
+  // 消息提示数组
+  const messages = ref<Message[]>([]);
 
   // 计算BMI状态
   const bmiStatus = computed(() => {
@@ -70,8 +80,10 @@ export function useSetupForm() {
     return { text: '肥胖', color: '#e17055' };
   });
 
-  // 验证第一步表单
-  const validateStep1 = (): boolean => {
+  /**
+   * 验证个人信息
+   */
+  const validatePersonalInfo = (): boolean => {
     const { nickname, gender, birthday, height, currentWeight, targetWeight } = formData;
 
     // 验证基础信息
@@ -119,17 +131,56 @@ export function useSetupForm() {
     return true;
   };
 
-  // 完成设置
-  const completeSetup = async (): Promise<void> => {
+  /**
+   * 验证步骤
+   * @param step 当前步骤
+   * @returns 是否验证通过
+   */
+  const validateStep = (step: number): boolean => {
+    messages.value = [];
+
+    switch (step) {
+      case 1: // 个人信息
+        return validatePersonalInfo();
+      case 2: // 断食计划
+        return !!formData.fastingPlanId;
+      case 3: // 提醒设置
+        return true;
+      default:
+        return true;
+    }
+  };
+
+  /**
+   * 保存用户信息
+   * @returns 是否保存成功
+   */
+  const saveUserProfile = async (): Promise<boolean> => {
     try {
       saving.value = true;
 
+      // 定义请求接口中的FastingPlan类型
+      interface FastingPlanRequest {
+        startTime: string;
+        endTime: string;
+        isActive: string;
+        planId?: string;
+      }
+
+      // 准备断食计划数据
+      const fastingPlan: FastingPlanRequest = {
+        startTime: formData.fastingStart,
+        endTime: formData.fastingEnd,
+        isActive: '1'
+      };
+
+      // 添加计划ID
+      if (formData.fastingPlanId) {
+        fastingPlan.planId = formData.fastingPlanId;
+      }
+
       const { code } = await completeSetupApi({
-        fastingPlan: {
-          startTime: formData.fastingStart,
-          endTime: formData.fastingEnd,
-          isActive: '1'
-        },
+        fastingPlan,
         systemConfig: [
           {
             key: SystemConfigKey.ENABLE_PUSH_NOTIFICATIONS,
@@ -159,69 +210,25 @@ export function useSetupForm() {
         await userStore.fetchUserData();
         uni.vibrateShort({ type: 'heavy' });
         message.success('设置完成！欢迎使用坚持有你', 2000);
-        setTimeout(() => {
-          uni.reLaunch({ url: '/pages/index/index' });
-        }, 2000);
+        return true;
       }
+
+      return false;
     }
     catch (error) {
       console.error('设置失败:', error);
-      message.error('设置失败，请重试');
+      message.error('保存失败，请重试');
+      return false;
     }
     finally {
       saving.value = false;
     }
   };
 
-  // 下一步
-  const nextStep = async (): Promise<void> => {
-    try {
-      if (currentStep.value === 1) {
-        if (!validateStep1())
-          return;
-        uni.vibrateShort({ type: 'light' });
-        currentStep.value++;
-      }
-      else if (currentStep.value === 2) {
-        uni.vibrateShort({ type: 'light' });
-        currentStep.value++;
-      }
-      else {
-        await completeSetup();
-      }
-    }
-    catch (error) {
-      console.error('步骤处理失败:', error);
-      message.error('操作失败，请重试');
-    }
-  };
-
-  // 上一步
-  const prevStep = (): void => {
-    if (currentStep.value > 1) {
-      uni.vibrateShort({ type: 'light' });
-      currentStep.value--;
-    }
-  };
-
-  // 跳过设置
-  const skipSetup = (): void => {
-    uni.showModal({
-      title: '确认跳过设置',
-      content: '跳过设置将无法使用完整功能，您可以随时在个人中心完善信息',
-      cancelText: '继续设置',
-      confirmText: '跳过',
-      confirmColor: '#fa5151',
-      success: (res) => {
-        if (res.confirm) {
-          uni.vibrateShort({ type: 'light' });
-          uni.reLaunch({ url: '/pages/index/index' });
-        }
-      }
-    });
-  };
-
-  // 初始化表单数据
+  /**
+   * 初始化表单数据
+   * @param userInfo 用户信息
+   */
   const initFormData = (userInfo: any): void => {
     if (userInfo?.isSetup) {
       message.success('您已完成初始设置');
@@ -230,29 +237,60 @@ export function useSetupForm() {
       }, 1000);
       return;
     }
+
+    // 填充现有用户数据
     if (userInfo?.nickname) {
       formData.nickname = userInfo.nickname;
     }
     if (userInfo?.birthday) {
       formData.birthday = userInfo.birthday;
     }
+    if (userInfo?.gender) {
+      formData.gender = userInfo.gender;
+    }
+    if (userInfo?.height) {
+      formData.height = String(userInfo.height);
+    }
+    if (userInfo?.currentWeight) {
+      formData.currentWeight = String(userInfo.currentWeight);
+    }
+    if (userInfo?.targetWeight) {
+      formData.targetWeight = String(userInfo.targetWeight);
+    }
+  };
+
+  /**
+   * 更新表单数据
+   * @param field 字段名
+   * @param value 字段值
+   */
+  const updateFormData = (field: keyof SetupFormData, value: any): void => {
+    (formData[field] as any) = value;
+  };
+
+  /**
+   * 隐藏消息
+   * @param index 消息索引
+   */
+  const hideMessage = (index: number): void => {
+    messages.value.splice(index, 1);
   };
 
   return {
     // 状态
-    currentStep,
-    totalSteps,
-    saving,
     formData,
+    saving,
     bmiStatus,
+    messages,
 
     // 方法
-    nextStep,
-    prevStep,
-    skipSetup,
+    validateStep,
+    saveUserProfile,
     initFormData,
+    updateFormData,
+    hideMessage,
 
-    // 消息提示
+    // 使用message钩子
     ...message
   };
 }
