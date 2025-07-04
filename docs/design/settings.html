@@ -480,7 +480,26 @@
     <script>
       // 页面初始化
       document.addEventListener("DOMContentLoaded", function () {
-        // 在这里可以添加页面特定的初始化代码
+        // 检查URL中的锚点，如果存在则高亮显示对应的设置项
+        const hash = window.location.hash;
+        if (hash) {
+          const targetElement = document.querySelector(hash);
+          if (targetElement) {
+            // 添加高亮效果
+            targetElement.style.backgroundColor = "var(--primary-light)";
+            targetElement.style.transition = "background-color 0.5s";
+            
+            // 滚动到目标元素
+            setTimeout(function() {
+              targetElement.scrollIntoView({ behavior: "smooth" });
+            }, 300);
+            
+            // 3秒后恢复原来的背景色
+            setTimeout(function() {
+              targetElement.style.backgroundColor = "";
+            }, 3000);
+          }
+        }
       });
     </script>
   </head>
@@ -508,7 +527,7 @@
             <div class="settings-screen">
               <!-- 顶部标题栏 -->
               <div class="settings-header">
-                <div class="header-back">←</div>
+                <div class="header-back" onclick="window.location.href='profile.html'">←</div>
                 <div class="header-title">系统设置</div>
               </div>
 
@@ -517,7 +536,7 @@
                 <!-- 账号与安全 -->
                 <div class="settings-section">
                   <div class="section-header">账号与安全</div>
-                  <div class="settings-item">
+                  <div class="settings-item" id="account-info">
                     <div class="item-icon">👤</div>
                     <div class="item-content">
                       <div class="item-title">账号信息</div>
@@ -578,7 +597,7 @@
                       <div class="item-arrow">›</div>
                     </div>
                   </div>
-                  <div class="settings-item">
+                  <div class="settings-item" id="notification-settings">
                     <div class="item-icon">🔔</div>
                     <div class="item-content">
                       <div class="item-title">提醒通知</div>
@@ -799,6 +818,26 @@
 
                 <!-- 版本信息 -->
                 <div class="version-info">坚持有你 v1.0.0</div>
+              </div>
+              
+              <!-- 底部导航 -->
+              <div class="bottom-nav">
+                <div class="nav-item" onclick="window.location.href='08_home_screen.html'">
+                  <div class="nav-icon">🏠</div>
+                  <div>首页</div>
+                </div>
+                <div class="nav-item" onclick="window.location.href='weight_record.html'">
+                  <div class="nav-icon">⚖️</div>
+                  <div>体重</div>
+                </div>
+                <div class="nav-item" onclick="window.location.href='02_fasting.html'">
+                  <div class="nav-icon">⏱️</div>
+                  <div>断食</div>
+                </div>
+                <div class="nav-item active" onclick="window.location.href='profile.html'">
+                  <div class="nav-icon">👤</div>
+                  <div>我的</div>
+                </div>
               </div>
             </div>
           </div>
