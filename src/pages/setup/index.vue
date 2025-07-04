@@ -34,7 +34,6 @@ const userStore = useUserStore();
 const { userInfo } = storeToRefs(userStore);
 
 // 设置表单逻辑
-const setupForm = useSetupForm();
 const {
   currentStep,
   totalSteps,
@@ -47,7 +46,7 @@ const {
   initFormData,
   messages,
   hideMessage
-} = setupForm;
+} = useSetupForm();
 
 // 时间选择器状态
 const showTimePicker = ref(false);
@@ -74,7 +73,13 @@ function onTimeCancel() {
 
 // 格式化时间显示
 function formatTimeDisplay(time: string) {
-  return time || '08:00';
+  if (!time)
+    return '08:00';
+  // 如果是日期时间格式，提取时间部分
+  if (time.includes(' ')) {
+    return time.split(' ')[1]?.substring(0, 5) || '08:00';
+  }
+  return time;
 }
 
 // 页面加载
@@ -153,46 +158,32 @@ onLoad(() => {
                 性别
               </text>
               <view class="gender-selector">
-                <wd-button
-                  :type="formData.gender === 'male' ? 'primary' : 'info'"
-                  :plain="formData.gender !== 'male'"
-                  size="small"
-                  custom-style="flex: 1; margin-right: 8rpx;"
-                  @click="formData.gender = 'male'"
-                >
-                  👨 男
-                </wd-button>
-                <wd-button
-                  :type="formData.gender === 'female' ? 'primary' : 'info'"
-                  :plain="formData.gender !== 'female'"
-                  size="small"
-                  custom-style="flex: 1; margin-left: 8rpx;"
-                  @click="formData.gender = 'female'"
-                >
-                  👩 女
-                </wd-button>
+                <wd-radio-group v-model="formData.gender" shape="button">
+                  <wd-radio value="male">
+                    👨 男
+                  </wd-radio>
+                  <wd-radio value="female">
+                    👩 女
+                  </wd-radio>
+                </wd-radio-group>
               </view>
             </view>
 
             <view class="form-item">
               <text class="label">
-                年龄
+                出壳日 🥚 {{ formData.birthday }}
               </text>
               <wd-input
-                v-model="formData.age"
-                type="number"
-                placeholder="如：25"
-                :maxlength="2"
+                v-model="formData.birthday"
+                placeholder="请选择出壳日"
+                readonly
+                @click="selectTime('birthday')"
               />
             </view>
           </view>
 
           <!-- 身体数据分组 -->
           <view class="info-group">
-            <text class="group-title">
-              📊 身体数据
-            </text>
-
             <view class="form-item">
               <text class="label">
                 身高 (cm)
@@ -386,8 +377,8 @@ onLoad(() => {
       v-if="showTimePicker"
       v-model="formData[currentTimeField]"
       :show="showTimePicker"
-      type="time"
-      title="选择时间"
+      :type="currentTimeField === 'birthday' ? 'date' : 'time'"
+      :title="currentTimeField === 'birthday' ? '选择出壳日' : '选择时间'"
       @update:show="showTimePicker = $event"
       @confirm="onTimeConfirm"
       @cancel="onTimeCancel"

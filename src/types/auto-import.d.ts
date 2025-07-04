@@ -88,6 +88,7 @@ declare global {
   const useSlots: typeof import('vue')['useSlots']
   const useTemplateRef: typeof import('vue')['useTemplateRef']
   const useTimePicker: typeof import('../hooks/useTimePicker')['useTimePicker']
+  const useTimePickerValue: typeof import('../hooks/useTimePickerValue')['useTimePickerValue']
   const useUpload: typeof import('../hooks/useUpload')['default']
   const useWechatAuth: typeof import('../hooks/useWechatAuth')['default']
   const watch: typeof import('vue')['watch']
@@ -187,6 +188,7 @@ declare module 'vue' {
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
     readonly useTemplateRef: UnwrapRef<typeof import('vue')['useTemplateRef']>
     readonly useTimePicker: UnwrapRef<typeof import('../hooks/useTimePicker')['useTimePicker']>
+    readonly useTimePickerValue: UnwrapRef<typeof import('../hooks/useTimePickerValue')['useTimePickerValue']>
     readonly useUpload: UnwrapRef<typeof import('../hooks/useUpload')['default']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>

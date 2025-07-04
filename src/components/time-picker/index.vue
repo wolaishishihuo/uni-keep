@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TimePickerType } from './types';
-import { computed, ref, watch } from 'vue';
+import dayjs from 'dayjs';
 
 // Props 接口
 interface Props {
@@ -14,6 +14,8 @@ interface Props {
   maxHour?: number;
   minMinute?: number;
   maxMinute?: number;
+  minDate?: number;
+  maxDate?: number;
   formatter?: (type: string, value: string) => string;
   filter?: (type: string, values: number[]) => number[];
 }
@@ -37,48 +39,62 @@ const props = withDefaults(defineProps<Props>(), {
   minHour: 0,
   maxHour: 23,
   minMinute: 0,
-  maxMinute: 59
+  maxMinute: 59,
+  minDate: new Date(new Date().getFullYear() - 100, 0, 1).getTime(),
+  maxDate: new Date(new Date().getFullYear() + 10, 11, 31).getTime()
 });
 
 const emit = defineEmits<Emits>();
 
-// 内部状态
-const innerValue = ref(props.modelValue || '08:00');
+const isTimestamp = computed(() => props.type === 'date' || props.type === 'datetime' || props.type === 'year-month');
+
+const innerValue = ref<string | number>(
+  props.modelValue
+    ? (isTimestamp.value ? dayjs(props.modelValue).valueOf() : props.modelValue)
+    : (isTimestamp.value ? dayjs().valueOf() : '08:00')
+);
+
+const stringValue = computed(() =>
+  isTimestamp.value ? dayjs(innerValue.value).format('YYYY-MM-DD') : String(innerValue.value)
+);
+
+watch(() => props.modelValue, (newValue) => {
+  if (newValue) {
+    innerValue.value = isTimestamp.value ? dayjs(newValue).valueOf() : newValue;
+  }
+});
+
+// 重置值
+function reset() {
+  if (props.modelValue) {
+    innerValue.value = isTimestamp.value ? dayjs(props.modelValue).valueOf() : props.modelValue;
+  }
+  else {
+    innerValue.value = isTimestamp.value ? dayjs().valueOf() : '08:00';
+  }
+}
+
+// 弹窗显示状态
 const visible = computed({
   get: () => props.show,
   set: value => emit('update:show', value)
 });
 
-// 监听外部值变化，更新内部值
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    if (newValue !== undefined) {
-      innerValue.value = newValue;
-    }
-  },
-  { immediate: true }
-);
-
 // 监听内部值变化，触发 change 事件
-watch(
-  () => innerValue.value,
-  (newValue) => {
-    emit('change', newValue);
-  }
-);
+watch(() => innerValue.value, () => {
+  emit('change', stringValue.value);
+});
 
 // 确认选择
 function onConfirm() {
-  emit('update:modelValue', innerValue.value);
-  emit('confirm', innerValue.value);
+  emit('update:modelValue', stringValue.value);
+  emit('confirm', stringValue.value);
   visible.value = false;
 }
 
 // 取消选择
 function onCancel() {
-  // 恢复到原始值
-  innerValue.value = props.modelValue || '08:00';
+  reset();
   emit('cancel');
   visible.value = false;
 }
@@ -86,7 +102,7 @@ function onCancel() {
 // 打开选择器
 function open(initialValue?: string) {
   if (initialValue !== undefined) {
-    innerValue.value = initialValue;
+    innerValue.value = isTimestamp.value ? dayjs(initialValue).valueOf() : initialValue;
   }
   visible.value = true;
 }
@@ -122,6 +138,7 @@ defineExpose({
           {{ confirmText }}
         </text>
       </view>
+
       <wd-datetime-picker-view
         v-model="innerValue"
         :type="type"
@@ -129,6 +146,8 @@ defineExpose({
         :max-hour="maxHour"
         :min-minute="minMinute"
         :max-minute="maxMinute"
+        :min-date="minDate"
+        :max-date="maxDate"
         :formatter="formatter"
         :filter="filter"
       />

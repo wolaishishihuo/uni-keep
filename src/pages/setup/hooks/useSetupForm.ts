@@ -8,7 +8,7 @@ export interface SetupFormData {
   // 基础信息
   nickname: string;
   gender: Gender | '';
-  age: string;
+  birthday: string;
   // 身体数据
   height: string;
   currentWeight: string;
@@ -25,7 +25,7 @@ const defaultFormData: SetupFormData = {
   // 基础信息
   nickname: '',
   gender: '',
-  age: '',
+  birthday: '',
   // 身体数据
   height: '',
   currentWeight: '',
@@ -70,7 +70,7 @@ export function useSetupForm() {
 
   // 验证第一步表单
   const validateStep1 = (): boolean => {
-    const { nickname, gender, age, height, currentWeight, targetWeight } = formData;
+    const { nickname, gender, birthday, height, currentWeight, targetWeight } = formData;
 
     // 验证基础信息
     if (!nickname || nickname.trim().length < 2) {
@@ -88,8 +88,8 @@ export function useSetupForm() {
       return false;
     }
 
-    if (!age || Number(age) < 10 || Number(age) > 100) {
-      message.error('请输入有效的年龄 (10-100岁)');
+    if (!birthday) {
+      message.error('请选择出壳日');
       return false;
     }
 
@@ -126,7 +126,7 @@ export function useSetupForm() {
         // 基础信息
         nickname: formData.nickname.trim(),
         gender: formData.gender as Gender,
-        age: Number(formData.age),
+        birthday: formData.birthday,
         // 身体数据
         height: Number(formData.height),
         currentWeight: Number(formData.currentWeight),
@@ -140,16 +140,16 @@ export function useSetupForm() {
         }
       };
 
-      const success = await userStore.updateUserInfo(setupData);
+      // const success = await userStore.updateUserInfo(setupData);
 
-      if (success) {
-        uni.vibrateShort({ type: 'heavy' });
-        message.success('设置完成！欢迎使用坚持有你', 2000);
+      // if (success) {
+      //   uni.vibrateShort({ type: 'heavy' });
+      //   message.success('设置完成！欢迎使用坚持有你', 2000);
 
-        setTimeout(() => {
-          uni.reLaunch({ url: '/pages/index/index' });
-        }, 2000);
-      }
+      //   setTimeout(() => {
+      //     uni.reLaunch({ url: '/pages/index/index' });
+      //   }, 2000);
+      // }
     }
     catch (error) {
       console.error('设置失败:', error);
@@ -210,34 +210,19 @@ export function useSetupForm() {
 
   // 初始化表单数据
   const initFormData = (userInfo: any): void => {
-    if (userInfo?.height && userInfo?.currentWeight && userInfo?.targetWeight) {
+    if (userInfo?.isSetup) {
       message.success('您已完成初始设置');
       setTimeout(() => {
         uni.reLaunch({ url: '/pages/index/index' });
       }, 1000);
       return;
     }
-
-    // 初始化基础信息
+    console.log(userInfo);
     if (userInfo?.nickname) {
       formData.nickname = userInfo.nickname;
     }
-    if (userInfo?.gender) {
-      formData.gender = userInfo.gender;
-    }
-    if (userInfo?.age) {
-      formData.age = userInfo.age.toString();
-    }
-
-    // 初始化身体数据
-    if (userInfo?.height) {
-      formData.height = userInfo.height.toString();
-    }
-    if (userInfo?.currentWeight) {
-      formData.currentWeight = userInfo.currentWeight.toString();
-    }
-    if (userInfo?.targetWeight) {
-      formData.targetWeight = userInfo.targetWeight.toString();
+    if (userInfo?.birthday) {
+      formData.birthday = userInfo.birthday;
     }
   };
 

@@ -3,11 +3,11 @@ import { defineStore } from 'pinia';
 import {
   getWxCode,
   getWxUserInfo,
-  login,
-  updateInfo
+  login
 } from '@/api/login';
+import { formatTime } from '@/utils';
 import { toast } from '@/utils/toast';
-import { isNewUser, isUserProfileComplete, validateUserUpdateData } from '@/utils/userProfile';
+import { isNewUser, isUserProfileComplete } from '@/utils/userProfile';
 import { useThemeStore } from './theme';
 
 // 初始化用户信息
@@ -22,7 +22,10 @@ const initialUserInfo: UserProfile = {
   gender: 'male',
   coupleId: '',
   createdAt: '',
-  updatedAt: ''
+  updatedAt: '',
+  isSetup: false,
+  birthday: formatTime(new Date(), 'YYYY-MM-DD'),
+  age: 0
 };
 
 export const useUserStore = defineStore(
@@ -55,6 +58,7 @@ export const useUserStore = defineStore(
 
     // 设置用户信息
     const setUserInfo = (val: UserProfile) => {
+      console.log('设置用户信息', val);
       userInfo.value = val;
     };
 
@@ -62,63 +66,6 @@ export const useUserStore = defineStore(
     const clearUserInfo = () => {
       userInfo.value = { ...initialUserInfo };
       token.value = '';
-    };
-
-    // 批量更新用户信息
-    const updateUserInfo = async (updateData: Partial<UserProfile>) => {
-      try {
-        // 验证数据
-        const validation = validateUserUpdateData(updateData);
-        if (!validation.valid) {
-          toast.error(validation.message!);
-          return false;
-        }
-
-        // 先更新本地状态
-        const newUserInfo = {
-          ...userInfo.value,
-          ...updateData
-        };
-        setUserInfo(newUserInfo);
-
-        // 调用API更新到服务器
-        await updateInfo(newUserInfo);
-
-        toast.success('信息更新成功');
-        return true;
-      }
-      catch (error) {
-        console.error('更新用户信息失败:', error);
-        toast.error('更新失败，请重试');
-        return false;
-      }
-    };
-
-    // 快速设置用户信息（用于新用户引导）
-    const quickSetupProfile = async (setupData: {
-      height: number;
-      currentWeight: number;
-      targetWeight: number;
-      reminderSettings?: any;
-    }) => {
-      try {
-        const { reminderSettings, ...profileData } = setupData;
-
-        // 更新用户基础信息
-        const success = await updateUserInfo(profileData);
-
-        if (success && reminderSettings) {
-          // 保存提醒设置到本地存储
-          uni.setStorageSync('user_reminder_settings', reminderSettings);
-        }
-
-        return success;
-      }
-      catch (error) {
-        console.error('快速设置失败:', error);
-        toast.error('设置失败，请重试');
-        return false;
-      }
     };
 
     // 处理登录后的页面导航
@@ -162,7 +109,7 @@ export const useUserStore = defineStore(
           userInfo: data.userInfo
         });
         // 3. 临时设置微信用户信息到userInfo
-        setUserInfo(data.userInfo);
+        setUserInfo({ ...data.userInfo, birthday: formatTime(new Date(), 'YYYY-MM-DD') });
         token.value = data.token;
 
         // 4. 设置主题色
@@ -187,8 +134,6 @@ export const useUserStore = defineStore(
       isProfileComplete,
       token,
       setUserInfo,
-      updateUserInfo,
-      quickSetupProfile,
       wxLogin,
       handlePostLoginNavigation,
       clearUserInfo

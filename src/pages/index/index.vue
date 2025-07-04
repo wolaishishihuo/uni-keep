@@ -100,10 +100,18 @@ function handleQuickAction(action: string) {
 onLoad(() => {
   console.log('首页加载完成');
 });
+
+function handleClick() {
+  //  前往设置页面
+  uni.navigateTo({ url: '/pages/setup/index' });
+}
 </script>
 
 <template>
   <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
+    <view @click="handleClick">
+      点击
+    </view>
     <!-- 问候语区域 -->
     <view class="greeting-section">
       <view class="greeting-text">
