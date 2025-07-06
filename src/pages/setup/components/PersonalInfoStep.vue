@@ -40,9 +40,9 @@ function onTimeFieldClick(field: string) {
     <view class="form-section scrollable">
       <!-- 基础信息分组 -->
       <view class="info-group">
-        <text class="group-title">
+        <view class="group-title">
           📝 基础信息
-        </text>
+        </view>
 
         <view class="form-item">
           <text class="label">
@@ -91,9 +91,9 @@ function onTimeFieldClick(field: string) {
 
       <!-- 身体数据分组 -->
       <view class="info-group">
-        <text class="group-title">
+        <view class="group-title">
           📊 身体数据
-        </text>
+        </view>
 
         <view class="form-item">
           <text class="label">
@@ -149,10 +149,9 @@ function onTimeFieldClick(field: string) {
 
 <style lang="scss" scoped>
 .step-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 0 30rpx;
+  padding: 30rpx;
 }
 
 .step-header {
@@ -166,34 +165,30 @@ function onTimeFieldClick(field: string) {
   }
 
   .step-title {
-    font-size: 36rpx;
+    font-size: 48rpx;
     font-weight: bold;
-    color: var(--text-color);
+    color: var(--text-primary);
   }
 }
 
 .form-section {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 40rpx;
-
+  background-color: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
   &.scrollable {
     max-height: calc(100vh - 400rpx);
   }
 }
 
 .info-group {
-  background-color: var(--card-bg-color);
-  border-radius: 16rpx;
   padding: 30rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-
   .group-title {
-    font-size: 28rpx;
+    font-size: 38rpx;
     font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 20rpx;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
   }
 }
 
@@ -202,8 +197,8 @@ function onTimeFieldClick(field: string) {
 
   .label {
     display: block;
-    font-size: 28rpx;
-    color: var(--text-color-secondary);
+    font-size: 32rpx;
+    color: var(--text-secondary);
     margin-bottom: 12rpx;
   }
 }

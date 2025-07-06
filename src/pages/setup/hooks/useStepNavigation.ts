@@ -1,5 +1,3 @@
-import { computed, ref } from 'vue';
-
 /**
  * 步骤导航控制Hook
  * @param stepsCount 总步骤数
