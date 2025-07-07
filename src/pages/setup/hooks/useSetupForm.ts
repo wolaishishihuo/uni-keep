@@ -1,9 +1,7 @@
 import type { Message } from '@/hooks/useMessage';
 import type { Gender } from '@/models/user';
 import { computed, reactive, ref } from 'vue';
-import { completeSetupApi } from '@/api/user';
 import { useMessage } from '@/hooks/useMessage';
-import { SystemConfigKey } from '@/models/system';
 import { useUserStore } from '@/store/user';
 
 // 表单数据接口
@@ -19,10 +17,16 @@ export interface SetupFormData {
   // 断食计划
   fastingPlanId: string;
   // 提醒设置
-  enableNotification: boolean;
-  fastingStart: string;
-  fastingEnd: string;
-  weightRecord: string;
+  fastingStartNotify: boolean;
+  fastingStartAdvanceMinutes: number;
+  eatingWindowStartNotify: boolean;
+  eatingWindowEndNotify: boolean;
+  eatingWindowAdvanceMinutes: number;
+  achievementNotify: boolean;
+  milestoneNotify: boolean;
+  // 情侣互动提醒
+  partnerFastingNotify: boolean;
+  partnerEncourageNotify: boolean;
 }
 
 // 默认表单数据
@@ -38,10 +42,16 @@ const defaultFormData: SetupFormData = {
   // 断食计划
   fastingPlanId: 'plan16_8',
   // 提醒设置
-  enableNotification: true,
-  fastingStart: '20:00',
-  fastingEnd: '12:00',
-  weightRecord: '08:00'
+  fastingStartNotify: true, // 断食开始提醒
+  fastingStartAdvanceMinutes: 15, // 断食开始提前提醒分钟
+  eatingWindowStartNotify: true, // 进食窗口开始提醒
+  eatingWindowEndNotify: true, // 进食窗口结束提醒
+  eatingWindowAdvanceMinutes: 30, // 进食窗口提前提醒分钟
+  achievementNotify: true, // 成就解锁提醒
+  milestoneNotify: true, // 坚持里程碑提醒
+  // 情侣互动提醒
+  partnerFastingNotify: true, // 伙伴坚持状态提醒
+  partnerEncourageNotify: true // 伙伴鼓励提醒
 };
 
 // 表单数据
@@ -158,59 +168,51 @@ export function useSetupForm() {
     try {
       saving.value = true;
 
-      // 定义请求接口中的FastingPlan类型
-      interface FastingPlanRequest {
-        startTime: string;
-        endTime: string;
-        isActive: string;
-        planId?: string;
-      }
+      // // 准备断食计划数据
+      // const fastingPlan: FastingPlanRequest = {
+      //   startTime: formData.fastingStart,
+      //   endTime: formData.fastingEnd,
+      //   isActive: '1'
+      // };
 
-      // 准备断食计划数据
-      const fastingPlan: FastingPlanRequest = {
-        startTime: formData.fastingStart,
-        endTime: formData.fastingEnd,
-        isActive: '1'
-      };
+      // // 添加计划ID
+      // if (formData.fastingPlanId) {
+      //   fastingPlan.planId = formData.fastingPlanId;
+      // }
 
-      // 添加计划ID
-      if (formData.fastingPlanId) {
-        fastingPlan.planId = formData.fastingPlanId;
-      }
+      // const { code } = await completeSetupApi({
+      //   fastingPlan,
+      //   systemConfig: [
+      //     {
+      //       key: SystemConfigKey.ENABLE_PUSH_NOTIFICATIONS,
+      //       value: formData.enableNotification ? '1' : '0'
+      //     },
+      //     {
+      //       key: SystemConfigKey.DEFAULT_FASTING_REMINDER,
+      //       value: formData.fastingStart
+      //     },
+      //     {
+      //       key: SystemConfigKey.DEFAULT_WEIGHT_REMINDER_TIME,
+      //       value: formData.weightRecord
+      //     }
+      //   ],
+      //   userId: userStore.userInfo.id,
+      //   userInfo: {
+      //     nickname: formData.nickname,
+      //     birthday: formData.birthday,
+      //     gender: formData.gender as Gender,
+      //     height: Number(formData.height),
+      //     currentWeight: Number(formData.currentWeight),
+      //     targetWeight: Number(formData.targetWeight)
+      //   }
+      // });
 
-      const { code } = await completeSetupApi({
-        fastingPlan,
-        systemConfig: [
-          {
-            key: SystemConfigKey.ENABLE_PUSH_NOTIFICATIONS,
-            value: formData.enableNotification ? '1' : '0'
-          },
-          {
-            key: SystemConfigKey.DEFAULT_FASTING_REMINDER,
-            value: formData.fastingStart
-          },
-          {
-            key: SystemConfigKey.DEFAULT_WEIGHT_REMINDER_TIME,
-            value: formData.weightRecord
-          }
-        ],
-        userId: userStore.userInfo.id,
-        userInfo: {
-          nickname: formData.nickname,
-          birthday: formData.birthday,
-          gender: formData.gender as Gender,
-          height: Number(formData.height),
-          currentWeight: Number(formData.currentWeight),
-          targetWeight: Number(formData.targetWeight)
-        }
-      });
-
-      if (code === 1) {
-        await userStore.fetchUserData();
-        uni.vibrateShort({ type: 'heavy' });
-        message.success('设置完成！欢迎使用坚持有你', 2000);
-        return true;
-      }
+      // if (code === 1) {
+      //   await userStore.fetchUserData();
+      //   uni.vibrateShort({ type: 'heavy' });
+      //   message.success('设置完成！欢迎使用坚持有你', 2000);
+      //   return true;
+      // }
 
       return false;
     }

@@ -10,7 +10,6 @@
 
 :root,
 page {
-  // ========== 默认主题（男主题 - 清新蓝系） ==========
   /* 主色调 */
   --primary-gradient: linear-gradient(45deg, #4195e1, #667eea);
   --primary-color: #4195e1;
@@ -32,7 +31,6 @@ page {
   --button-shadow-hover: rgba(65, 149, 225, 0.4);
 }
 
-// ========== 女主题（少女粉系） ==========
 .theme-female {
   /* 主色调 */
   --primary-gradient: linear-gradient(45deg, #ff6b9d, #ff85a1);
