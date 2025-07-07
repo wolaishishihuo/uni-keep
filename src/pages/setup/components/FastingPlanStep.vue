@@ -1,31 +1,25 @@
 <script setup lang="ts">
-import type { SetupFormData } from '../hooks/useSetupForm';
 import { computed } from 'vue';
 import { useFastingPlan } from '../hooks/useFastingPlan';
+import { useSetupForm } from '../hooks/useSetupForm';
 
 defineOptions({
   name: 'FastingPlanStep'
 });
 
-const props = defineProps<{
-  formData: SetupFormData;
-}>();
-
-const emit = defineEmits<{
-  'select-plan': [planId: string];
-}>();
+const { formData } = useSetupForm();
 
 // 使用断食计划hook获取数据
 const { fastingPlans } = useFastingPlan();
 
 // 计算当前选中的计划详情
 const currentPlan = computed(() =>
-  fastingPlans.value.find(plan => plan.id === props.formData.fastingPlanId)
+  fastingPlans.value.find(plan => plan.id === formData.fastingPlanId)
 );
 
 // 选择计划
 function selectPlan(planId: string) {
-  emit('select-plan', planId);
+  formData.fastingPlanId = planId;
 }
 </script>
 

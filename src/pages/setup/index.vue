@@ -65,16 +65,6 @@ const {
 // 时间选择器逻辑
 const { showTimePicker, currentField, openTimePicker: selectTime, onTimeConfirm, onTimeCancel } = useTimePicker(formData);
 
-// 处理字段更新
-function handleUpdateField(field, value) {
-  updateFormData(field, value);
-}
-
-// 断食计划选择处理
-function handlePlanSelect(planId) {
-  updateFormData('fastingPlanId', planId);
-}
-
 // 页面加载
 onLoad(() => {
   initFormData(userInfo.value);
@@ -117,7 +107,6 @@ onLoad(() => {
       <!-- 步骤1：个人信息 -->
       <PersonalInfoStep
         v-show="currentStep === 1"
-        :form-data="formData"
         :bmi-status="bmiStatus"
         @select-time="selectTime"
       />
@@ -125,8 +114,6 @@ onLoad(() => {
       <!-- 步骤2：断食计划 -->
       <FastingPlanStep
         v-show="currentStep === 2"
-        :form-data="formData"
-        @select-plan="handlePlanSelect"
       />
 
       <!-- 步骤3：提醒设置 -->
@@ -134,7 +121,6 @@ onLoad(() => {
         v-show="currentStep === 3"
         :form-data="formData"
         @select-time="selectTime"
-        @update:field="handleUpdateField"
       />
 
       <!-- 步骤4：完成 -->
