@@ -1,11 +1,21 @@
 <script setup lang="ts">
+import { parseTimeString } from '@/utils/time';
+import { useFastingPlan } from '../hooks/useFastingPlan';
 import { useSetupForm } from '../hooks/useSetupForm';
 
 defineOptions({
   name: 'NotificationStep'
 });
+const emit = defineEmits<{
+  'select-time': [field: string];
+}>();
 
-const { formData, updateFormData } = useSetupForm();
+const { formData } = useSetupForm();
+const { fastingPlans } = useFastingPlan();
+
+const currentPlan = computed(() =>
+  fastingPlans.value.find(plan => plan.id === formData.fastingPlanId)
+);
 
 // 时间选项（分钟）
 const timeOptions = [5, 10, 15, 20, 30, 45, 60];
@@ -14,7 +24,7 @@ const timeOptions = [5, 10, 15, 20, 30, 45, 60];
  * 更新时间设置
  */
 function updateTime(field: string, isIncrease: boolean) {
-  const currentValue = (formData as any)[field];
+  const currentValue = formData[field];
   const currentIndex = timeOptions.indexOf(currentValue);
 
   let newIndex;
@@ -25,7 +35,7 @@ function updateTime(field: string, isIncrease: boolean) {
     newIndex = currentIndex > 0 ? currentIndex - 1 : timeOptions.length - 1;
   }
 
-  updateFormData(field as any, timeOptions[newIndex]);
+  formData[field] = timeOptions[newIndex];
 }
 
 /**
@@ -33,6 +43,23 @@ function updateTime(field: string, isIncrease: boolean) {
  */
 function formatTime(minutes: number): string {
   return `${minutes}分钟`;
+}
+
+// 进食结束时间
+const eatingEndTime = computed(() => {
+  const start = formData.eatingStartTime;
+  if (!start || !currentPlan.value)
+    return '';
+  const { hours: h, minutes: m } = parseTimeString(start);
+  let endHour = h + currentPlan.value.eatingHours;
+  if (endHour >= 24)
+    endHour -= 24;
+  return `${endHour.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+});
+
+// 点击时间字段，打开时间选择器
+function onTimeFieldClick(field: string) {
+  emit('select-time', field);
 }
 </script>
 
@@ -48,6 +75,37 @@ function formatTime(minutes: number): string {
     </view>
 
     <view class="overflow-y-auto">
+      <!-- 进食时间设置 -->
+      <view class="card">
+        <text class="section-title">
+          ⏱️ 进食时间设置
+        </text>
+        <view class="setting-row">
+          <view class="setting-title">
+            进食开始时间
+          </view>
+          <view class="time-picker text-[var(--primary-color)]" @tap="onTimeFieldClick('eatingStartTime')">
+            {{ formData.eatingStartTime }}
+          </view>
+        </view>
+        <view class="setting-row">
+          <view class="setting-title">
+            进食结束时间
+          </view>
+          <view class="time-picker">
+            {{ eatingEndTime }} (自动计算)
+          </view>
+        </view>
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
+              进食窗口
+            </view>
+          </view>
+          {{ currentPlan?.eatingHours }}小时
+        </view>
+      </view>
+
       <!-- 断食计划提醒 -->
       <view class="card">
         <text class="section-title">

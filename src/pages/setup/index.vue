@@ -49,7 +49,6 @@ const {
   bmiStatus,
   messages,
   initFormData,
-  updateFormData,
   validateStep,
   saveUserProfile
 } = useSetupForm();

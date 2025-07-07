@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { useFastingPlan } from '../hooks/useFastingPlan';
 import { useSetupForm } from '../hooks/useSetupForm';
 
@@ -34,11 +33,7 @@ function selectPlan(planId: string) {
       </text>
     </view>
 
-    <view class="form-section">
-      <view class="section-title">
-        选择断食计划
-      </view>
-
+    <view class="overflow-y-auto pt-2">
       <view class="plans-container">
         <view
           v-for="plan in fastingPlans"
@@ -94,7 +89,6 @@ function selectPlan(planId: string) {
           </view>
         </view>
       </view>
-
       <view v-if="currentPlan" class="plan-detail">
         <text class="detail-title">
           方案详情
@@ -150,24 +144,17 @@ function selectPlan(planId: string) {
 </template>
 
 <style lang="scss" scoped>
-.section-title {
-  font-size: 32rpx;
-  color: var(--text-color);
-  margin-bottom: 30rpx;
-  display: block;
-  font-weight: bold;
-}
-
 .plans-container {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
   margin-bottom: 30rpx;
+
 }
 
 .plan-card {
   position: relative;
-  background: var(--card-bg-color, #fff);
+  background: #fff;
   border-radius: 16rpx;
   box-shadow: 0 4rpx 15rpx rgba(0,0,0,0.05);
   padding: 24rpx;
@@ -256,7 +243,7 @@ function selectPlan(planId: string) {
 
 .plan-detail {
   padding: 30rpx;
-  background-color: var(--card-bg-color);
+  background: #fff;
   border-radius: 16rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
   margin-bottom: 30rpx;

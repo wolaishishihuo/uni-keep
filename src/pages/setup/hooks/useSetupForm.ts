@@ -16,6 +16,7 @@ export interface SetupFormData {
   targetWeight: string;
   // 断食计划
   fastingPlanId: string;
+  eatingStartTime: string;
   // 提醒设置
   fastingStartNotify: boolean;
   fastingStartAdvanceMinutes: number;
@@ -41,6 +42,7 @@ const defaultFormData: SetupFormData = {
   targetWeight: '',
   // 断食计划
   fastingPlanId: 'plan16_8',
+  eatingStartTime: '08:00', // 进食开始时间
   // 提醒设置
   fastingStartNotify: true, // 断食开始提醒
   fastingStartAdvanceMinutes: 15, // 断食开始提前提醒分钟
@@ -261,15 +263,6 @@ export function useSetupForm() {
   };
 
   /**
-   * 更新表单数据
-   * @param field 字段名
-   * @param value 字段值
-   */
-  const updateFormData = (field: keyof SetupFormData, value: any): void => {
-    (formData[field] as any) = value;
-  };
-
-  /**
    * 隐藏消息
    * @param index 消息索引
    */
@@ -288,7 +281,6 @@ export function useSetupForm() {
     validateStep,
     saveUserProfile,
     initFormData,
-    updateFormData,
     hideMessage,
 
     // 使用message钩子
