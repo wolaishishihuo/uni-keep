@@ -105,11 +105,6 @@ function navigateTo(url: string) {
 
 <template>
   <view class="login-container">
-    <!-- 前往欢迎页 -->
-    <view class="login-header" @click="navigateTo('/pages/welcome/index')">
-      <text>前往欢迎页</text>
-    </view>
-
     <!-- 登录背景 -->
     <view class="login-bg">
       <view class="logo-section">
