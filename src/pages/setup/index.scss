@@ -4,6 +4,7 @@
   overflow: hidden;
   background: var(--bg-gradient);
   color: var(--text-primary);
+  height: 100vh;
 }
 
 // 头部区域样式
@@ -53,7 +54,6 @@
 // 内容区域 - 只保留容器样式
 .content {
   flex: 1;
-  padding: 24rpx;
   overflow: hidden;
 }
 
@@ -61,7 +61,6 @@
 .bottom-actions {
   flex-shrink: 0;
   padding: 24rpx 32rpx;
-  padding-bottom: 50rpx;
 
   .button-row {
     display: flex;

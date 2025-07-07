@@ -9,7 +9,6 @@ declare module 'vue' {
   export interface GlobalComponents {
     AuthModal: typeof import('./../components/auth-modal/index.vue')['default']
     FgNavbar: typeof import('./../components/fg-navbar/fg-navbar.vue')['default']
-    Input: typeof import('./../components/input/index.vue')['default']
     MessageDisplay: typeof import('./../components/message-display/index.vue')['default']
     ProfileGuideCard: typeof import('./../components/profile-guide-card/index.vue')['default']
     TimePicker: typeof import('./../components/time-picker/index.vue')['default']

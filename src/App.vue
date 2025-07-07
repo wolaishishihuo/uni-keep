@@ -26,6 +26,11 @@ onHide(() => {
 </script>
 
 <style lang="scss">
+page,view,button,input,textarea,image,swiper,scroll-view {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 // 全局隐藏滚动条 - 小程序项目通用设置
 ::-webkit-scrollbar {
   display: none;

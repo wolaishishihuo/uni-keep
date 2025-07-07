@@ -58,10 +58,8 @@ const {
 const {
   currentStep,
   totalSteps,
-  canMoveNext,
   nextStep,
-  prevStep,
-  skipSetup
+  prevStep
 } = useStepNavigation(4, validateStep, saveUserProfile);
 
 // 时间选择器逻辑
@@ -86,7 +84,7 @@ onLoad(() => {
 <template>
   <view
     class="setup-container"
-    :style="{ paddingTop: `${safeAreaInsets?.top || 0}px`, height: `calc(100vh - ${safeAreaInsets?.top || 0}px)` }"
+    :style="{ paddingTop: `${safeAreaInsets?.top || 0}px` }"
     :class="themeClassName"
   >
     <!-- 顶部区域 -->
@@ -122,7 +120,6 @@ onLoad(() => {
         :form-data="formData"
         :bmi-status="bmiStatus"
         @select-time="selectTime"
-        @update:field="handleUpdateField"
       />
 
       <!-- 步骤2：断食计划 -->

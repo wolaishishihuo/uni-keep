@@ -1,24 +1,18 @@
 <script setup lang="ts">
-import type { SetupFormData } from '../hooks/useSetupForm';
+import { useSetupForm } from '../hooks/useSetupForm';
 
 defineOptions({
   name: 'PersonalInfoStep'
 });
 
 defineProps<{
-  formData: SetupFormData;
   bmiStatus: { text: string; color: string } | null;
 }>();
-
 const emit = defineEmits<{
   'select-time': [field: string];
-  'update:field': [field: string, value: any];
 }>();
 
-// 更新字段值
-function updateField(field: keyof SetupFormData, value: any) {
-  emit('update:field', field, value);
-}
+const { formData } = useSetupForm();
 
 // 点击时间字段，打开时间选择器
 function onTimeFieldClick(field: string) {
@@ -29,7 +23,7 @@ function onTimeFieldClick(field: string) {
 <template>
   <view class="step-content">
     <view class="step-header">
-      <view class="step-icon">
+      <view class="step-icon h-40px w-40px">
         👤
       </view>
       <text class="step-title">
@@ -49,10 +43,9 @@ function onTimeFieldClick(field: string) {
             昵称
           </text>
           <wd-input
-            :model-value="formData.nickname"
+            v-model="formData.nickname"
             placeholder="请输入您的昵称"
             :maxlength="20"
-            @update:model-value="updateField('nickname', $event)"
           />
         </view>
 
@@ -61,18 +54,14 @@ function onTimeFieldClick(field: string) {
             性别
           </text>
           <view class="gender-selector">
-            <wd-radio-group
-              :model-value="formData.gender"
-              shape="button"
-              @update:model-value="updateField('gender', $event)"
-            >
-              <wd-radio value="male">
+            <view class="buttons w-full flex-row gap-20rpx">
+              <button class="btn p-0! font-400!" :class="{ 'btn-primary': formData.gender === 'male' }" @click="formData.gender = 'male'">
                 👨 男
-              </wd-radio>
-              <wd-radio value="female">
+              </button>
+              <button class="btn p-0! font-400!" :class="{ 'btn-primary': formData.gender === 'female' }" @click="formData.gender = 'female'">
                 👩 女
-              </wd-radio>
-            </wd-radio-group>
+              </button>
+            </view>
           </view>
         </view>
 
@@ -81,7 +70,7 @@ function onTimeFieldClick(field: string) {
             出壳日 🥚
           </text>
           <wd-input
-            :model-value="formData.birthday"
+            v-model="formData.birthday"
             placeholder="请选择出壳日"
             readonly
             @click="onTimeFieldClick('birthday')"
@@ -100,11 +89,10 @@ function onTimeFieldClick(field: string) {
             身高 (cm)
           </text>
           <wd-input
-            :model-value="formData.height"
+            v-model="formData.height"
             type="number"
             placeholder="如：170"
             :maxlength="3"
-            @update:model-value="updateField('height', $event)"
           />
         </view>
 
@@ -113,11 +101,10 @@ function onTimeFieldClick(field: string) {
             当前体重 (kg)
           </text>
           <wd-input
-            :model-value="formData.currentWeight"
+            v-model="formData.currentWeight"
             type="digit"
             placeholder="如：65.5"
             :maxlength="5"
-            @update:model-value="updateField('currentWeight', $event)"
           />
         </view>
 
@@ -126,11 +113,10 @@ function onTimeFieldClick(field: string) {
             目标体重 (kg)
           </text>
           <wd-input
-            :model-value="formData.targetWeight"
+            v-model="formData.targetWeight"
             type="digit"
             placeholder="如：60.0"
             :maxlength="5"
-            @update:model-value="updateField('targetWeight', $event)"
           />
         </view>
 
@@ -151,7 +137,9 @@ function onTimeFieldClick(field: string) {
 .step-content {
   display: flex;
   flex-direction: column;
-  padding: 30rpx;
+  height: 100%;
+  padding: 0 30rpx;
+  border-radius: 20rpx;
 }
 
 .step-header {
@@ -160,32 +148,35 @@ function onTimeFieldClick(field: string) {
   margin-bottom: 40rpx;
 
   .step-icon {
-    font-size: 48rpx;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
     margin-right: 20rpx;
   }
 
   .step-title {
-    font-size: 48rpx;
+    font-size: 40rpx;
     font-weight: bold;
     color: var(--text-primary);
   }
 }
 
 .form-section {
-  flex: 1;
   overflow-y: auto;
   background-color: #fff;
   border-radius: 16rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-  &.scrollable {
-    max-height: calc(100vh - 400rpx);
-  }
+
 }
 
 .info-group {
   padding: 30rpx;
   .group-title {
-    font-size: 38rpx;
+    font-size: 32rpx;
     font-weight: bold;
     color: var(--text-primary);
     margin-bottom: 1rem;
@@ -197,7 +188,7 @@ function onTimeFieldClick(field: string) {
 
   .label {
     display: block;
-    font-size: 32rpx;
+    font-size: 28rpx;
     color: var(--text-secondary);
     margin-bottom: 12rpx;
   }

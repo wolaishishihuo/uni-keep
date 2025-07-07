@@ -39,6 +39,7 @@ const navigateToInterceptor = {
     if (isDev) {
       needLoginPages = getNeedLoginPages();
     }
+
     else {
       needLoginPages = _needLoginPages;
     }
