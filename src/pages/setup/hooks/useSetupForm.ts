@@ -1,7 +1,9 @@
 import type { Message } from '@/hooks/useMessage';
 import type { Gender } from '@/models/user';
 import { computed, reactive, ref } from 'vue';
+import { completeSetupApi } from '@/api/user';
 import { useMessage } from '@/hooks/useMessage';
+import { SystemConfigKey } from '@/models/system';
 import { useUserStore } from '@/store/user';
 
 // 表单数据接口
@@ -58,6 +60,20 @@ const defaultFormData: SetupFormData = {
 
 // 表单数据
 const formData = reactive<SetupFormData>({ ...defaultFormData });
+
+// 系统配置映射表
+const systemConfigMap = [
+  { key: SystemConfigKey.FASTING_START_NOTIFY, field: 'fastingStartNotify', toValue: (v: boolean) => v ? '1' : '0' },
+  { key: SystemConfigKey.FASTING_START_ADVANCE, field: 'fastingStartAdvanceMinutes', toValue: (v: number) => String(v) },
+  { key: SystemConfigKey.EAT_START_NOTIFY, field: 'eatingWindowStartNotify', toValue: (v: boolean) => v ? '1' : '0' },
+  { key: SystemConfigKey.EAT_START_ADVANCE, field: 'eatingWindowAdvanceMinutes', toValue: (v: number) => String(v) },
+  { key: SystemConfigKey.EAT_END_NOTIFY, field: 'eatingWindowEndNotify', toValue: (v: boolean) => v ? '1' : '0' },
+  { key: SystemConfigKey.ACHIEVEMENT_NOTIFY, field: 'achievementNotify', toValue: (v: boolean) => v ? '1' : '0' },
+  { key: SystemConfigKey.MILESTONE_NOTIFY, field: 'milestoneNotify', toValue: (v: boolean) => v ? '1' : '0' },
+  { key: SystemConfigKey.PARTNER_STATUS_NOTIFY, field: 'partnerFastingNotify', toValue: (v: boolean) => v ? '1' : '0' },
+  { key: SystemConfigKey.PARTNER_ENCOURAGE_NOTIFY, field: 'partnerEncourageNotify', toValue: (v: boolean) => v ? '1' : '0' }
+];
+
 /**
  * 设置表单数据管理Hook
  * 职责：管理表单数据、表单验证、数据保存
@@ -170,51 +186,38 @@ export function useSetupForm() {
     try {
       saving.value = true;
 
-      // // 准备断食计划数据
-      // const fastingPlan: FastingPlanRequest = {
-      //   startTime: formData.fastingStart,
-      //   endTime: formData.fastingEnd,
-      //   isActive: '1'
-      // };
+      // 准备断食计划数据
+      const fastingPlan = {
+        startTime: formData.eatingStartTime,
+        isActive: '1',
+        fastingType: formData.fastingPlanId
+      };
 
-      // // 添加计划ID
-      // if (formData.fastingPlanId) {
-      //   fastingPlan.planId = formData.fastingPlanId;
-      // }
+      const systemConfig = systemConfigMap.map(item => ({
+        key: item.key,
+        value: item.toValue(formData[item.field] as never)
+      }));
 
-      // const { code } = await completeSetupApi({
-      //   fastingPlan,
-      //   systemConfig: [
-      //     {
-      //       key: SystemConfigKey.ENABLE_PUSH_NOTIFICATIONS,
-      //       value: formData.enableNotification ? '1' : '0'
-      //     },
-      //     {
-      //       key: SystemConfigKey.DEFAULT_FASTING_REMINDER,
-      //       value: formData.fastingStart
-      //     },
-      //     {
-      //       key: SystemConfigKey.DEFAULT_WEIGHT_REMINDER_TIME,
-      //       value: formData.weightRecord
-      //     }
-      //   ],
-      //   userId: userStore.userInfo.id,
-      //   userInfo: {
-      //     nickname: formData.nickname,
-      //     birthday: formData.birthday,
-      //     gender: formData.gender as Gender,
-      //     height: Number(formData.height),
-      //     currentWeight: Number(formData.currentWeight),
-      //     targetWeight: Number(formData.targetWeight)
-      //   }
-      // });
+      const { code } = await completeSetupApi({
+        fastingPlan,
+        systemConfig,
+        userId: userStore.userInfo.id,
+        userInfo: {
+          nickname: formData.nickname,
+          birthday: formData.birthday,
+          gender: formData.gender as Gender,
+          height: Number(formData.height),
+          currentWeight: Number(formData.currentWeight),
+          targetWeight: Number(formData.targetWeight)
+        }
+      });
 
-      // if (code === 1) {
-      //   await userStore.fetchUserData();
-      //   uni.vibrateShort({ type: 'heavy' });
-      //   message.success('设置完成！欢迎使用坚持有你', 2000);
-      //   return true;
-      // }
+      if (code === 1) {
+        await userStore.fetchUserData();
+        uni.vibrateShort({ type: 'heavy' });
+        message.success('设置完成！欢迎使用坚持有你', 2000);
+        return true;
+      }
 
       return false;
     }

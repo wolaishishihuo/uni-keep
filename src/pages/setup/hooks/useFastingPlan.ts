@@ -24,7 +24,7 @@ export function useFastingPlan() {
   // 所有断食计划数据
   const fastingPlans = ref<FastingPlan[]>([
     {
-      id: 'plan16_8',
+      id: 'TIME_16_8',
       name: '16:8 间歇性断食',
       icon: '⏱️',
       pattern: '16小时断食 / 8小时进食',
@@ -40,7 +40,7 @@ export function useFastingPlan() {
       difficulty: 2
     },
     {
-      id: 'plan18_6',
+      id: 'TIME_18_6',
       name: '18:6 断食法',
       icon: '🕙',
       pattern: '18小时断食 / 6小时进食',
