@@ -96,7 +96,7 @@ export function useSetupForm() {
 
     const h = Number(height) / 100;
     const w = Number(currentWeight);
-    const bmi = w / (h * h);
+    const bmi = w / h ** 2;
 
     if (bmi < 18.5)
       return { text: '偏瘦', color: '#74b9ff' };
