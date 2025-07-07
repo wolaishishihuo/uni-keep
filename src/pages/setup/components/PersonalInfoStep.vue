@@ -54,7 +54,7 @@ function onTimeFieldClick(field: string) {
             性别
           </text>
           <view class="gender-selector">
-            <view class="buttons w-full flex-row gap-20rpx">
+            <view class="buttons w-full gap-20rpx flex-row!">
               <button class="btn p-0! font-400!" :class="{ 'btn-primary': formData.gender === 'male' }" @click="formData.gender = 'male'">
                 👨 男
               </button>

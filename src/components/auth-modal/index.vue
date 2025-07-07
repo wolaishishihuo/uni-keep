@@ -18,7 +18,7 @@ const showModal = computed({
   get() {
     return props.modelValue;
   },
-  set(value) {
+  set() {
     emit('close');
   }
 });
@@ -82,7 +82,8 @@ function handleConfirm() {
       <!-- 标题 -->
       <view class="modal-header">
         <view class="app-icon">
-          <i class="iconfont icon-jianchi text-2xl text-[var(--keep-primary)]" />
+          <!-- <i class="iconfont icon-jianchi text-2xl text-[var(--keep-primary)]" /> -->
+          <i class="iconfont icon-jianchi text-[var(--primary-color)] text-2xl!" />
         </view>
         <view class="modal-title">
           服务授权

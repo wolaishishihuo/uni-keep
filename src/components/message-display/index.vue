@@ -53,6 +53,7 @@ function getMessageIcon(type: MessageType): string {
   position: relative;
   width: 100%;
   z-index: 100;
+  margin: 24rpx 0;
 }
 
 .message-list {

@@ -43,7 +43,7 @@ const defaultFormData: SetupFormData = {
   currentWeight: '',
   targetWeight: '',
   // 断食计划
-  fastingPlanId: 'plan16_8',
+  fastingPlanId: 'TIME_16_8',
   eatingStartTime: '08:00', // 进食开始时间
   // 提醒设置
   fastingStartNotify: true, // 断食开始提醒
@@ -164,8 +164,6 @@ export function useSetupForm() {
    * @returns 是否验证通过
    */
   const validateStep = (step: number): boolean => {
-    console.log('validateStep', step);
-
     switch (step) {
       case 1: // 个人信息
         return validatePersonalInfo();

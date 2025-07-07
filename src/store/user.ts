@@ -85,7 +85,7 @@ export const useUserStore = defineStore(
     // 登录后页面跳转
     const navigateAfterLogin = () => {
       if (!userInfo.value.isSetup) {
-        uni.reLaunch({ url: '/pages/setup/index' });
+        uni.reLaunch({ url: '/pages/welcome/index' });
       }
       else {
         uni.reLaunch({ url: '/pages/index/index' });

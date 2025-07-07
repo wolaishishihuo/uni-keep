@@ -97,19 +97,15 @@ function handleQuickAction(action: string) {
 // 页面加载
 onLoad(() => {
   console.log('首页加载完成');
+  // 如果用户没有完成设置，则跳转到设置页面
+  if (!userInfo.value.isSetup) {
+    uni.navigateTo({ url: '/pages/setup/index' });
+  }
 });
-
-function handleClick() {
-  //  前往设置页面
-  uni.navigateTo({ url: '/pages/setup/index' });
-}
 </script>
 
 <template>
   <view class="home-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
-    <view @click="handleClick">
-      点击
-    </view>
     <!-- 问候语区域 -->
     <view class="greeting-section">
       <view class="greeting-text">

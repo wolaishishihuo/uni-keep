@@ -12,9 +12,10 @@ const { formData } = useSetupForm();
 const { fastingPlans } = useFastingPlan();
 
 // 计算当前选中的计划详情
-const currentPlan = computed(() =>
-  fastingPlans.value.find(plan => plan.id === formData.fastingPlanId)
-);
+const currentPlan = computed(() => {
+  console.log('currentPlan', formData.fastingPlanId);
+  return fastingPlans.value.find(plan => plan.id === formData.fastingPlanId);
+});
 
 // 选择计划
 function selectPlan(planId: string) {

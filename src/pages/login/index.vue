@@ -8,13 +8,8 @@
 </route>
 
 <script setup lang="ts">
-import { onLoad } from '@dcloudio/uni-app';
-import { ref } from 'vue';
 import { useUserStore } from '@/store';
 import { toast } from '@/utils/toast';
-
-// 获取路由参数
-const redirect = ref('');
 
 // 用户状态管理
 const userStore = useUserStore();
@@ -25,22 +20,9 @@ const isWxLoading = ref(false);
 // 授权弹窗显示状态
 const showAuthModal = ref(false);
 
-// 页面加载
-onLoad((options) => {
-  redirect.value = options?.redirect || '';
-
-  // 如果已经登录，直接跳转
-  if (userStore.isLoggedIn) {
-    handleLoginSuccess();
-  }
-});
-
 // 微信授权登录
 function handleWxLogin() {
-  uni.navigateTo({
-    url: '/pages/welcome/index'
-  });
-  // showAuthModal.value = true;
+  showAuthModal.value = true;
 }
 
 // 一键登录（暂未实现）
@@ -53,7 +35,6 @@ async function handleAuthConfirm() {
   try {
     isWxLoading.value = true;
     await userStore.wxLogin();
-    handleLoginSuccess();
   }
   catch (error) {
     console.error('登录失败:', error);
@@ -66,14 +47,6 @@ async function handleAuthConfirm() {
 // 授权取消
 function handleAuthCancel() {
   showAuthModal.value = false;
-}
-
-// 登录成功处理
-function handleLoginSuccess() {
-  // 直接切换到首页，让首页处理新用户引导
-  uni.switchTab({
-    url: '/pages/index/index'
-  });
 }
 
 // 查看隐私政策
@@ -95,12 +68,6 @@ function viewTerms() {
     }
   });
 }
-
-function navigateTo(url: string) {
-  uni.navigateTo({
-    url
-  });
-}
 </script>
 
 <template>
@@ -109,7 +76,7 @@ function navigateTo(url: string) {
     <view class="login-bg">
       <view class="logo-section">
         <view class="app-logo">
-          <i class="iconfont icon-jianchi text-6xl text-white" />
+          <i class="iconfont icon-jianchi text-white text-6xl!" />
         </view>
         <view class="app-name">
           坚持有你

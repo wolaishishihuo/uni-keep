@@ -130,7 +130,7 @@ onLoad(() => {
 
     <!-- 底部按钮 -->
     <view class="bottom-actions">
-      <view class="buttons flex-row">
+      <view class="buttons flex-row!">
         <button
           v-if="currentStep > 1"
           class="btn btn-secondary flex-1"
