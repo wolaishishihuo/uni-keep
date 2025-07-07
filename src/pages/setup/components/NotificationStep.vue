@@ -11,13 +11,6 @@ const { formData, updateFormData } = useSetupForm();
 const timeOptions = [5, 10, 15, 20, 30, 45, 60];
 
 /**
- * 更新开关状态
- */
-function updateToggle(field: string, value: boolean) {
-  updateFormData(field as any, value);
-}
-
-/**
  * 更新时间设置
  */
 function updateTime(field: string, isIncrease: boolean) {
@@ -54,193 +47,130 @@ function formatTime(minutes: number): string {
       </text>
     </view>
 
-    <view class="form-section">
-      <!-- 断食计划提醒设置 -->
-      <view class="info-group">
-        <text class="group-title">
+    <view class="overflow-y-auto">
+      <!-- 断食计划提醒 -->
+      <view class="card">
+        <text class="section-title">
           ⏱️ 断食计划提醒
         </text>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               断食开始提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               在每日断食时间开始前发送提醒
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.fastingStartNotify"
-            @change="updateToggle('fastingStartNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.fastingStartNotify" />
         </view>
-
-        <view v-if="formData.fastingStartNotify" class="time-item">
-          <view class="time-label">
+        <view v-if="formData.fastingStartNotify" class="setting-row">
+          <view class="setting-title">
             提前提醒时间
           </view>
-          <view class="time-value">
-            <view class="time-picker">
-              <view
-                class="arrow-btn"
-                @tap="updateTime('fastingStartAdvanceMinutes', false)"
-              >
-                -
-              </view>
-              <input
-                type="text"
-                class="time-input"
-                :value="formatTime(formData.fastingStartAdvanceMinutes)"
-                readonly
-              >
-              <view
-                class="arrow-btn"
-                @tap="updateTime('fastingStartAdvanceMinutes', true)"
-              >
-                +
-              </view>
+          <view class="time-picker">
+            <view class="arrow-btn" @tap="updateTime('fastingStartAdvanceMinutes', false)">
+              -
+            </view>
+            <input type="text" class="time-input" :value="formatTime(formData.fastingStartAdvanceMinutes)" readonly>
+            <view class="arrow-btn" @tap="updateTime('fastingStartAdvanceMinutes', true)">
+              +
             </view>
           </view>
         </view>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               进食窗口提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               在进食窗口开始前发送提醒
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.eatingWindowStartNotify"
-            @change="updateToggle('eatingWindowStartNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.eatingWindowStartNotify" />
         </view>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               进食窗口结束提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               在进食窗口即将结束时发送提醒
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.eatingWindowEndNotify"
-            @change="updateToggle('eatingWindowEndNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.eatingWindowEndNotify" />
         </view>
-
-        <view v-if="formData.eatingWindowEndNotify" class="time-item">
-          <view class="time-label">
+        <view v-if="formData.eatingWindowEndNotify" class="setting-row">
+          <view class="setting-title">
             提前提醒时间
           </view>
-          <view class="time-value">
-            <view class="time-picker">
-              <view
-                class="arrow-btn"
-                @tap="updateTime('eatingWindowAdvanceMinutes', false)"
-              >
-                -
-              </view>
-              <input
-                type="text"
-                class="time-input"
-                :value="formatTime(formData.eatingWindowAdvanceMinutes)"
-                readonly
-              >
-              <view
-                class="arrow-btn"
-                @tap="updateTime('eatingWindowAdvanceMinutes', true)"
-              >
-                +
-              </view>
+          <view class="time-picker">
+            <view class="arrow-btn" @tap="updateTime('eatingWindowAdvanceMinutes', false)">
+              -
+            </view>
+            <input type="text" class="time-input" :value="formatTime(formData.eatingWindowAdvanceMinutes)" readonly>
+            <view class="arrow-btn" @tap="updateTime('eatingWindowAdvanceMinutes', true)">
+              +
             </view>
           </view>
         </view>
       </view>
 
       <!-- 成就与里程碑 -->
-      <view class="info-group">
-        <text class="group-title">
+      <view class="card">
+        <text class="section-title">
           🏆 成就与里程碑
         </text>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               成就解锁提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               当您达成成就或解锁新奖励时通知您
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.achievementNotify"
-            @change="updateToggle('achievementNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.achievementNotify" />
         </view>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               坚持里程碑提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               当您达成坚持天数里程碑时通知您
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.milestoneNotify"
-            @change="updateToggle('milestoneNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.milestoneNotify" />
         </view>
       </view>
 
       <!-- 情侣互动提醒 -->
-      <view class="info-group">
-        <text class="group-title">
+      <view class="card">
+        <text class="section-title">
           ❤️ 情侣互动提醒
         </text>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               伙伴坚持状态提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               当您的伙伴开始或完成断食时通知您
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.partnerFastingNotify"
-            @change="updateToggle('partnerFastingNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.partnerFastingNotify" />
         </view>
-
-        <view class="notification-toggle">
-          <view class="toggle-info">
-            <view class="toggle-title">
+        <view class="setting-row">
+          <view>
+            <view class="setting-title">
               伙伴鼓励提醒
             </view>
-            <view class="toggle-desc">
+            <view class="setting-desc">
               当您的伙伴发送鼓励或表扬时通知您
             </view>
           </view>
-          <switch
-            class="uni-switch"
-            :checked="formData.partnerEncourageNotify"
-            @change="updateToggle('partnerEncourageNotify', $event.detail.value)"
-          />
+          <wd-switch v-model="formData.partnerEncourageNotify" />
         </view>
       </view>
     </view>
@@ -248,35 +178,37 @@ function formatTime(minutes: number): string {
 </template>
 
 <style lang="scss" scoped>
+$card-radius: 30rpx;
+$card-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.05);
+$spacing-lg: 40rpx;
+
 .step-content {
-  height: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .step-header {
   display: flex;
   align-items: center;
   margin-bottom: 50rpx;
-}
-
-.step-icon {
-  width: 80rpx;
-  height: 80rpx;
-  background: var(--primary-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-light);
-  font-size: 36rpx;
-  margin-right: 30rpx;
-}
-
-.step-title {
-  font-size: 48rpx;
-  font-weight: 600;
-  color: var(--text-primary);
+  .step-icon {
+    width: 80rpx;
+    height: 80rpx;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 36rpx;
+    margin-right: 30rpx;
+  }
+  .step-title {
+    font-size: 48rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
 }
 
 .form-section {
@@ -285,15 +217,15 @@ function formatTime(minutes: number): string {
   padding-bottom: 160rpx;
 }
 
-.info-group {
-  background: white;
-  border-radius: 30rpx;
+.card {
+  background: #fff;
+  border-radius: $card-radius;
+  box-shadow: $card-shadow;
   padding: 30rpx;
-  margin-bottom: 40rpx;
-  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.05);
+  margin-bottom: $spacing-lg;
 }
 
-.group-title {
+.section-title {
   font-size: 32rpx;
   font-weight: 600;
   color: #262626;
@@ -301,101 +233,61 @@ function formatTime(minutes: number): string {
   display: block;
 }
 
-.notification-toggle {
+.setting-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 24rpx 0;
   border-bottom: 1px solid #f0f0f0;
-}
-
-.notification-toggle:last-child {
-  border-bottom: none;
-}
-
-.toggle-info {
-  flex: 1;
-  margin-right: 20rpx;
-}
-
-.toggle-title {
-  font-size: 30rpx;
-  font-weight: 500;
-  color: #262626;
-  margin-bottom: 10rpx;
-}
-
-.toggle-desc {
-  font-size: 26rpx;
-  color: #595959;
-  line-height: 1.4;
-}
-
-.uni-switch {
-  transform: scale(0.9);
-}
-
-.time-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24rpx 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.time-item:last-child {
-  border-bottom: none;
-}
-
-.time-label {
-  font-size: 28rpx;
-  color: #262626;
-}
-
-.time-value {
-  font-size: 28rpx;
-  color: var(--primary-color);
-  font-weight: 500;
-  display: flex;
-  align-items: center;
+  &:last-child {
+    border-bottom: none;
+  }
+  .setting-title {
+    font-size: 30rpx;
+    font-weight: 500;
+    color: #262626;
+    margin-bottom: 10rpx;
+  }
+  .setting-desc {
+    font-size: 26rpx;
+    color: #595959;
+    line-height: 1.4;
+  }
 }
 
 .time-picker {
   display: flex;
   gap: 16rpx;
   align-items: center;
-}
-
-.time-input {
-  background: #f5f5f5;
-  border: none;
-  padding: 10rpx 20rpx;
-  border-radius: 10rpx;
-  width: 120rpx;
-  text-align: center;
-  font-size: 28rpx;
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.arrow-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48rpx;
-  height: 48rpx;
-  background: #e8f4ff;
-  color: var(--primary-color);
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 24rpx;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.arrow-btn:active {
-  transform: scale(0.95);
-  background: var(--primary-color);
-  color: white;
+  .arrow-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48rpx;
+    height: 48rpx;
+    background: #e8f4ff;
+    color: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24rpx;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    &:active {
+      transform: scale(0.95);
+      background: var(--primary-color);
+      color: white;
+    }
+  }
+  .time-input {
+    background: #f5f5f5;
+    border: none;
+    padding: 5rpx 10rpx;
+    border-radius: 10rpx;
+    width: 120rpx;
+    text-align: center;
+    font-size: 28rpx;
+    color: var(--primary-color);
+    font-weight: 500;
+  }
 }
 </style>
