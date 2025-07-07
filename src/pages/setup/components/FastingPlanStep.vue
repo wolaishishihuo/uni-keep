@@ -41,30 +41,61 @@ function selectPlan(planId: string) {
     </view>
 
     <view class="form-section">
-      <text class="section-title">
-        选择适合您的断食方案
-      </text>
+      <view class="section-title">
+        选择断食计划
+      </view>
 
-      <view class="plan-list">
+      <view class="plans-container">
         <view
           v-for="plan in fastingPlans"
           :key="plan.id"
-          class="plan-item"
-          :class="{ active: formData.fastingPlanId === plan.id }"
+          class="plan-card"
+          :class="{ selected: formData.fastingPlanId === plan.id }"
           @click="selectPlan(plan.id)"
         >
-          <view class="plan-icon">
-            {{ plan.icon }}
-          </view>
-          <view class="plan-info">
-            <text class="plan-name">
+          <view class="plan-header">
+            <view class="plan-name">
               {{ plan.name }}
-            </text>
-            <text class="plan-desc">
-              {{ plan.pattern }}
-            </text>
+            </view>
+            <view class="plan-difficulty">
+              <view
+                v-for="n in 3"
+                :key="n"
+                class="difficulty-dot"
+                :class="{ active: plan.difficulty >= n }"
+              />
+            </view>
           </view>
-          <view v-if="formData.fastingPlanId === plan.id" class="plan-check">
+          <view class="plan-details">
+            <view class="plan-info">
+              <view class="info-label">
+                断食时长
+              </view>
+              <view class="info-value">
+                {{ plan.fastingHours }}小时
+              </view>
+            </view>
+            <view class="plan-info">
+              <view class="info-label">
+                进食窗口
+              </view>
+              <view class="info-value">
+                {{ plan.eatingHours }}小时
+              </view>
+            </view>
+            <view class="plan-info">
+              <view class="info-label">
+                推荐难度
+              </view>
+              <view class="info-value">
+                {{ plan.difficulty === 1 ? '简单' : plan.difficulty === 2 ? '中等' : '较难' }}
+              </view>
+            </view>
+          </view>
+          <view class="plan-description">
+            {{ plan.description }}
+          </view>
+          <view v-if="formData.fastingPlanId === plan.id" class="plan-checkmark">
             ✓
           </view>
         </view>
@@ -125,105 +156,107 @@ function selectPlan(planId: string) {
 </template>
 
 <style lang="scss" scoped>
-.step-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 0 30rpx;
-}
-
-.step-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 40rpx;
-
-  .step-icon {
-    font-size: 48rpx;
-    margin-right: 20rpx;
-  }
-
-  .step-title {
-    font-size: 36rpx;
-    font-weight: bold;
-    color: var(--text-color);
-  }
-}
-
-.form-section {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 40rpx;
-}
-
 .section-title {
-  font-size: 30rpx;
+  font-size: 32rpx;
   color: var(--text-color);
   margin-bottom: 30rpx;
   display: block;
+  font-weight: bold;
 }
 
-.plan-list {
+.plans-container {
   display: flex;
   flex-direction: column;
   gap: 20rpx;
   margin-bottom: 30rpx;
 }
 
-.plan-item {
-  display: flex;
-  align-items: center;
-  padding: 24rpx;
-  background-color: var(--card-bg-color);
-  border-radius: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+.plan-card {
   position: relative;
+  background: var(--card-bg-color, #fff);
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 15rpx rgba(0,0,0,0.05);
+  padding: 24rpx;
+  margin-bottom: 0;
+  cursor: pointer;
+  border: 2rpx solid transparent;
+  transition: box-shadow 0.2s, border 0.2s, background 0.2s;
 
-  &.active {
-    background-color: var(--primary-color-light);
+  &.selected {
     border: 2rpx solid var(--primary-color);
+    background: var(--primary-color-light, #f0f6ff);
+    box-shadow: 0 8rpx 25rpx rgba(0,0,0,0.10);
   }
 
-  .plan-icon {
-    font-size: 40rpx;
-    margin-right: 20rpx;
-    width: 80rpx;
-    height: 80rpx;
+  .plan-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    background-color: var(--bg-color-light);
-    border-radius: 50%;
-  }
-
-  .plan-info {
-    flex: 1;
+    margin-bottom: 15rpx;
 
     .plan-name {
-      font-size: 30rpx;
-      font-weight: bold;
-      color: var(--text-color);
-      margin-bottom: 6rpx;
-      display: block;
+      font-size: 32rpx;
+      font-weight: 600;
+      color: var(--text-color, #262626);
     }
 
-    .plan-desc {
-      font-size: 24rpx;
-      color: var(--text-color-secondary);
-      display: block;
+    .plan-difficulty {
+      display: flex;
+      gap: 6rpx;
+
+      .difficulty-dot {
+        width: 16rpx;
+        height: 16rpx;
+        border-radius: 50%;
+        background: #e0e0e0;
+        &.active {
+          background: var(--primary-color);
+        }
+      }
     }
   }
 
-  .plan-check {
-    width: 40rpx;
-    height: 40rpx;
+  .plan-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15rpx;
+
+    .plan-info {
+      text-align: center;
+      .info-label {
+        font-size: 22rpx;
+        color: var(--text-color-secondary, #888);
+        margin-bottom: 4rpx;
+      }
+      .info-value {
+        font-size: 28rpx;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .plan-description {
+    font-size: 24rpx;
+    color: #595959;
+    line-height: 1.5;
+  }
+
+  .plan-checkmark {
+    position: absolute;
+    top: -10rpx;
+    right: 20rpx;
+    width: 36rpx;
+    height: 36rpx;
     border-radius: 50%;
+    background: var(--primary-color);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--primary-color);
-    color: #fff;
-    font-size: 24rpx;
+    font-size: 26rpx;
     font-weight: bold;
+    box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.10);
   }
 }
 

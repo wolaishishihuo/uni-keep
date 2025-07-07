@@ -23,7 +23,7 @@ function onTimeFieldClick(field: string) {
 <template>
   <view class="step-content">
     <view class="step-header">
-      <view class="step-icon h-40px w-40px">
+      <view class="step-icon">
         👤
       </view>
       <text class="step-title">
@@ -134,47 +134,7 @@ function onTimeFieldClick(field: string) {
 </template>
 
 <style lang="scss" scoped>
-.step-content {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding: 0 30rpx;
-  border-radius: 20rpx;
-}
-
-.step-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 40rpx;
-
-  .step-icon {
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    color: var(--text-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28rpx;
-    margin-right: 20rpx;
-  }
-
-  .step-title {
-    font-size: 40rpx;
-    font-weight: bold;
-    color: var(--text-primary);
-  }
-}
-
-.form-section {
-  overflow-y: auto;
-  background-color: #fff;
-  border-radius: 16rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
-
-}
-
 .info-group {
-  padding: 30rpx;
   .group-title {
     font-size: 32rpx;
     font-weight: bold;

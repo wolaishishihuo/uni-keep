@@ -10,7 +10,7 @@ export function useStepNavigation(
   saveProfileFn: () => Promise<boolean>
 ) {
   // 当前步骤
-  const currentStep = ref(1);
+  const currentStep = ref(2);
   // 总步骤数
   const totalSteps = ref(stepsCount);
   // 保存中状态
