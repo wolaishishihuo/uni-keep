@@ -96,7 +96,7 @@ defineOptions({
   display: flex;
   align-items: center;
   padding: 24rpx;
-  background-color: var(--card-bg-color);
+  background: var(--bg-gradient);
   border-radius: 16rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 
