@@ -5,7 +5,7 @@ defineOptions({
   name: 'PersonalInfoStep'
 });
 
-const props = defineProps<{
+defineProps<{
   formData: SetupFormData;
   bmiStatus: { text: string; color: string } | null;
 }>();

@@ -87,7 +87,7 @@ function navigateTo(url: string) {
         </view>
       </view>
 
-      <view class="welcome-buttons">
+      <view class="buttons">
         <button class="btn btn-primary" @tap="navigateTo('/pages/setup/index')">
           开始使用
         </button>

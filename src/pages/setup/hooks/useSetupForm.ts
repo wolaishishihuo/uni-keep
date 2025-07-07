@@ -137,7 +137,7 @@ export function useSetupForm() {
    * @returns 是否验证通过
    */
   const validateStep = (step: number): boolean => {
-    messages.value = [];
+    console.log('validateStep', step);
 
     switch (step) {
       case 1: // 个人信息

@@ -20,6 +20,7 @@ export function useStepNavigation(
 
   // 是否可以进入下一步
   const canMoveNext = computed(() => {
+    console.log('canMoveNext', currentStep.value);
     return validateStepFn(currentStep.value);
   });
 

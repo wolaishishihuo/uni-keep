@@ -108,9 +108,6 @@ onLoad(() => {
             :class="{ completed: step <= currentStep }"
           />
         </view>
-        <text class="step-text">
-          {{ currentStep }}/{{ totalSteps }}
-        </text>
       </view>
     </view>
 
@@ -151,34 +148,20 @@ onLoad(() => {
 
     <!-- 底部按钮 -->
     <view class="bottom-actions">
-      <view class="button-row">
-        <wd-button
+      <view class="buttons">
+        <button
           v-if="currentStep > 1"
-          type="info"
-          size="large"
-          plain
-          custom-style="flex: 1; margin-right: 12rpx;"
+          class="btn btn-secondary mr-12 flex-1"
           @click="prevStep"
         >
           上一步
-        </wd-button>
-
-        <wd-button
-          type="primary"
-          size="large"
-          custom-style="flex: 1;"
-          :loading="saving"
-          :disabled="saving || !canMoveNext"
+        </button>
+        <button
+          class="btn btn-primary flex-1"
           @click="nextStep"
         >
           {{ currentStep === totalSteps ? (saving ? '设置中...' : '开始体验') : '下一步' }}
-        </wd-button>
-      </view>
-
-      <view v-if="currentStep === 1" class="skip-area">
-        <text class="skip-link" @click="skipSetup">
-          暂时跳过
-        </text>
+        </button>
       </view>
     </view>
 

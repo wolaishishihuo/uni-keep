@@ -100,35 +100,6 @@
         }
       }
     }
-
-    .welcome-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 25rpx;
-
-      .btn {
-        width: 100%;
-        padding: 20rpx;
-        border-radius: 20rpx;
-        border: none;
-        font-size: 32rpx;
-        font-weight: 600;
-        text-align: center;
-
-        &.btn-primary {
-          background: var(--primary-gradient);
-          color: var(--text-light);
-          box-shadow: var(---button-shadow);
-        }
-
-        &.btn-secondary {
-          background: transparent;
-          border: 1rpx solid var(--primary-color);
-          color: var(--primary-color);
-        }
-      }
-    }
-
     .social-login {
       display: flex;
       justify-content: center;
