@@ -109,7 +109,7 @@ function navigateTo(url: string) {
       </view>
 
       <view class="footer-text">
-        继续使用即表示您同意我们的《用户协议》和《隐私政策》
+        开始使用即表示您同意我们的《用户协议》和《隐私政策》
       </view>
     </view>
   </view>

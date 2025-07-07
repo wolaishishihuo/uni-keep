@@ -37,7 +37,10 @@ onLoad((options) => {
 
 // 微信授权登录
 function handleWxLogin() {
-  showAuthModal.value = true;
+  uni.navigateTo({
+    url: '/pages/welcome/index'
+  });
+  // showAuthModal.value = true;
 }
 
 // 一键登录（暂未实现）
