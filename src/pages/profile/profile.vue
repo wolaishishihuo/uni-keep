@@ -11,7 +11,6 @@
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
@@ -25,12 +24,9 @@ const { safeAreaInsets } = useSafeArea();
 
 // 主题管理
 const themeStore = useThemeStore();
-const { themeColor, themeClassName, themeName } = storeToRefs(themeStore);
+const { themeClassName } = storeToRefs(themeStore);
 const userStore = useUserStore();
-const { userInfo, isLoggedIn } = storeToRefs(userStore);
-
-// 授权弹框控制
-const showAuthModal = ref(false);
+const { userInfo } = storeToRefs(userStore);
 
 // 成就数据
 const achievements = ref([
@@ -41,17 +37,16 @@ const achievements = ref([
 ]);
 
 // 菜单项
-const menuSections = computed(() => [
+const menuSections = [
   {
     title: '数据统计',
     items: [
       {
         icon: '📊',
-        title: '我的数据',
-        description: '查看详细统计',
+        title: '健康数据分析',
+        description: '查看详细数据',
         route: '/pages/stats/overview'
       },
-      { icon: '📈', title: '进度报告', description: '周月年度报告', route: '/pages/stats/report' },
       {
         icon: '🏆',
         title: '成就中心',
@@ -61,23 +56,9 @@ const menuSections = computed(() => [
     ]
   },
   {
-    title: '情侣互动',
-    items: [
-      { icon: '❤️', title: '情侣状态', description: '查看对方进度', route: '/pages/couple/status' },
-      { icon: '🎯', title: '共同目标', description: '设置情侣目标', route: '/pages/couple/goals' },
-      { icon: '💌', title: '互动记录', description: '鼓励与支持', route: '/pages/couple/messages' }
-    ]
-  },
-  {
     title: '设置',
     items: [
       { icon: '⚙️', title: '应用设置', description: '通知提醒等', route: '/pages/settings/app' },
-      {
-        icon: '👤',
-        title: '个人资料',
-        description: '编辑个人信息',
-        route: '/pages/profile/edit/edit'
-      },
       {
         icon: '🔒',
         title: '隐私设置',
@@ -87,15 +68,37 @@ const menuSections = computed(() => [
       { icon: '📞', title: '联系我们', description: '意见反馈', route: '/pages/settings/contact' }
     ]
   }
-]);
+];
+
+const userProfile = computed(() => {
+  return {
+    ...userInfo.value,
+    bio: '健康生活，从现在开始',
+    fastingDays: 32,
+    bmi: 23.7,
+    continuousFasting: 12,
+    targetRate: 68,
+    coupleAvatar: '/static/images/default-avatar.png',
+    coupleName: '李小红',
+    coupleStatus: '正在断食中 · 还剩4小时'
+  };
+});
+
+// 徽章等级样式辅助
+function getBadgeLevel(idx: number, unlocked: boolean) {
+  if (!unlocked)
+    return 'badge-locked';
+  if (idx === 0)
+    return 'badge-gold';
+  if (idx === 1)
+    return 'badge-silver';
+  if (idx === 2)
+    return 'badge-bronze';
+  return '';
+}
 
 // 处理菜单点击
 function handleMenuClick(route?: string, action?: string) {
-  if (action === 'theme') {
-    handleThemeToggle();
-    return;
-  }
-
   if (route) {
     uni.navigateTo({
       url: route,
@@ -109,42 +112,6 @@ function handleMenuClick(route?: string, action?: string) {
   }
 }
 
-// 切换主题
-function handleThemeToggle() {
-  themeStore.toggleGenderTheme();
-}
-
-// 处理登录
-function handleLogin() {
-  uni.navigateTo({ url: '/pages/login/index' });
-}
-
-// 查看成就详情
-function viewAchievement(achievement: any) {
-  uni.showModal({
-    title: achievement.title,
-    content: achievement.description,
-    showCancel: false
-  });
-}
-
-// 处理授权确认
-function handleAuthConfirm() {
-  console.log('用户授权确认');
-  userStore.wxLogin();
-}
-
-// 处理授权取消
-function handleAuthCancel() {
-  console.log('用户取消授权');
-  showAuthModal.value = false;
-}
-
-// 关闭授权弹框
-function closeAuthModal() {
-  showAuthModal.value = false;
-}
-
 onLoad(() => {
   console.log('个人中心页面加载完成');
 });
@@ -154,135 +121,153 @@ onLoad(() => {
   <view class="profile-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
     <!-- 用户信息卡片 -->
     <view class="user-card">
-      <view class="user-info">
-        <view class="avatar-container">
-          <image :src="userInfo.avatar" class="user-avatar" mode="aspectFill" />
-        </view>
-        <view class="user-details">
-          <view v-if="!isLoggedIn" class="login-btn" @click="handleLogin">
-            <text class="login-icon">
-              登录/注册
-            </text>
-          </view>
-          <view v-else>
-            <text class="user-name">
-              {{ userInfo.nickname }}
-            </text>
-            <text class="user-status">
-              {{ userInfo.coupleId ? `与${userInfo.coupleId}携手坚持` : '独自坚持中' }}
-            </text>
-          </view>
-        </view>
-        <view class="user-actions">
-          <view class="theme-btn" @click="handleThemeToggle">
-            <text class="theme-icon" :style="{ color: themeColor }">
-              🎨
-            </text>
-          </view>
-        </view>
+      <view class="user-avatar">
+        <image :src="userProfile.avatar || '/static/images/avatar.jpg'" class="avatar-img" mode="aspectFill" />
       </view>
+      <view class="user-info-main">
+        <view class="user-name">
+          {{ userProfile.nickname || '未登录用户' }}
+        </view>
+        <view class="user-bio">
+          {{ userProfile.bio }}
+        </view>
+        <view class="user-stats">
+          <view class="user-stat">
+            断食天数<span class="stat-value">{{ userProfile.fastingDays }}</span>
+          </view>
+          <view class="user-stat">
+            成就<span class="stat-value">{{ achievements.filter(a => a.unlocked).length }}</span>
+          </view>
+        </view>
+        <button class="edit-profile" @click="handleMenuClick('/pages/profile/edit/edit')">
+          编辑资料
+        </button>
+      </view>
+    </view>
 
-      <!-- 坚持统计 -->
-      <view class="stats-row">
-        <view class="stat-item">
-          <text class="stat-value">
-            {{ userInfo.currentWeight }}
-          </text>
-          <text class="stat-label">
-            连续天数
-          </text>
+    <!-- 健康数据概览 -->
+    <view class="health-summary">
+      <view class="summary-title">
+        健康数据
+      </view>
+      <view class="summary-grid">
+        <view class="summary-item">
+          <view class="summary-icon">
+            ⚖️
+          </view>
+          <view class="summary-label">
+            当前体重
+          </view>
+          <view class="summary-value">
+            {{ userProfile.currentWeight || '--' }}<span class="summary-unit">kg</span>
+          </view>
         </view>
-        <view class="stat-divider" />
-        <view class="stat-item">
-          <text class="stat-value">
-            {{ userInfo.targetWeight }}
-          </text>
-          <text class="stat-label">
-            总坚持天数
-          </text>
+        <view class="summary-item">
+          <view class="summary-icon">
+            📏
+          </view>
+          <view class="summary-label">
+            BMI指数
+          </view>
+          <view class="summary-value">
+            {{ userProfile.bmi }}
+          </view>
         </view>
-        <view class="stat-divider" />
-        <view class="stat-item">
-          <text class="stat-value">
-            {{ Math.round((userInfo.currentWeight / userInfo.targetWeight) * 100) || 0 }}%
-          </text>
-          <text class="stat-label">
-            成功率
-          </text>
+        <view class="summary-item">
+          <view class="summary-icon">
+            🔥
+          </view>
+          <view class="summary-label">
+            连续断食
+          </view>
+          <view class="summary-value">
+            {{ userProfile.continuousFasting }}<span class="summary-unit">天</span>
+          </view>
+        </view>
+        <view class="summary-item">
+          <view class="summary-icon">
+            🎯
+          </view>
+          <view class="summary-label">
+            目标达成
+          </view>
+          <view class="summary-value">
+            {{ userProfile.targetRate }}<span class="summary-unit">%</span>
+          </view>
         </view>
       </view>
     </view>
 
-    <!-- 成就展示 -->
-    <view class="achievement-section">
-      <view class="section-header">
-        <text class="section-title">
-          最新成就
-        </text>
-        <text class="view-more" @click="handleMenuClick('/pages/achievements/list')">
+    <!-- 伴侣信息卡片 -->
+    <view class="couple-card">
+      <view class="couple-title">
+        我的伴侣
+      </view>
+      <view class="couple-info">
+        <view class="couple-avatar">
+          <image :src="userProfile.coupleAvatar" class="avatar-img" mode="aspectFill" />
+        </view>
+        <view class="couple-details">
+          <view class="couple-name">
+            {{ userProfile.coupleName }}
+          </view>
+          <view class="couple-status">
+            {{ userProfile.coupleStatus }}
+          </view>
+        </view>
+        <view class="couple-message" @click="handleMenuClick('/pages/couple/messages')">
+          💬
+        </view>
+      </view>
+    </view>
+
+    <!-- 成就与徽章 -->
+    <view class="achievements">
+      <view class="achievements-title">
+        <text>我的成就</text>
+        <text class="view-all" @click="handleMenuClick('/pages/achievements/list')">
           查看全部
         </text>
       </view>
-      <view class="achievement-grid">
-        <view
-          v-for="(achievement, index) in achievements.slice(0, 4)"
-          :key="index"
-          class="achievement-item"
-          :class="{ unlocked: achievement.unlocked }"
-          @click="viewAchievement(achievement)"
-        >
-          <text class="achievement-icon">
+      <view class="badges-grid">
+        <view v-for="(achievement, idx) in achievements.slice(0, 6)" :key="idx" class="badge">
+          <view class="badge-icon" :class="[getBadgeLevel(idx, achievement.unlocked)]">
             {{ achievement.icon }}
-          </text>
-          <text class="achievement-title">
+            <view v-if="achievement.unlocked" class="badge-check">
+              ✓
+            </view>
+          </view>
+          <view class="badge-name">
             {{ achievement.title }}
-          </text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 菜单列表 -->
-    <view v-for="section in menuSections" :key="section.title" class="menu-section">
-      <view class="section-title-bar">
-        <text class="section-title">
-          {{ section.title }}
-        </text>
-      </view>
-      <view class="menu-list">
-        <view
-          v-for="item in section.items"
-          :key="item.title"
-          class="menu-item"
-          @click="handleMenuClick(item.route)"
-        >
-          <view class="menu-left">
-            <view class="menu-icon">
-              {{ item.icon }}
-            </view>
-            <view class="menu-content">
-              <text class="menu-title">
-                {{ item.title }}
-              </text>
-              <text class="menu-description">
-                {{ item.description }}
-              </text>
-            </view>
-          </view>
-          <view class="menu-arrow">
-            >
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 版本信息 -->
-    <view class="version-info">
-      <text class="version-text">
-        坚持有你 v1.0.0
-      </text>
-      <text class="copyright">
-        © 2024 健康管理应用
-      </text>
+    <!-- 功能菜单 -->
+    <view class="menu-section">
+      <view v-for="item in menuSections[0].items" :key="item.title" class="menu-item" @click="handleMenuClick(item.route)">
+        <view class="menu-icon">
+          {{ item.icon }}
+        </view>
+        <view class="menu-text">
+          {{ item.title }}
+        </view>
+        <view class="menu-arrow">
+          ›
+        </view>
+      </view>
+      <view v-for="item in menuSections[1].items" :key="item.title" class="menu-item" @click="handleMenuClick(item.route)">
+        <view class="menu-icon">
+          {{ item.icon }}
+        </view>
+        <view class="menu-text">
+          {{ item.title }}
+        </view>
+        <view class="menu-arrow">
+          ›
+        </view>
+      </view>
     </view>
   </view>
 </template>

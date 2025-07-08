@@ -232,7 +232,7 @@ function handleComplete() {
   }, 1500);
 }
 
-onLoad((options) => {
+onLoad(() => {
   console.log('个人资料页面加载完成');
 
   // 加载已保存的偏好设置

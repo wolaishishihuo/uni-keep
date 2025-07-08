@@ -116,7 +116,7 @@
       }
     },
     {
-      "path": "pages/profile/edit/edit",
+      "path": "pages/profile/edit/index",
       "type": "page",
       "needLogin": true,
       "style": {

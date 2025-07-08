@@ -11,7 +11,7 @@ interface NavigateToOptions {
        "/pages/setup/index" |
        "/pages/weight/weight" |
        "/pages/welcome/index" |
-       "/pages/profile/edit/edit";
+       "/pages/profile/edit/index";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 
