@@ -80,7 +80,7 @@
       }
     },
     {
-      "path": "pages/profile/profile",
+      "path": "pages/profile/index",
       "type": "page",
       "layout": "tabbar",
       "needLogin": true,

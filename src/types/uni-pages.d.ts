@@ -7,7 +7,7 @@ interface NavigateToOptions {
   url: "/pages/index/index" |
        "/pages/fasting/fasting" |
        "/pages/login/index" |
-       "/pages/profile/profile" |
+       "/pages/profile/index" |
        "/pages/setup/index" |
        "/pages/weight/weight" |
        "/pages/welcome/index" |

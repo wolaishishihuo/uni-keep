@@ -58,7 +58,7 @@ const menuSections = [
   {
     title: '设置',
     items: [
-      { icon: '⚙️', title: '应用设置', description: '通知提醒等', route: '/pages/settings/app' },
+      { icon: '⚙️', title: '断食计划设置', description: '通知提醒等', route: '/pages/settings/app' },
       {
         icon: '🔒',
         title: '隐私设置',
