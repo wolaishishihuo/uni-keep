@@ -40,7 +40,7 @@ export function useStepNavigation(
       // 保存成功跳转到主页
       if (success) {
         uni.switchTab({
-          url: '/pages/index/index'
+          url: '/pages/home/index'
         });
       }
       return;
@@ -60,7 +60,7 @@ export function useStepNavigation(
   // 跳过设置
   const skipSetup = () => {
     uni.switchTab({
-      url: '/pages/index/index'
+      url: '/pages/home/index'
     });
   };
 

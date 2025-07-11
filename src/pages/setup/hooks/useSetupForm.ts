@@ -237,7 +237,7 @@ export function useSetupForm() {
     if (userInfo?.isSetup) {
       message.success('您已完成初始设置');
       setTimeout(() => {
-        uni.reLaunch({ url: '/pages/index/index' });
+        uni.reLaunch({ url: '/pages/home/index' });
       }, 1000);
       return;
     }

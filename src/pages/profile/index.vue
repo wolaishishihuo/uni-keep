@@ -172,6 +172,7 @@ import { useUserStore } from '@/store/user';
 
 defineOptions({
   name: 'Profile'
+
 });
 
 // 获取屏幕边界到安全区域距离

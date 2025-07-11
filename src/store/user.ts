@@ -88,7 +88,7 @@ export const useUserStore = defineStore(
         uni.reLaunch({ url: '/pages/welcome/index' });
       }
       else {
-        uni.reLaunch({ url: '/pages/index/index' });
+        uni.reLaunch({ url: '/pages/home/index' });
       }
     };
 

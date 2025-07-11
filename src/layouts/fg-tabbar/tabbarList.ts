@@ -21,7 +21,7 @@ export const tabbarList = [
   {
     iconPath: 'static/tabbar/home.png',
     selectedIconPath: 'static/tabbar/homeHL.png',
-    pagePath: 'pages/index/index',
+    pagePath: 'pages/home/index',
     text: '首页',
     icon: 'home',
     iconType: 'uiLib'
@@ -45,7 +45,7 @@ export const tabbarList = [
   {
     iconPath: 'static/tabbar/personal.png',
     selectedIconPath: 'static/tabbar/personalHL.png',
-    pagePath: 'pages/profile/profile',
+    pagePath: 'pages/profile/index',
     text: '我的',
     icon: 'user',
     iconType: 'uiLib'

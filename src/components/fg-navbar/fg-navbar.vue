@@ -1,42 +1,3 @@
-<script lang="ts" setup>
-withDefaults(
-  defineProps<{
-    leftText?: string
-    rightText?: string
-    leftArrow?: boolean
-    bordered?: boolean
-    fixed?: boolean
-    placeholder?: boolean
-    zIndex?: number
-    safeAreaInsetTop?: boolean
-    leftDisabled?: boolean
-    rightDisabled?: boolean
-  }>(),
-  {
-    leftText: '返回',
-    rightText: '',
-    leftArrow: true,
-    bordered: true,
-    fixed: false,
-    placeholder: true,
-    zIndex: 1,
-    safeAreaInsetTop: true,
-    leftDisabled: false,
-    rightDisabled: false,
-  },
-)
-
-function handleClickLeft() {
-  uni.navigateBack({
-    fail() {
-      uni.reLaunch({
-        url: '/pages/index/index',
-      })
-    },
-  })
-}
-</script>
-
 <template>
   <wd-navbar
     :left-text="leftText"
@@ -56,3 +17,42 @@ function handleClickLeft() {
     </template>
   </wd-navbar>
 </template>
+
+<script lang="ts" setup>
+withDefaults(
+  defineProps<{
+    leftText?: string;
+    rightText?: string;
+    leftArrow?: boolean;
+    bordered?: boolean;
+    fixed?: boolean;
+    placeholder?: boolean;
+    zIndex?: number;
+    safeAreaInsetTop?: boolean;
+    leftDisabled?: boolean;
+    rightDisabled?: boolean;
+  }>(),
+  {
+    leftText: '返回',
+    rightText: '',
+    leftArrow: true,
+    bordered: true,
+    fixed: false,
+    placeholder: true,
+    zIndex: 1,
+    safeAreaInsetTop: true,
+    leftDisabled: false,
+    rightDisabled: false
+  }
+);
+
+function handleClickLeft() {
+  uni.navigateBack({
+    fail() {
+      uni.reLaunch({
+        url: '/pages/home/index'
+      });
+    }
+  });
+}
+</script>
