@@ -1,21 +1,16 @@
+import type { Ref } from 'vue';
+import type { FastingPlan, FastingRecord } from '@/models';
 import dayjs from 'dayjs';
-import { storeToRefs } from 'pinia';
-import { useUserStore } from '@/store/user';
 import { formatDuration } from '@/utils/time';
 
 /**
  * 断食计时器 Hook
- * 自动获取用户的断食计划并处理计时逻辑
+ * 基于断食记录状态进行计时
  */
-export function useFastingTimer() {
-  // 获取用户断食计划
-  const { fastingPlan } = storeToRefs(useUserStore());
-
-  // 获取当前活跃的断食计划
-  const activePlan = computed(() =>
-    fastingPlan.value.find(plan => plan.isActive === '1')
-  );
-
+export function useFastingTimer(
+  activePlan: Ref<FastingPlan | null>,
+  fastingRecord: Ref<FastingRecord | null>
+) {
   const now = ref(dayjs());
   let timer: any;
 
@@ -29,130 +24,93 @@ export function useFastingTimer() {
   startTimer();
   onUnmounted(() => clearInterval(timer));
 
-  // 获取进食窗口时间
-  const eatingWindow = computed(() => {
-    if (!activePlan.value)
-      return '08:00 - 16:00'; // 默认进食窗口
-    return `${activePlan.value.startTime} - ${activePlan.value.endTime}`;
+  // 是否已开始今日计划
+  const hasTodayStarted = computed(() => {
+    return !!fastingRecord.value;
   });
 
-  // 解析进食窗口
-  const parseEatingWindow = (window: string) => {
-    const [startTime, endTime] = window.split('-').map(time => time.trim());
-    return { startTime, endTime };
-  };
+  // 是否断食中
+  const isFasting = computed(() => {
+    if (!hasTodayStarted.value)
+      return false;
+    return fastingRecord.value?.status === 'active';
+  });
 
-  // 获取今日进食时间段
-  const getTodayEatingPeriod = () => {
-    const { startTime, endTime } = parseEatingWindow(eatingWindow.value);
-    const today = now.value.format('YYYY-MM-DD');
+  // 状态文本
+  const statusText = computed(() => {
+    if (!fastingRecord.value)
+      return '未开始';
 
-    let eatingStart = dayjs(`${today} ${startTime}`);
-    let eatingEnd = dayjs(`${today} ${endTime}`);
-
-    // 处理跨天情况（如 22:00 - 06:00）
-    if (eatingEnd.isBefore(eatingStart)) {
-      if (now.value.isBefore(eatingEnd)) {
-        eatingStart = eatingStart.subtract(1, 'day');
-      }
-      else {
-        eatingEnd = eatingEnd.add(1, 'day');
-      }
+    switch (fastingRecord.value.status) {
+      case 'active': return '断食中';
+      case 'completed': return '已完成';
+      case 'broken': return '已中断';
+      default: return '未开始';
     }
-
-    return { eatingStart, eatingEnd };
-  };
-
-  // 判断当前是否在进食窗口
-  const isInEatingWindow = computed(() => {
-    const { eatingStart, eatingEnd } = getTodayEatingPeriod();
-    return now.value.isAfter(eatingStart) && now.value.isBefore(eatingEnd);
   });
 
-  // 获取当前周期信息
-  const currentPeriod = computed(() => {
-    const { eatingStart, eatingEnd } = getTodayEatingPeriod();
-
-    if (isInEatingWindow.value) {
-      // 进食中
+  // 计算进度和时间信息
+  const timeInfo = computed(() => {
+    if (!fastingRecord.value || !activePlan.value) {
       return {
-        type: 'eating' as const,
-        start: eatingStart,
-        end: eatingEnd,
-        statusText: '进食中',
-        descText: '距离断食开始还有'
+        percent: 0,
+        remainingText: '0小时0分',
+        elapsedText: '0小时0分'
       };
     }
-    else {
-      // 断食中
-      let fastingStart: dayjs.Dayjs;
-      let fastingEnd: dayjs.Dayjs;
 
-      if (now.value.isBefore(eatingStart)) {
-        fastingStart = eatingEnd.subtract(1, 'day');
-        fastingEnd = eatingStart;
-      }
-      else {
-        fastingStart = eatingEnd;
-        fastingEnd = eatingStart.add(1, 'day');
-      }
+    const record = fastingRecord.value;
+    const plan = activePlan.value;
 
+    if (record.status === 'pending') {
       return {
-        type: 'fasting' as const,
-        start: fastingStart,
-        end: fastingEnd,
-        statusText: '断食中',
-        descText: '距离进食窗口还有'
+        percent: 0,
+        remainingText: '未开始',
+        elapsedText: '0小时0分'
       };
     }
-  });
 
-  // 计算进度百分比
-  const percent = computed(() => {
-    if (!activePlan.value)
-      return 0;
-    const { start, end } = currentPeriod.value;
-    const totalSeconds = end.diff(start, 'second');
-    const passedSeconds = now.value.diff(start, 'second');
-    return Math.min(100, Math.max(0, Math.floor((passedSeconds / totalSeconds) * 100)));
-  });
+    // 使用记录中的开始时间
+    const startTime = dayjs(record.startTime);
+    const plannedDuration = plan.fastingHours * 60 * 60; // 转为秒
+    const elapsed = now.value.diff(startTime, 'second');
 
-  // 计算剩余时间文本
-  const remainingText = computed(() => {
-    if (!activePlan.value)
-      return '0小时0分';
-    const remainingSeconds = currentPeriod.value.end.diff(now.value, 'second');
-    return formatDuration(remainingSeconds);
-  });
+    let percent = 0;
+    let remainingSeconds = 0;
 
-  // 计算已坚持时间文本
-  const elapsedText = computed(() => {
-    if (!activePlan.value)
-      return '0小时0分';
-    const elapsedSeconds = now.value.diff(currentPeriod.value.start, 'second');
-    return formatDuration(elapsedSeconds);
+    if (record.status === 'active') {
+      percent = Math.min(100, (elapsed / plannedDuration) * 100);
+      remainingSeconds = Math.max(0, plannedDuration - elapsed);
+    }
+    else if (record.status === 'completed') {
+      percent = 100;
+      remainingSeconds = 0;
+    }
+    else if (record.status === 'broken') {
+      // 中断时显示已完成的进度
+      percent = Math.min(100, (elapsed / plannedDuration) * 100);
+      remainingSeconds = 0;
+    }
+
+    return {
+      percent: Math.floor(percent),
+      remainingText: formatDuration(remainingSeconds),
+      elapsedText: formatDuration(Math.max(0, elapsed))
+    };
   });
 
   return {
-    // 状态数据
-    percent,
-    remainingText,
-    elapsedText,
-    statusText: computed(() => activePlan.value ? currentPeriod.value.statusText : '暂无计划'),
-    descText: computed(() => activePlan.value ? `${currentPeriod.value.descText}${remainingText.value}` : '请设置断食计划'),
+    // 状态
+    isFasting,
+    hasTodayStarted,
+    statusText,
 
-    // 布尔状态
-    isFasting: computed(() => !isInEatingWindow.value),
-    isEating: computed(() => isInEatingWindow.value),
+    // 时间信息
+    percent: computed(() => timeInfo.value.percent),
+    remainingText: computed(() => timeInfo.value.remainingText),
+    elapsedText: computed(() => timeInfo.value.elapsedText),
 
-    // 周期信息
-    currentPeriod: computed(() => ({
-      type: currentPeriod.value.type,
-      start: currentPeriod.value.start,
-      end: currentPeriod.value.end
-    })),
-
-    // 当前活跃计划
+    // 计划信息
     activePlan: readonly(activePlan)
   };
 }

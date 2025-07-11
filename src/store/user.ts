@@ -1,7 +1,7 @@
-import type { FastingPlan, WeightRecord } from '@/models';
+import type { FastingPlan, FastingRecord, WeightRecord } from '@/models';
 import type { UserProfile } from '@/models/user';
 import { defineStore } from 'pinia';
-import { getFastingPlanList } from '@/api/fasting';
+import { getFastingPlan, getUnfinishedRecord } from '@/api/fasting';
 import { getWxCode, getWxUserInfo, login } from '@/api/login';
 import { getUserInfo } from '@/api/user';
 import { formatTime } from '@/utils';
@@ -33,8 +33,10 @@ export const useUserStore = defineStore(
 
     // 状态
     const userInfo = ref<UserProfile>({ ...initialUserInfo });
-    const fastingPlan = ref<FastingPlan[]>([]);
+    const fastingPlan = ref<FastingPlan | null>(null);
+    const fastingRecord = ref<FastingRecord | null>(null);
     const weightRecord = ref<WeightRecord[]>([]);
+
     const token = ref('');
     const loading = ref(false);
 
@@ -50,7 +52,9 @@ export const useUserStore = defineStore(
     // 清除用户信息
     const clearUserInfo = () => {
       userInfo.value = { ...initialUserInfo };
-      fastingPlan.value = [];
+      fastingPlan.value = null;
+      fastingRecord.value = null;
+      weightRecord.value = [];
       token.value = '';
     };
 
@@ -62,15 +66,21 @@ export const useUserStore = defineStore(
         // 并行查询用户信息和断食计划
         const [userResult, fastingResult] = await Promise.all([
           getUserInfo(userId),
-          getFastingPlanList({ userId })
+          getFastingPlan({ userId })
         ]);
-
-        if (userResult.code === 1) {
-          setUserInfo(userResult.data);
-        }
 
         if (fastingResult.code === 1) {
           fastingPlan.value = fastingResult.data;
+        }
+
+        // 获取未完成的断食记录
+        const unfinishedRecordResult = await getUnfinishedRecord({ userId, planId: fastingResult.data.id });
+        if (unfinishedRecordResult.code === 1) {
+          fastingRecord.value = unfinishedRecordResult.data || null;
+        }
+
+        if (userResult.code === 1) {
+          setUserInfo(userResult.data);
         }
       }
       catch (error) {
@@ -127,6 +137,7 @@ export const useUserStore = defineStore(
       // 状态
       userInfo,
       fastingPlan,
+      fastingRecord,
       token,
       loading,
       // 计算属性
@@ -142,7 +153,7 @@ export const useUserStore = defineStore(
   {
     persist: {
       key: 'user',
-      paths: ['userInfo', 'token', 'fastingPlan', 'weightRecord'],
+      paths: ['userInfo', 'token', 'fastingPlan', 'weightRecord', 'fastingRecord'],
       storage: localStorage
     }
   }

@@ -54,10 +54,12 @@
             </text>
           </view>
         </view>
-        <view v-if="isFasting" class="fasting-actions">
-          <button class="action-btn btn-end" @click="endFasting">
-            <span class="action-icon">⏹️</span>
-            结束断食
+        <view class="fasting-actions">
+          <button class="action-btn btn-end" @click="subscribeActionPlan">
+            <span class="action-icon">
+              {{ isFasting ? '🍽️' : '🔥' }}
+            </span>
+            {{ isFasting ? '进入进食' : '开始断食' }}
           </button>
         </view>
       </view>
@@ -172,9 +174,11 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
+import { ACTION_PLAN_TEMPLATE_ID } from '@/constants';
 import { useFastingTimer } from '@/hooks/useFastingTimer';
 import { useSafeArea } from '@/hooks/useSafeArea';
 import { useThemeStore } from '@/store/theme';
+import { useUserStore } from '@/store/user';
 
 defineOptions({
   name: 'Home'
@@ -186,6 +190,8 @@ const { safeAreaInsets } = useSafeArea();
 // 主题
 const themeStore = useThemeStore();
 const { themeClassName } = storeToRefs(themeStore);
+// 获取用户断食计划
+const { fastingPlan, fastingRecord } = storeToRefs(useUserStore());
 
 // 断食计时器
 const {
@@ -194,8 +200,9 @@ const {
   elapsedText,
   statusText,
   isFasting,
+  hasTodayStarted,
   activePlan
-} = useFastingTimer();
+} = useFastingTimer(fastingPlan, fastingRecord);
 
 // wot-circle 渐变色配置
 const gradientColor = computed(() => {
@@ -206,10 +213,67 @@ const gradientColor = computed(() => {
   };
 });
 
-// 结束断食
-function endFasting() {
-  uni.showToast({ title: '断食已结束', icon: 'none' });
-  // TODO: 调用API结束断食
+// 断食操作
+function fastingAction() {
+  if (!hasTodayStarted.value) {
+    uni.showToast({ title: '断食已开始', icon: 'none' });
+    // TODO: 调用API开始今日断食计划
+  }
+  else if (isFasting.value) {
+    uni.showToast({ title: '进入进食时间', icon: 'none' });
+    // TODO: 调用API切换到进食状态
+  }
+  else {
+    uni.showToast({ title: '断食已开始', icon: 'none' });
+    // TODO: 调用API开始断食
+  }
+}
+
+function subscribeActionPlan() {
+  uni.requestSubscribeMessage({
+    tmplIds: [ACTION_PLAN_TEMPLATE_ID],
+    success: (res) => {
+      if (res[ACTION_PLAN_TEMPLATE_ID] === 'reject') {
+        uni.showModal({
+          title: '订阅失败!',
+          content: '您已设置不再询问，请前往设置开启订阅提醒!',
+          confirmText: '去设置',
+          success(modalRes) {
+            if (modalRes.confirm) {
+              openSetting();
+            }
+            else {
+              uni.showToast({
+                title: '您可能错过重要通知!',
+                icon: 'none'
+              });
+            }
+          }
+        });
+      }
+      else {
+        // 订阅成功
+        fastingAction();
+      }
+    },
+    fail: (err) => {
+      console.log(err);
+    }
+  });
+}
+
+function openSetting() {
+  uni.openSetting({
+    success(res) {
+      console.log('设置界面返回：', res);
+      if (res.subscriptionsSetting) {
+        console.log('订阅消息授权状态：', res.subscriptionsSetting);
+      }
+    },
+    fail(err) {
+      console.error('打开设置失败：', err);
+    }
+  });
 }
 
 // 统计数据
