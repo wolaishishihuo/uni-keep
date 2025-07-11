@@ -1,152 +1,331 @@
-// 首页整体容器
-.home-container {
+// ===== 1. 页面基础布局 =====
+.home-screen {
   min-height: 100vh;
-  background: var(--keep-gradient-primary);
-  color: white;
-  padding: 0 40rpx 40rpx;
+  background: var(--bg-gradient);
+  position: relative;
+}
 
-  // 顶部状态栏
-  .status-bar {
+// ===== 2. 顶部导航栏 - 固定吸顶 =====
+.top-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--bg-gradient);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 40rpx;
+
+  .app-name {
+    font-weight: 600;
+    font-size: 36rpx;
+    color: var(--text-primary);
+  }
+}
+
+// ===== 3. 主要内容区域 - 可滚动 =====
+.main-content {
+  flex: 1;
+  padding: 120rpx 40rpx 140rpx; // 顶部给导航栏留空间，底部给tabbar留空间
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+// ===== 4. 卡片通用样式 =====
+.fasting-card,
+.stats-card,
+.partner-card {
+  background: var(--bg-secondary);
+  border-radius: 40rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+// 连续打卡卡片使用渐变背景
+.streak-card {
+  background: var(--primary-gradient);
+  color: var(--text-light);
+  border-radius: 40rpx;
+  padding: 40rpx;
+  margin-bottom: 40rpx;
+  box-shadow: 0 8rpx 30rpx var(--button-shadow);
+  display: flex;
+  align-items: center;
+}
+
+// ===== 5. 断食卡片样式 =====
+.fasting-card {
+  .fasting-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20rpx 0;
-    font-size: 28rpx;
-    opacity: 0.9;
-    .status-time {
-    }
-    .status-battery {
-    }
+    margin-bottom: 30rpx;
   }
 
-  // 问候语区域
-  .greeting-section {
-    padding: 60rpx 0;
-    text-align: center;
-    .greeting-text {
-      .greeting-main {
-        display: block;
-        font-size: 48rpx;
-        font-weight: 600;
-        margin-bottom: 20rpx;
-      }
-      .greeting-sub {
-        font-size: 30rpx;
-        opacity: 0.9;
-      }
-    }
+  .fasting-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: var(--text-primary);
   }
 
-  // 断食计时器 - 使用组合类，只定义特有样式
-  .fasting-timer {
+  .fasting-status {
+    padding: 10rpx 24rpx;
     border-radius: 40rpx;
-    padding: 60rpx 40rpx;
-    text-align: center;
-    margin-bottom: 40rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .timer-circle {
-      .timer-content {
-        color: var(--keep-text-white);
-      }
+    font-size: 24rpx;
+    font-weight: 500;
+
+    &.status-active {
+      background: #e1fff0;
+      color: #00b368;
     }
-    .timer-description {
-      text-align: center;
-      margin-top: 20rpx;
-      font-size: 28rpx;
-      color: var(--keep-text-white);
+
+    &.status-eating {
+      background: #fff3e0;
+      color: #ff9800;
+    }
+
+    &.status-inactive {
+      background: #f5f5f5;
+      color: var(--text-secondary);
     }
   }
 
-  // 今日概览 - 使用组合类，只定义特有样式
-  .daily-overview {
+  // 计时器容器
+  .timer-container {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 40rpx;
+  }
+
+  .timer-info {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .time-left {
+    font-size: 40rpx;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10rpx;
+    display: block;
+  }
+
+  .time-label {
+    font-size: 26rpx;
+    color: var(--text-secondary);
+  }
+
+  // 断食详情
+  .fasting-details {
+    display: flex;
+    justify-content: space-around;
+    margin: 40rpx 0;
+  }
+
+  .detail-item {
+    text-align: center;
+  }
+
+  .detail-label {
+    font-size: 24rpx;
+    color: var(--text-secondary);
+    margin-bottom: 10rpx;
+    display: block;
+  }
+
+  .detail-value {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  // 操作按钮
+  .fasting-actions {
+    display: flex;
+    justify-content: center;
+    gap: 30rpx;
+    margin-top: 50rpx;
+  }
+
+  .action-btn {
+    padding: 24rpx 40rpx;
+    border-radius: 24rpx;
+    border: none;
+    font-size: 28rpx;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .action-icon {
+      margin-right: 16rpx;
+      font-size: 32rpx;
+    }
+  }
+
+  .btn-start {
+    background: var(--primary-gradient);
+    color: var(--text-light);
+    box-shadow: 0 8rpx 30rpx var(--button-shadow);
+  }
+
+  .btn-end {
+    width: 80%;
+    background: #f5f5f5 !important;
+    color: var(--text-secondary) !important;
+    border: none !important;
+  }
+}
+
+// ===== 6. 统计卡片样式 =====
+.stats-card {
+  .section-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 30rpx;
+    display: block;
+  }
+
+  .stats-row {
     display: flex;
     gap: 20rpx;
-    margin-bottom: 40rpx;
-    .overview-item {
-      flex: 1;
-      border-radius: 20rpx;
-      padding: 30rpx 20rpx;
-      text-align: center;
-      .overview-label {
-        display: block;
-        font-size: 24rpx;
-        opacity: 0.8;
-        margin-bottom: 10rpx;
-      }
-      .overview-value {
-        font-size: 32rpx;
-        font-weight: 600;
-      }
-    }
   }
 
-  // 快速操作 - 使用组合类，只定义特有样式
-  .quick-actions {
-    margin-bottom: 40rpx;
-    .quick-actions-title {
-      font-size: 32rpx;
-      font-weight: 600;
-      margin-bottom: 30rpx;
-    }
-    .actions-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20rpx;
-      .action-item {
-        border-radius: 20rpx;
-        padding: 40rpx 20rpx;
-        text-align: center;
-        transition: all 0.3s ease;
-        &:active {
-          transform: scale(0.95);
-          background: var(--keep-gradient-glass-medium);
-        }
-        .action-icon {
-          display: block;
-          font-size: 48rpx;
-          margin-bottom: 15rpx;
-        }
-        .action-text {
-          font-size: 26rpx;
-          font-weight: 500;
-        }
-      }
-    }
+  .stat-box {
+    flex: 1;
+    background: var(--primary-light);
+    border-radius: 30rpx;
+    padding: 30rpx;
+    text-align: center;
   }
 
-  // 情侣状态 - 使用组合类，只定义特有样式
-  .couple-status {
-    border-radius: 20rpx;
-    padding: 40rpx;
-    .couple-header {
-      text-align: center;
-      margin-bottom: 30rpx;
-      .couple-title {
-        font-size: 32rpx;
-        font-weight: 600;
-      }
-    }
-    .couple-info {
-      display: flex;
-      justify-content: space-around;
-      .couple-item {
-        text-align: center;
-        .couple-label {
-          display: block;
-          font-size: 24rpx;
-          opacity: 0.8;
-          margin-bottom: 10rpx;
-        }
-        .couple-value {
-          font-size: 30rpx;
-          font-weight: 600;
-          &.active {
-            color: var(--keep-accent-active);
-          }
-        }
-      }
-    }
+  .stat-value {
+    font-size: 36rpx;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10rpx;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 22rpx;
+    color: var(--text-secondary);
+  }
+}
+
+// ===== 7. 连续打卡卡片样式 =====
+.streak-card {
+  .streak-icon {
+    font-size: 56rpx;
+    margin-right: 30rpx;
+  }
+
+  .streak-info {
+    flex: 1;
+  }
+
+  .streak-value {
+    font-size: 34rpx;
+    font-weight: 600;
+    margin-bottom: 10rpx;
+    display: block;
+  }
+
+  .streak-text {
+    font-size: 26rpx;
+    opacity: 0.9;
+  }
+}
+
+// ===== 8. 伴侣状态卡片样式 =====
+.partner-card {
+  .section-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 30rpx;
+    display: block;
+  }
+
+  .partner-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30rpx;
+  }
+
+  .partner-avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background: #ff85a1;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 30rpx;
+  }
+
+  .partner-name {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6rpx;
+    display: block;
+  }
+
+  .partner-status {
+    font-size: 24rpx;
+    color: #00b368;
+  }
+
+  .partner-details {
+    display: flex;
+    padding: 20rpx 0;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .partner-stat {
+    flex: 1;
+    text-align: center;
+  }
+
+  .partner-stat-value {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 6rpx;
+    display: block;
+  }
+
+  .partner-stat-label {
+    font-size: 22rpx;
+    color: var(--text-secondary);
+  }
+}
+
+// ===== 9. 断食日历样式 =====
+.calendar-view {
+  display: flex;
+  gap: 10rpx;
+  margin-top: 20rpx;
+}
+
+.calendar-day {
+  flex: 1;
+  height: 60rpx;
+  border-radius: 10rpx;
+  background: var(--primary-light);
+
+  &.completed {
+    background: var(--primary-color);
   }
 }
