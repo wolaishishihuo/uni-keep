@@ -9,114 +9,6 @@
 }
 </route>
 
-<script lang="ts" setup>
-import { storeToRefs } from 'pinia';
-import { useSafeArea } from '@/hooks/useSafeArea';
-import { useThemeStore } from '@/store/theme';
-import { useUserStore } from '@/store/user';
-
-defineOptions({
-  name: 'Profile'
-});
-
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = useSafeArea();
-
-// 主题管理
-const themeStore = useThemeStore();
-const { themeClassName } = storeToRefs(themeStore);
-const userStore = useUserStore();
-const { userInfo } = storeToRefs(userStore);
-
-// 成就数据
-const achievements = ref([
-  { icon: '🏆', title: '坚持达人', description: '连续坚持7天', unlocked: true },
-  { icon: '💪', title: '减重英雄', description: '成功减重5kg', unlocked: true },
-  { icon: '❤️', title: '情侣冠军', description: '与伴侣共同坚持30天', unlocked: false },
-  { icon: '🌟', title: '完美主义', description: '100%完成率', unlocked: false }
-]);
-
-// 菜单项
-const menuSections = [
-  {
-    title: '数据统计',
-    items: [
-      {
-        icon: '📊',
-        title: '健康数据分析',
-        description: '查看详细数据',
-        route: '/pages/stats/overview'
-      },
-      {
-        icon: '🏆',
-        title: '成就中心',
-        description: '查看所有成就',
-        route: '/pages/achievements/list'
-      }
-    ]
-  },
-  {
-    title: '设置',
-    items: [
-      { icon: '⚙️', title: '断食计划设置', description: '通知提醒等', route: '/pages/settings/app' },
-      {
-        icon: '🔒',
-        title: '隐私设置',
-        description: '数据与隐私',
-        route: '/pages/settings/privacy'
-      },
-      { icon: '📞', title: '联系我们', description: '意见反馈', route: '/pages/settings/contact' }
-    ]
-  }
-];
-
-const userProfile = computed(() => {
-  return {
-    ...userInfo.value,
-    bio: '健康生活，从现在开始',
-    fastingDays: 32,
-    bmi: 23.7,
-    continuousFasting: 12,
-    targetRate: 68,
-    coupleAvatar: '/static/images/default-avatar.png',
-    coupleName: '李小红',
-    coupleStatus: '正在断食中 · 还剩4小时'
-  };
-});
-
-// 徽章等级样式辅助
-function getBadgeLevel(idx: number, unlocked: boolean) {
-  if (!unlocked)
-    return 'badge-locked';
-  if (idx === 0)
-    return 'badge-gold';
-  if (idx === 1)
-    return 'badge-silver';
-  if (idx === 2)
-    return 'badge-bronze';
-  return '';
-}
-
-// 处理菜单点击
-function handleMenuClick(route?: string, action?: string) {
-  if (route) {
-    uni.navigateTo({
-      url: route,
-      fail: () => {
-        uni.showToast({ title: '功能开发中', icon: 'none' });
-      }
-    });
-  }
-  else {
-    uni.showToast({ title: '功能开发中', icon: 'none' });
-  }
-}
-
-onLoad(() => {
-  console.log('个人中心页面加载完成');
-});
-</script>
-
 <template>
   <view class="profile-container" :style="{ paddingTop: `${safeAreaInsets?.top}px` }" :class="themeClassName">
     <!-- 用户信息卡片 -->
@@ -129,7 +21,7 @@ onLoad(() => {
           {{ userProfile.nickname || '未登录用户' }}
         </view>
         <view class="user-bio">
-          {{ userProfile.bio }}
+          {{ userProfile.signature }}
         </view>
         <view class="user-stats">
           <view class="user-stat">
@@ -271,6 +163,114 @@ onLoad(() => {
     </view>
   </view>
 </template>
+
+<script lang="ts" setup>
+import { storeToRefs } from 'pinia';
+import { useSafeArea } from '@/hooks/useSafeArea';
+import { useThemeStore } from '@/store/theme';
+import { useUserStore } from '@/store/user';
+
+defineOptions({
+  name: 'Profile'
+});
+
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = useSafeArea();
+
+// 主题管理
+const themeStore = useThemeStore();
+const { themeClassName } = storeToRefs(themeStore);
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore);
+
+// 成就数据
+const achievements = ref([
+  { icon: '🏆', title: '坚持达人', description: '连续坚持7天', unlocked: true },
+  { icon: '💪', title: '减重英雄', description: '成功减重5kg', unlocked: true },
+  { icon: '❤️', title: '情侣冠军', description: '与伴侣共同坚持30天', unlocked: false },
+  { icon: '🌟', title: '完美主义', description: '100%完成率', unlocked: false }
+]);
+
+// 菜单项
+const menuSections = [
+  {
+    title: '数据统计',
+    items: [
+      {
+        icon: '📊',
+        title: '健康数据分析',
+        description: '查看详细数据',
+        route: '/pages/stats/overview'
+      },
+      {
+        icon: '🏆',
+        title: '成就中心',
+        description: '查看所有成就',
+        route: '/pages/achievements/list'
+      }
+    ]
+  },
+  {
+    title: '设置',
+    items: [
+      { icon: '⚙️', title: '断食计划设置', description: '通知提醒等', route: '/pages/settings/app' },
+      {
+        icon: '🔒',
+        title: '隐私设置',
+        description: '数据与隐私',
+        route: '/pages/settings/privacy'
+      },
+      { icon: '📞', title: '联系我们', description: '意见反馈', route: '/pages/settings/contact' }
+    ]
+  }
+];
+
+const userProfile = computed(() => {
+  return {
+    ...userInfo.value,
+    signature: '健康生活，从现在开始', // 个人简介
+    fastingDays: 32, // 断食天数
+    bmi: 23.7, // BMI指数
+    continuousFasting: 12, // 连续断食天数
+    targetRate: 68, // 目标达成率
+    coupleAvatar: '/static/images/default-avatar.png', // 伴侣头像
+    coupleName: '李小红', // 伴侣昵称
+    coupleStatus: '正在断食中 · 还剩4小时' // 伴侣状态
+  };
+});
+
+// 徽章等级样式辅助
+function getBadgeLevel(idx: number, unlocked: boolean) {
+  if (!unlocked)
+    return 'badge-locked';
+  if (idx === 0)
+    return 'badge-gold';
+  if (idx === 1)
+    return 'badge-silver';
+  if (idx === 2)
+    return 'badge-bronze';
+  return '';
+}
+
+// 处理菜单点击
+function handleMenuClick(route?: string, action?: string) {
+  if (route) {
+    uni.navigateTo({
+      url: route,
+      fail: () => {
+        uni.showToast({ title: '功能开发中', icon: 'none' });
+      }
+    });
+  }
+  else {
+    uni.showToast({ title: '功能开发中', icon: 'none' });
+  }
+}
+
+onLoad(() => {
+  console.log('个人中心页面加载完成');
+});
+</script>
 
 <style lang="scss">
 @import './index.scss';

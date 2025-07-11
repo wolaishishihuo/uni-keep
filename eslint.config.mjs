@@ -11,6 +11,8 @@ export default uniHelper({
   },
   ignores: ["src/uni_modules/", "dist", "src/style/iconfont/**"],
   rules: {
+    "vue/block-order": ["error", { order: ["template", "script", "style"] }],
+
     "no-console": "off",
     "no-unused-vars": "off",
     "vue/no-unused-refs": "off",
