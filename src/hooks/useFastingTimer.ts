@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import type { FastingPlan, FastingRecord } from '@/models';
 import dayjs from 'dayjs';
+import { FastingStatus } from '@/enums';
 import { formatDuration } from '@/utils/time';
 
 /**
@@ -30,87 +31,133 @@ export function useFastingTimer(
   });
 
   // 是否断食中
-  const isFasting = computed(() => {
+  const fastingStatus = computed(() => {
     if (!hasTodayStarted.value)
-      return false;
-    return fastingRecord.value?.status === 'active';
+      return FastingStatus.pending;
+    return fastingRecord.value?.status;
   });
 
-  // 状态文本
-  const statusText = computed(() => {
-    if (!fastingRecord.value)
-      return '未开始';
-
-    switch (fastingRecord.value.status) {
-      case 'active': return '断食中';
-      case 'completed': return '已完成';
-      case 'broken': return '已中断';
-      default: return '未开始';
-    }
-  });
-
-  // 计算进度和时间信息
-  const timeInfo = computed(() => {
-    if (!fastingRecord.value || !activePlan.value) {
+  // 状态文本优化
+  const fastingStatusText = computed<{
+    text: string;
+    color: string;
+    actionText: string;
+    timeText: string;
+  }>(() => {
+    if (!fastingRecord.value) {
       return {
-        percent: 0,
-        remainingText: '0小时0分',
-        elapsedText: '0小时0分'
+        text: '未开始',
+        color: '#999',
+        actionText: '开始断食',
+        timeText: '断食时间'
       };
+    };
+
+    // 使用枚举映射表简化状态转换
+    const statusMap = {
+      [FastingStatus.active]: {
+        text: '断食中',
+        color: '#4195e1',
+        actionText: '中断断食',
+        timeText: '断食时间'
+      },
+      [FastingStatus.completed]: {
+        text: '已完成',
+        color: '#00b368',
+        timeText: '进食时间'
+      }
+    };
+
+    return statusMap[fastingRecord.value.status];
+  });
+
+  // 基础计算属性 - 处理共享的时间计算逻辑
+  const baseTimeInfo = computed(() => {
+    if (!fastingRecord.value || !activePlan.value) {
+      return null; // 没有记录或计划
     }
 
     const record = fastingRecord.value;
-    const plan = activePlan.value;
-
-    if (record.status === 'pending') {
-      return {
-        percent: 0,
-        remainingText: '未开始',
-        elapsedText: '0小时0分'
-      };
+    if (record.status === FastingStatus.pending) {
+      return { isPending: true };
     }
 
-    // 使用记录中的开始时间
-    const startTime = dayjs(record.startTime);
-    const plannedDuration = plan.fastingHours * 60 * 60; // 转为秒
-    const elapsed = now.value.diff(startTime, 'second');
-
-    let percent = 0;
-    let remainingSeconds = 0;
-
-    if (record.status === 'active') {
-      percent = Math.min(100, (elapsed / plannedDuration) * 100);
-      remainingSeconds = Math.max(0, plannedDuration - elapsed);
-    }
-    else if (record.status === 'completed') {
-      percent = 100;
-      remainingSeconds = 0;
-    }
-    else if (record.status === 'broken') {
-      // 中断时显示已完成的进度
-      percent = Math.min(100, (elapsed / plannedDuration) * 100);
-      remainingSeconds = 0;
-    }
+    // 计算基础时间信息
+    const startTime = dayjs(record.startTime); // 开始时间
+    const plannedDuration = activePlan.value.fastingHours * 60 * 60; // 计划时长
+    const elapsed = now.value.diff(startTime, 'second'); // 已过时间
+    const isActive = record.status === FastingStatus.active; // 是否活跃
+    const isCompleted = record.status === FastingStatus.completed; // 是否已完成
 
     return {
-      percent: Math.floor(percent),
-      remainingText: formatDuration(remainingSeconds),
-      elapsedText: formatDuration(Math.max(0, elapsed))
+      isPending: false,
+      startTime,
+      plannedDuration,
+      elapsed,
+      isActive,
+      isCompleted
     };
   });
 
+  // 计算进度百分比
+  const percent = computed(() => {
+    const base = baseTimeInfo.value;
+    if (!base)
+      return 0;
+    if (base.isPending)
+      return 0;
+    if (base.isCompleted)
+      return 100;
+
+    // 计算进度百分比
+    return Math.min(100, Math.floor((base.elapsed / base.plannedDuration) * 100));
+  });
+
+  // 是否在时间窗口内
+  const isInTimeWindow = computed(() => {
+    const base = baseTimeInfo.value;
+    if (!base)
+      return false;
+    return base.isActive && percent.value < 100;
+  });
+
+  // 计算剩余时间文本
+  const remainingText = computed(() => {
+    const base = baseTimeInfo.value;
+    if (!base)
+      return '0小时0分';
+    if (base.isPending)
+      return '未开始';
+    if (!base.isActive)
+      return '0小时0分';
+
+    // 计算剩余时间
+    const remainingSeconds = Math.max(0, base.plannedDuration - base.elapsed);
+    return formatDuration(remainingSeconds);
+  });
+
+  // 计算已经过时间文本
+  const elapsedText = computed(() => {
+    const base = baseTimeInfo.value;
+    if (!base)
+      return '0小时0分';
+    if (base.isPending)
+      return '0小时0分';
+
+    return formatDuration(Math.max(0, base.elapsed));
+  });
+
+  // 在返回值中使用这些独立的计算属性
   return {
     // 状态
-    isFasting,
+    fastingStatus,
     hasTodayStarted,
-    statusText,
+    fastingStatusText,
 
-    // 时间信息
-    percent: computed(() => timeInfo.value.percent),
-    remainingText: computed(() => timeInfo.value.remainingText),
-    elapsedText: computed(() => timeInfo.value.elapsedText),
-
-    // 计划信息
-    activePlan: readonly(activePlan)
+    // 时间信息 - 现在都是独立的计算属性，不再嵌套
+    percent,
+    remainingText,
+    elapsedText,
+    isInTimeWindow
   };
 }

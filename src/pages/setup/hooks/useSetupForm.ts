@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue';
 import { completeSetupApi } from '@/api/user';
 import { useMessage } from '@/hooks/useMessage';
 import { SystemConfigKey } from '@/models/system';
+import { useFastingStore } from '@/store/fasting';
 import { useUserStore } from '@/store/user';
 
 // 表单数据接口
@@ -81,7 +82,7 @@ const systemConfigMap = [
 export function useSetupForm() {
   const message = useMessage();
   const userStore = useUserStore();
-
+  const fastingStore = useFastingStore();
   // 保存中状态
   const saving = ref(false);
 
@@ -211,7 +212,11 @@ export function useSetupForm() {
       });
 
       if (code === 1) {
-        await userStore.fetchUserData();
+        // 获取断食计划
+        await fastingStore.fetchFastingData();
+
+        // 获取未完成的断食记录
+        await fastingStore.getUnfinishedRecord();
         uni.vibrateShort({ type: 'heavy' });
         message.success('设置完成！欢迎使用坚持有你', 2000);
         return true;

@@ -13,7 +13,7 @@
     <view class="login-bg">
       <view class="logo-section">
         <view class="app-logo">
-          <i class="iconfont icon-jianchi text-white text-6xl!" />
+          <text class="iconfont icon-jianchi text-white text-6xl!" />
         </view>
         <view class="app-name">
           坚持有你
@@ -97,11 +97,11 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '@/store';
+import { useFastingStore, useUserStore } from '@/store';
 import { toast } from '@/utils/toast';
 
-// 用户状态管理
 const userStore = useUserStore();
+const fastingStore = useFastingStore();
 
 // 加载状态
 const isWxLoading = ref(false);
@@ -124,6 +124,16 @@ async function handleAuthConfirm() {
   try {
     isWxLoading.value = true;
     await userStore.wxLogin();
+
+    if (userStore.userInfo.isSetup) {
+      // 获取断食计划
+      await fastingStore.fetchFastingData();
+
+      // 获取未完成的断食记录
+      await fastingStore.getUnfinishedRecord();
+    }
+
+    userStore.navigateAfterLogin();
   }
   catch (error) {
     console.error('登录失败:', error);

@@ -13,10 +13,10 @@
       <view class="fasting-card">
         <view class="fasting-header">
           <text class="fasting-title">
-            {{ activePlan?.name }}
+            {{ fastingPlan?.name }}
           </text>
-          <text class="fasting-status" :class="isFasting ? 'status-active' : 'status-eating'">
-            {{ statusText }}
+          <text class="fasting-status" :style="{ color: fastingStatusText.color }">
+            {{ fastingStatusText.text }}
           </text>
         </view>
         <view class="timer-container">
@@ -31,7 +31,7 @@
                 {{ remainingText }}
               </text>
               <text class="time-label">
-                {{ isFasting ? '断食时间' : '进食时间' }}
+                {{ fastingStatusText.timeText }}
               </text>
             </view>
           </wd-circle>
@@ -47,19 +47,19 @@
           </view>
           <view class="detail-item">
             <text class="detail-label">
-              进食窗口
+              断食窗口
             </text>
             <text class="detail-value">
-              {{ `${activePlan?.startTime}-${activePlan?.endTime}` }}
+              {{ `${fastingPlan?.startTime}-${fastingPlan?.endTime}` }}
             </text>
           </view>
         </view>
         <view class="fasting-actions">
           <button class="action-btn btn-end" @click="subscribeActionPlan">
             <span class="action-icon">
-              {{ isFasting ? '🍽️' : '🔥' }}
+              {{ fastingStatus === FastingStatus.active ? '🍽️' : '🔥' }}
             </span>
-            {{ isFasting ? '进入进食' : '开始断食' }}
+            {{ fastingStatusText.actionText }}
           </button>
         </view>
       </view>
@@ -72,7 +72,7 @@
         <view class="stats-row">
           <view class="stat-box">
             <view class="stat-value">
-              {{ weekDays }}
+              {{ fastingStatistics?.currentWeekDays }}
             </view>
             <view class="stat-label">
               坚持天数
@@ -80,7 +80,7 @@
           </view>
           <view class="stat-box">
             <view class="stat-value">
-              {{ weekRate }}
+              {{ fastingStatistics?.currentWeekSuccessRate }}
             </view>
             <view class="stat-label">
               完成率
@@ -88,7 +88,7 @@
           </view>
           <view class="stat-box">
             <view class="stat-value">
-              {{ weekHours }}
+              {{ fastingStatistics?.totalFastingDuration }}
             </view>
             <view class="stat-label">
               总断食时间
@@ -175,8 +175,10 @@
 import { storeToRefs } from 'pinia';
 import { computed, ref } from 'vue';
 import { ACTION_PLAN_TEMPLATE_ID } from '@/constants';
+import { FastingStatus } from '@/enums';
 import { useFastingTimer } from '@/hooks/useFastingTimer';
 import { useSafeArea } from '@/hooks/useSafeArea';
+import { useFastingStore } from '@/store/fasting';
 import { useThemeStore } from '@/store/theme';
 import { useUserStore } from '@/store/user';
 
@@ -184,24 +186,20 @@ defineOptions({
   name: 'Home'
 });
 
-// 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = useSafeArea();
-
-// 主题
+const { userInfo } = storeToRefs(useUserStore());
 const themeStore = useThemeStore();
 const { themeClassName } = storeToRefs(themeStore);
-// 获取用户断食计划
-const { fastingPlan, fastingRecord } = storeToRefs(useUserStore());
+const fastingStore = useFastingStore();
+const { fastingPlan, fastingRecord, fastingStatistics } = storeToRefs(fastingStore);
 
 // 断食计时器
 const {
   percent,
   remainingText,
   elapsedText,
-  statusText,
-  isFasting,
-  hasTodayStarted,
-  activePlan
+  fastingStatusText,
+  fastingStatus
 } = useFastingTimer(fastingPlan, fastingRecord);
 
 // wot-circle 渐变色配置
@@ -214,20 +212,44 @@ const gradientColor = computed(() => {
 });
 
 // 断食操作
-function fastingAction() {
-  if (!hasTodayStarted.value) {
-    uni.showToast({ title: '断食已开始', icon: 'none' });
-    // TODO: 调用API开始今日断食计划
+const fastingActionMap = {
+  // 断食中
+  [FastingStatus.active]: async () => {
+    const result = await fastingStore.updateFastingRecord(
+      percent.value >= 100 ? FastingStatus.completed : FastingStatus.broken
+    );
+
+    if (result.code === 200) {
+      uni.showToast({
+        title: percent.value >= 100 ? '断食已完成' : '断食已中断',
+        icon: 'success'
+      });
+    }
+    else {
+      uni.showToast({ title: '操作失败', icon: 'error' });
+    }
+  },
+  // 未开始
+  [FastingStatus.pending]: async () => {
+    const result = await fastingStore.startFasting();
+    if (result.code === 200) {
+      uni.showToast({ title: '断食已开始', icon: 'success' });
+    }
+    else {
+      uni.showToast({ title: '开始断食失败', icon: 'error' });
+    }
+  },
+  // 已中断
+  [FastingStatus.broken]: async () => {
+    const result = await fastingStore.startFasting();
+    if (result.code === 200) {
+      uni.showToast({ title: '断食已开始', icon: 'success' });
+    }
+    else {
+      uni.showToast({ title: '开始断食失败', icon: 'error' });
+    }
   }
-  else if (isFasting.value) {
-    uni.showToast({ title: '进入进食时间', icon: 'none' });
-    // TODO: 调用API切换到进食状态
-  }
-  else {
-    uni.showToast({ title: '断食已开始', icon: 'none' });
-    // TODO: 调用API开始断食
-  }
-}
+};
 
 function subscribeActionPlan() {
   uni.requestSubscribeMessage({
@@ -252,8 +274,7 @@ function subscribeActionPlan() {
         });
       }
       else {
-        // 订阅成功
-        fastingAction();
+        fastingActionMap[fastingStatus.value]?.();
       }
     },
     fail: (err) => {

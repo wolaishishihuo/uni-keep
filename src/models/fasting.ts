@@ -104,3 +104,21 @@ export interface FastingStats {
   /** 总断食时长（小时） */
   totalFastingHours: number;
 }
+
+/** 数据统计 */
+export interface FastingStatistics {
+  /** 总天数 */
+  allDays: number;
+  /** 连续天数 */
+  continuousDays: number;
+  /** 当前周天数 */
+  currentWeekDays: number;
+  /** 当前周成功率 */
+  currentWeekSuccessRate: number;
+  /** 成功天数 */
+  successDays: number;
+  /** 成功率 */
+  successRate: number;
+  /** 总断食时长（小时） */
+  totalFastingDuration: number;
+}

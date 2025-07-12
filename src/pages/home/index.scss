@@ -140,12 +140,13 @@
   }
   .stats-row {
     @extend .stats-grid;
+    grid-template-columns: repeat(3, 1fr);
   }
   .stat-box {
     flex: 1;
     background: var(--primary-light);
     border-radius: $border-radius-lg;
-    padding: $spacing-lg;
+    padding: $spacing-sm;
     text-align: center;
   }
   .stat-value {

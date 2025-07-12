@@ -1,76 +1,3 @@
-<script setup lang="ts">
-interface Props {
-  modelValue: boolean;
-}
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-  close: [];
-  confirm: [];
-  cancel: [];
-}>();
-
-// 是否同意协议
-const agreed = ref(false);
-
-const showModal = computed({
-  get() {
-    return props.modelValue;
-  },
-  set() {
-    emit('close');
-  }
-});
-
-// 查看隐私政策
-function viewPrivacy() {
-  uni.navigateTo({
-    url: '/pages/legal/privacy',
-    fail: () => {
-      uni.showToast({
-        title: '隐私政策页面开发中',
-        icon: 'none'
-      });
-    }
-  });
-}
-
-// 查看用户协议
-function viewTerms() {
-  uni.navigateTo({
-    url: '/pages/legal/terms',
-    fail: () => {
-      uni.showToast({
-        title: '用户协议页面开发中',
-        icon: 'none'
-      });
-    }
-  });
-}
-
-// 取消授权
-function handleCancel() {
-  showModal.value = false;
-  agreed.value = false;
-  emit('cancel');
-}
-
-// 确认授权
-function handleConfirm() {
-  if (!agreed.value) {
-    uni.showToast({
-      title: '请先同意用户协议',
-      icon: 'none'
-    });
-    return;
-  }
-
-  showModal.value = false;
-  emit('confirm');
-}
-</script>
-
 <template>
   <wd-popup
     v-model="showModal"
@@ -82,8 +9,7 @@ function handleConfirm() {
       <!-- 标题 -->
       <view class="modal-header">
         <view class="app-icon">
-          <!-- <i class="iconfont icon-jianchi text-2xl text-[var(--keep-primary)]" /> -->
-          <i class="iconfont icon-jianchi text-[var(--primary-color)] text-2xl!" />
+          <text class="iconfont icon-jianchi text-[var(--primary-color)] text-2xl!" />
         </view>
         <view class="modal-title">
           服务授权
@@ -170,6 +96,79 @@ function handleConfirm() {
     </view>
   </wd-popup>
 </template>
+
+<script setup lang="ts">
+interface Props {
+  modelValue: boolean;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  close: [];
+  confirm: [];
+  cancel: [];
+}>();
+
+// 是否同意协议
+const agreed = ref(false);
+
+const showModal = computed({
+  get() {
+    return props.modelValue;
+  },
+  set() {
+    emit('close');
+  }
+});
+
+// 查看隐私政策
+function viewPrivacy() {
+  uni.navigateTo({
+    url: '/pages/legal/privacy',
+    fail: () => {
+      uni.showToast({
+        title: '隐私政策页面开发中',
+        icon: 'none'
+      });
+    }
+  });
+}
+
+// 查看用户协议
+function viewTerms() {
+  uni.navigateTo({
+    url: '/pages/legal/terms',
+    fail: () => {
+      uni.showToast({
+        title: '用户协议页面开发中',
+        icon: 'none'
+      });
+    }
+  });
+}
+
+// 取消授权
+function handleCancel() {
+  showModal.value = false;
+  agreed.value = false;
+  emit('cancel');
+}
+
+// 确认授权
+function handleConfirm() {
+  if (!agreed.value) {
+    uni.showToast({
+      title: '请先同意用户协议',
+      icon: 'none'
+    });
+    return;
+  }
+
+  showModal.value = false;
+  emit('confirm');
+}
+</script>
 
 <style lang="scss" scoped>
 .auth-modal {
