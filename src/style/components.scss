@@ -1,0 +1,275 @@
+// ==================== 公共组件样式 ====================
+
+// ========== 容器布局 ==========
+.page-container {
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  padding: $spacing-sm;
+}
+
+.main-content {
+  flex: 1;
+  padding: 120rpx $spacing-lg 140rpx;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.section-container {
+  margin-bottom: $spacing-lg;
+}
+
+// ========== 卡片组件 ==========
+.card-base {
+  background: var(--bg-secondary);
+  border-radius: $border-radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-medium;
+}
+
+.card-large {
+  @extend .card-base;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.card-gradient {
+  background: var(--primary-gradient);
+  color: var(--text-light);
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  box-shadow: 0 8rpx 30rpx var(--button-shadow);
+}
+
+// ========== 按钮组件 ==========
+.btn-primary {
+  background: var(--primary-gradient);
+  color: var(--text-light);
+  border: none;
+  border-radius: 24rpx;
+  padding: 24rpx 48rpx;
+  font-size: $font-size-md;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8rpx 20rpx var(--button-shadow);
+  transition: all $transition-normal;
+
+  &:hover {
+    transform: translateY(-2rpx);
+    box-shadow: 0 12rpx 30rpx var(--button-shadow-hover);
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2rpx solid var(--primary-color);
+  border-radius: 24rpx;
+  padding: 24rpx 48rpx;
+  font-size: $font-size-md;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &:hover {
+    background: var(--primary-light);
+  }
+}
+
+.action-btn {
+  padding: 24rpx 40rpx;
+  border-radius: 24rpx;
+  border: none;
+  font-size: $font-size-md;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-normal;
+}
+
+// ========== 统计网格 ==========
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.stat-item {
+  background: var(--bg-secondary);
+  border-radius: $border-radius-md;
+  padding: $spacing-sm 10rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+  font-size: $font-size-xl;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 6rpx;
+  display: block;
+}
+
+.stat-label {
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+}
+
+// ========== 状态标签 ==========
+.status-badge {
+  padding: 10rpx 24rpx;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-success {
+  @extend .status-badge;
+  background: #e8f4ff;
+  color: #4195e1;
+}
+
+.status-warning {
+  @extend .status-badge;
+  background: #fff0f5;
+  color: #ff6b9d;
+}
+
+.status-info {
+  @extend .status-badge;
+  background: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.status-active {
+  @extend .status-badge;
+  background: #e1fff0;
+  color: #00b368;
+}
+
+.status-eating {
+  @extend .status-badge;
+  background: #fff3e0;
+  color: #ff9800;
+}
+
+.status-inactive {
+  @extend .status-badge;
+  background: #f5f5f5;
+  color: var(--text-secondary);
+}
+
+// ========== 页面标题 ==========
+.page-title {
+  font-size: $font-size-xxl;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: $spacing-lg;
+}
+
+.section-title {
+  font-size: $font-size-xl;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: $spacing-md;
+}
+
+// ========== 进度条 ==========
+.progress-bar {
+  height: 12rpx;
+  background: var(--primary-light);
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--primary-gradient);
+  border-radius: 6rpx;
+  transition: width $transition-normal;
+}
+
+// ========== 列表项 ==========
+.list-item {
+  display: flex;
+  align-items: center;
+  padding: $spacing-sm 0;
+  border-bottom: 1rpx solid #f0f0f0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// ========== 过渡动画 ==========
+view,
+text,
+button,
+image {
+  transition:
+    background-color $transition-normal,
+    color $transition-normal,
+    border-color $transition-normal,
+    box-shadow $transition-normal;
+}
+
+// ========== 按钮组 ==========
+.button-group {
+  display: flex;
+  gap: 20rpx;
+  margin-bottom: 40rpx;
+}
+
+.button-group-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+  margin-bottom: 40rpx;
+}
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 25rpx;
+
+  .btn {
+    width: 100%;
+    padding: 20rpx;
+    border-radius: 20rpx;
+    border: none;
+    font-size: 32rpx;
+    font-weight: 600;
+    text-align: center;
+
+    &.btn-primary {
+      background: var(--primary-gradient);
+      color: var(--text-light);
+      box-shadow: 0 8rpx 20rpx var(--button-shadow);
+    }
+
+    &.btn-secondary {
+      background: transparent;
+      border: 1rpx solid var(--primary-color);
+      color: var(--primary-color);
+    }
+  }
+}
+
+// ========== 保留的工具样式 ==========
+.keep-text-theme {
+  color: var(--primary-color);
+}
+
+.keep-text-accent {
+  color: var(--keep-accent);
+}
+
+.keep-text-accent-active {
+  color: var(--keep-accent-active);
+}
+
+.keep-bg-theme {
+  background: var(--primary-color);
+}

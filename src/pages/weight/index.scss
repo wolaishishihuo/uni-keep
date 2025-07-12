@@ -1,302 +1,370 @@
-// 体重管理页面整体容器
+// ==================== 体重页面样式 ====================
+
 .weight-container {
-  min-height: 100vh;
-  background: var(--keep-gradient-bg);
-  padding: 0 40rpx 40rpx;
+  @extend .page-container;
+}
 
-  // 页面标题
-  .page-header {
-    padding: 40rpx 0;
-    text-align: center;
-    .page-title {
-      font-size: 44rpx;
-      font-weight: 600;
-      color: var(--keep-text-primary);
-    }
+// ========== 页面标题 ==========
+.page-header {
+  margin-bottom: $spacing-lg;
+  padding-top: $spacing-lg;
+}
+
+.page-title {
+  @extend .page-title;
+}
+
+// ========== 体重显示区域 ==========
+.weight-display {
+  @extend .card-large;
+  text-align: center;
+  margin-bottom: $spacing-md;
+}
+
+.weight-main {
+  margin-bottom: $spacing-sm;
+}
+
+.weight-value {
+  font-size: 80rpx;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.weight-unit {
+  font-size: $font-size-xl;
+  color: var(--text-secondary);
+  margin-left: $spacing-xs;
+}
+
+.weight-change {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.change-icon {
+  font-size: $font-size-lg;
+}
+
+.change-text {
+  font-size: $font-size-md;
+  font-weight: 600;
+}
+
+.change-date {
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+}
+
+.bmi-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+}
+
+.bmi-label {
+  font-size: $font-size-md;
+  color: var(--text-secondary);
+}
+
+.bmi-status {
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+// ========== 目标进度 ==========
+.target-progress {
+  @extend .card-base;
+  margin-bottom: $spacing-md;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.progress-title {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progress-target {
+  font-size: $font-size-md;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.progress-bar {
+  @extend .progress-bar;
+  margin-bottom: 15rpx;
+}
+
+.progress-fill {
+  @extend .progress-fill;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-text {
+  font-size: $font-size-sm + 2rpx;
+  color: var(--text-secondary);
+}
+
+.progress-percent {
+  font-size: $font-size-sm + 2rpx;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+// ========== 趋势图表 ==========
+.chart-container {
+  @extend .card-base;
+  margin-bottom: $spacing-md;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-md;
+}
+
+.chart-title {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.period-selector {
+  display: flex;
+  background: var(--primary-light);
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.period-item {
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-sm + 2rpx;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &.active {
+    background: var(--primary-color);
+    color: white;
+    font-weight: 500;
+  }
+}
+
+.chart-placeholder {
+  height: 360rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f8fbff;
+  border-radius: $border-radius-sm;
+  border: 2rpx dashed #e0e6ed;
+}
+
+.chart-text {
+  font-size: $font-size-lg;
+  color: var(--text-secondary);
+  margin-bottom: $spacing-xs;
+}
+
+.chart-subtitle {
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+// ========== 最近记录 ==========
+.recent-records {
+  @extend .card-base;
+  margin-bottom: $spacing-md;
+}
+
+.records-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+}
+
+.records-title {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.view-all {
+  font-size: $font-size-sm + 2rpx;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15rpx;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm;
+  background: var(--primary-light);
+  border-radius: $border-radius-sm;
+}
+
+.record-date {
+  font-size: $font-size-sm + 2rpx;
+  color: var(--text-secondary);
+}
+
+.record-weight {
+  font-size: $font-size-md;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.record-trend {
+  width: 40rpx;
+  text-align: center;
+}
+
+.trend-icon {
+  font-size: $font-size-sm;
+}
+
+// ========== 快速记录 ==========
+.quick-record {
+  @extend .card-base;
+  margin-bottom: $spacing-md;
+}
+
+.quick-header {
+  margin-bottom: $spacing-sm;
+}
+
+.quick-title {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.quick-options {
+  display: flex;
+  gap: 15rpx;
+}
+
+.quick-option {
+  flex: 1;
+  padding: $spacing-sm;
+  text-align: center;
+  border: 2rpx solid var(--primary-light);
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+  transition: all $transition-normal;
+
+  &.selected {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+  }
+}
+
+.option-label {
+  display: block;
+  font-size: $font-size-md;
+  color: var(--text-primary);
+  margin-bottom: 5rpx;
+}
+
+.option-time {
+  font-size: $font-size-sm;
+  color: var(--text-secondary);
+}
+
+// ========== 操作按钮 ==========
+.action-buttons {
+  @extend .button-group;
+  margin-bottom: $spacing-lg;
+}
+
+.record-btn {
+  @extend .btn-primary;
+  flex: 1;
+  padding: $spacing-md;
+  font-size: $font-size-lg;
+}
+
+.target-btn {
+  @extend .btn-secondary;
+  flex: 1;
+  padding: $spacing-md;
+  font-size: $font-size-lg;
+}
+
+// ========== 主题适配 ==========
+.theme-female {
+  .bmi-status {
+    color: #ff6b9d;
   }
 
-  // 当前体重显示
+  .progress-target,
+  .progress-percent {
+    color: #ff6b9d;
+  }
+
+  .period-item.active {
+    background: #ff6b9d;
+  }
+
+  .view-all {
+    color: #ff6b9d;
+  }
+
+  .quick-option.selected {
+    border-color: #ff6b9d;
+    background: #fff0f5;
+  }
+}
+
+// ========== 响应式适配 ==========
+@include mobile {
   .weight-display {
-    background: var(--keep-gradient-primary);
-    border-radius: 40rpx;
-    padding: 60rpx 40rpx;
-    text-align: center;
-    margin-bottom: 40rpx;
-    color: var(--keep-text-white);
-    .weight-main {
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
-      margin-bottom: 30rpx;
-      .weight-value {
-        font-size: 100rpx;
-        font-weight: bold;
-        line-height: 1;
-      }
-      .weight-unit {
-        font-size: 40rpx;
-        margin-left: 10rpx;
-        opacity: 0.9;
-      }
-    }
-    .weight-change {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15rpx;
-      margin-bottom: 20rpx;
-      .change-icon {
-        font-size: 32rpx;
-      }
-      .change-text {
-        font-size: 32rpx;
-        font-weight: 600;
-      }
-      .change-date {
-        font-size: 26rpx;
-        opacity: 0.8;
-      }
-    }
-    .bmi-info {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20rpx;
-      .bmi-label {
-        font-size: 28rpx;
-        opacity: 0.9;
-      }
-      .bmi-status {
-        font-size: 28rpx;
-        font-weight: 600;
-        padding: 5rpx 20rpx;
-        background: var(--keep-primary-alpha-20);
-        border-radius: 20rpx;
-      }
-    }
+    padding: $spacing-md;
   }
 
-  // 目标进度
-  .target-progress {
-    background: var(--keep-bg-primary);
-    border-radius: 30rpx;
-    padding: 40rpx;
-    margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30rpx;
-      .progress-title {
-        font-size: 32rpx;
-        font-weight: 600;
-        color: var(--keep-text-primary);
-      }
-      .progress-target {
-        font-size: 26rpx;
-        color: var(--keep-text-secondary);
-      }
-    }
-    .progress-bar {
-      height: 20rpx;
-      background: var(--keep-border-light);
-      border-radius: 10rpx;
-      overflow: hidden;
-      margin-bottom: 20rpx;
-      .progress-fill {
-        height: 100%;
-        background: var(--keep-gradient-secondary);
-        border-radius: 10rpx;
-        transition: width 0.3s ease;
-      }
-    }
-    .progress-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .progress-text {
-        font-size: 28rpx;
-        color: var(--keep-text-secondary);
-      }
-      .progress-percent {
-        font-size: 28rpx;
-        color: var(--keep-primary);
-        font-weight: 600;
-      }
-    }
+  .weight-value {
+    font-size: 70rpx;
   }
 
-  // 趋势图表
-  .chart-container {
-    background: var(--keep-bg-primary);
-    border-radius: 30rpx;
-    padding: 40rpx;
-    margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30rpx;
-      .chart-title {
-        font-size: 32rpx;
-        font-weight: 600;
-        color: var(--keep-text-primary);
-      }
-      .period-selector {
-        display: flex;
-        gap: 10rpx;
-        .period-item {
-          padding: 10rpx 25rpx;
-          border-radius: 20rpx;
-          font-size: 24rpx;
-          color: var(--keep-text-secondary);
-          background: var(--keep-bg-tertiary);
-          &.active {
-            background: var(--keep-primary);
-            color: var(--keep-text-white);
-          }
-        }
-      }
-    }
-    .chart-placeholder {
-      height: 300rpx;
-      background: var(--keep-gradient-secondary);
-      border-radius: 20rpx;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--keep-text-white);
-      .chart-text {
-        font-size: 32rpx;
-        font-weight: 600;
-        margin-bottom: 10rpx;
-      }
-      .chart-subtitle {
-        font-size: 24rpx;
-        opacity: 0.8;
-      }
-    }
+  .chart-placeholder {
+    height: 300rpx;
   }
 
-  // 最近记录
-  .recent-records {
-    background: var(--keep-bg-primary);
-    border-radius: 30rpx;
-    padding: 40rpx;
-    margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx var(--keep-shadow-light);
-    .records-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30rpx;
-      .records-title {
-        font-size: 32rpx;
-        font-weight: 600;
-        color: var(--keep-text-primary);
-      }
-      .view-all {
-        font-size: 26rpx;
-        color: var(--keep-primary);
-      }
-    }
-    .records-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20rpx;
-      .record-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 25rpx 0;
-        border-bottom: 1rpx solid var(--keep-border-light);
-        &:last-child {
-          border-bottom: none;
-        }
-        .record-date {
-          font-size: 28rpx;
-          color: var(--keep-text-secondary);
-        }
-        .record-weight {
-          font-size: 30rpx;
-          font-weight: 600;
-          color: var(--keep-text-primary);
-        }
-        .trend-icon {
-          font-size: 24rpx;
-        }
-      }
-    }
+  .quick-options {
+    flex-direction: column;
+    gap: $spacing-xs;
   }
 
-  // 快速记录
-  .quick-record {
-    background: white;
-    border-radius: 30rpx;
-    padding: 40rpx;
-    margin-bottom: 40rpx;
-    box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.08);
-    .quick-header {
-      margin-bottom: 30rpx;
-      .quick-title {
-        font-size: 32rpx;
-        font-weight: 600;
-        color: #333;
-      }
-    }
-    .quick-options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20rpx;
-      .quick-option {
-        padding: 30rpx 20rpx;
-        border-radius: 20rpx;
-        text-align: center;
-        background: #f8f9fa;
-        border: 2rpx solid transparent;
-        &.selected {
-          background: var(--keep-primary);
-          color: white;
-        }
-        .option-label {
-          display: block;
-          font-size: 26rpx;
-          font-weight: 500;
-          margin-bottom: 10rpx;
-        }
-        .option-time {
-          font-size: 22rpx;
-          opacity: 0.8;
-        }
-      }
-    }
-  }
-
-  // 操作按钮
   .action-buttons {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 20rpx;
-    .record-btn {
-      background: var(--keep-gradient-primary);
-      color: white;
-      border: none;
-      border-radius: 30rpx;
-      padding: 30rpx 40rpx;
-      font-size: 32rpx;
-      font-weight: 600;
-    }
-    .target-btn {
-      background: white;
-      color: var(--keep-primary);
-      border: 2rpx solid var(--keep-primary);
-      border-radius: 30rpx;
-      padding: 30rpx 40rpx;
-      font-size: 30rpx;
-      font-weight: 600;
-    }
+    flex-direction: column;
+    gap: 15rpx;
   }
 }

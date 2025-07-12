@@ -1,7 +1,6 @@
 // ===== 1. 页面基础布局 =====
 .home-screen {
-  min-height: 100vh;
-  background: var(--bg-gradient);
+  @extend .page-container;
   position: relative;
 }
 
@@ -16,44 +15,28 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx 40rpx;
+  padding: $spacing-lg $spacing-xl;
 
   .app-name {
     font-weight: 600;
-    font-size: 36rpx;
+    font-size: $font-size-xl;
     color: var(--text-primary);
   }
 }
 
-// ===== 3. 主要内容区域 - 可滚动 =====
+// ===== 3. 主要内容区 - 可滚动 =====
 .main-content {
-  flex: 1;
-  padding: 120rpx 40rpx 140rpx; // 顶部给导航栏留空间，底部给tabbar留空间
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  @extend .main-content;
 }
 
 // ===== 4. 卡片通用样式 =====
 .fasting-card,
 .stats-card,
 .partner-card {
-  background: var(--bg-secondary);
-  border-radius: 40rpx;
-  padding: 40rpx;
-  margin-bottom: 40rpx;
-  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.05);
-  position: relative;
-  overflow: hidden;
+  @extend .card-large;
 }
-
-// 连续打卡卡片使用渐变背景
 .streak-card {
-  background: var(--primary-gradient);
-  color: var(--text-light);
-  border-radius: 40rpx;
-  padding: 40rpx;
-  margin-bottom: 40rpx;
-  box-shadow: 0 8rpx 30rpx var(--button-shadow);
+  @extend .card-gradient;
   display: flex;
   align-items: center;
 }
@@ -64,119 +47,84 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30rpx;
+    margin-bottom: $spacing-lg;
   }
 
   .fasting-title {
-    font-size: 34rpx;
+    font-size: $font-size-lg;
     font-weight: 600;
     color: var(--text-primary);
   }
 
   .fasting-status {
-    padding: 10rpx 24rpx;
-    border-radius: 40rpx;
-    font-size: 24rpx;
-    font-weight: 500;
-
     &.status-active {
-      background: #e1fff0;
-      color: #00b368;
+      @extend .status-active;
     }
-
     &.status-eating {
-      background: #fff3e0;
-      color: #ff9800;
+      @extend .status-eating;
     }
-
     &.status-inactive {
-      background: #f5f5f5;
-      color: var(--text-secondary);
+      @extend .status-inactive;
     }
   }
 
-  // 计时器容器
   .timer-container {
     display: flex;
     justify-content: center;
-    margin: 0 auto 40rpx;
+    margin: 0 auto $spacing-lg;
   }
-
   .timer-info {
     position: relative;
     z-index: 1;
     text-align: center;
   }
-
   .time-left {
-    font-size: 40rpx;
+    font-size: $font-size-xl;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 10rpx;
     display: block;
   }
-
   .time-label {
-    font-size: 26rpx;
+    font-size: $font-size-md;
     color: var(--text-secondary);
   }
-
-  // 断食详情
   .fasting-details {
     display: flex;
     justify-content: space-around;
-    margin: 40rpx 0;
+    margin: $spacing-lg 0;
   }
-
   .detail-item {
     text-align: center;
   }
-
   .detail-label {
-    font-size: 24rpx;
+    font-size: $font-size-md;
     color: var(--text-secondary);
     margin-bottom: 10rpx;
     display: block;
   }
-
   .detail-value {
-    font-size: 32rpx;
+    font-size: $font-size-lg;
     font-weight: 600;
     color: var(--text-primary);
   }
-
-  // 操作按钮
   .fasting-actions {
-    display: flex;
+    @extend .button-group;
     justify-content: center;
-    gap: 30rpx;
-    margin-top: 50rpx;
+    margin-top: $spacing-xl;
   }
-
   .action-btn {
-    padding: 24rpx 40rpx;
-    border-radius: 24rpx;
-    border: none;
-    font-size: 28rpx;
-    font-weight: 600;
-    cursor: pointer;
+    @extend .btn-primary;
     display: flex;
     align-items: center;
     justify-content: center;
-
     .action-icon {
       margin-right: 16rpx;
-      font-size: 32rpx;
+      font-size: $font-size-lg;
     }
   }
-
-  .btn-start {
-    background: var(--primary-gradient);
-    color: var(--text-light);
-    box-shadow: 0 8rpx 30rpx var(--button-shadow);
-  }
-
   .btn-end {
+    @extend .btn-secondary;
     width: 80%;
     background: #f5f5f5 !important;
     color: var(--text-secondary) !important;
@@ -187,37 +135,25 @@
 // ===== 6. 统计卡片样式 =====
 .stats-card {
   .section-title {
-    font-size: 34rpx;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 30rpx;
+    @extend .section-title;
     display: block;
   }
-
   .stats-row {
-    display: flex;
-    gap: 20rpx;
+    @extend .stats-grid;
   }
-
   .stat-box {
     flex: 1;
     background: var(--primary-light);
-    border-radius: 30rpx;
-    padding: 30rpx;
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
     text-align: center;
   }
-
   .stat-value {
-    font-size: 36rpx;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin-bottom: 10rpx;
+    @extend .stat-value;
     display: block;
   }
-
   .stat-label {
-    font-size: 22rpx;
-    color: var(--text-secondary);
+    @extend .stat-label;
   }
 }
 
@@ -225,22 +161,19 @@
 .streak-card {
   .streak-icon {
     font-size: 56rpx;
-    margin-right: 30rpx;
+    margin-right: $spacing-lg;
   }
-
   .streak-info {
     flex: 1;
   }
-
   .streak-value {
-    font-size: 34rpx;
+    font-size: $font-size-lg;
     font-weight: 600;
     margin-bottom: 10rpx;
     display: block;
   }
-
   .streak-text {
-    font-size: 26rpx;
+    font-size: $font-size-md;
     opacity: 0.9;
   }
 }
@@ -248,66 +181,55 @@
 // ===== 8. 伴侣状态卡片样式 =====
 .partner-card {
   .section-title {
-    font-size: 34rpx;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 30rpx;
+    @extend .section-title;
     display: block;
   }
-
   .partner-info {
     display: flex;
     align-items: center;
-    margin-bottom: 30rpx;
+    margin-bottom: $spacing-lg;
   }
-
   .partner-avatar {
     width: 80rpx;
     height: 80rpx;
-    border-radius: 50%;
     background: #ff85a1;
     color: var(--text-light);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    margin-right: 30rpx;
+    margin-right: $spacing-lg;
+    border-radius: 50%;
   }
-
   .partner-name {
-    font-size: 32rpx;
+    font-size: $font-size-lg;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 6rpx;
     display: block;
   }
-
   .partner-status {
-    font-size: 24rpx;
+    font-size: $font-size-md;
     color: #00b368;
   }
-
   .partner-details {
     display: flex;
-    padding: 20rpx 0;
+    padding: $spacing-lg 0;
     border-top: 1px solid #f0f0f0;
   }
-
   .partner-stat {
     flex: 1;
     text-align: center;
   }
-
   .partner-stat-value {
-    font-size: 32rpx;
+    font-size: $font-size-lg;
     font-weight: 600;
     color: var(--primary-color);
     margin-bottom: 6rpx;
     display: block;
   }
-
   .partner-stat-label {
-    font-size: 22rpx;
+    font-size: $font-size-sm;
     color: var(--text-secondary);
   }
 }
@@ -316,15 +238,13 @@
 .calendar-view {
   display: flex;
   gap: 10rpx;
-  margin-top: 20rpx;
+  margin-top: $spacing-md;
 }
-
 .calendar-day {
   flex: 1;
   height: 60rpx;
-  border-radius: 10rpx;
+  border-radius: $border-radius-md;
   background: var(--primary-light);
-
   &.completed {
     background: var(--primary-color);
   }

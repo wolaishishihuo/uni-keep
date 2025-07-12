@@ -1,0 +1,71 @@
+// ==================== 主题变量系统 ====================
+
+:root,
+page {
+  /* 主色调 */
+  --primary-gradient: linear-gradient(45deg, #4195e1, #667eea);
+  --primary-color: #4195e1;
+  --primary-light: #e8f4ff;
+  --primary-dark: #3a85c8;
+
+  /* 文字颜色 */
+  --text-primary: #262626;
+  --text-secondary: #595959;
+  --text-light: #ffffff;
+
+  /* 背景色 */
+  --bg-gradient: linear-gradient(180deg, #f8fbff 0%, #e8f4ff 100%);
+  --bg-primary: #f8fbff;
+  --bg-secondary: #ffffff;
+
+  /* 交互元素 */
+  --button-shadow: rgba(65, 149, 225, 0.3);
+  --button-shadow-hover: rgba(65, 149, 225, 0.4);
+}
+
+.theme-female {
+  /* 主色调 */
+  --primary-gradient: linear-gradient(45deg, #ff6b9d, #ff85a1);
+  --primary-color: #ff6b9d;
+  --primary-light: #fff0f5;
+  --primary-dark: #e55c8a;
+
+  /* 背景色 */
+  --bg-gradient: linear-gradient(180deg, #fff9fb 0%, #fff0f5 100%);
+
+  /* 交互元素 */
+  --button-shadow: rgba(255, 107, 157, 0.3);
+  --button-shadow-hover: rgba(255, 107, 157, 0.4);
+}
+
+// ==================== 常用尺寸变量 ====================
+
+// 圆角
+$border-radius-sm: 20rpx;
+$border-radius-md: 30rpx;
+$border-radius-lg: 40rpx;
+
+// 间距
+$spacing-xs: 10rpx;
+$spacing-sm: 20rpx;
+$spacing-md: 30rpx;
+$spacing-lg: 40rpx;
+$spacing-xl: 50rpx;
+
+// 字体大小
+$font-size-xs: 22rpx;
+$font-size-sm: 24rpx;
+$font-size-md: 28rpx;
+$font-size-lg: 32rpx;
+$font-size-xl: 36rpx;
+$font-size-xxl: 48rpx;
+
+// 阴影
+$shadow-light: 0 4rpx 15rpx rgba(0, 0, 0, 0.05);
+$shadow-medium: 0 8rpx 30rpx rgba(0, 0, 0, 0.05);
+$shadow-strong: 0 8rpx 40rpx rgba(0, 0, 0, 0.05);
+
+// 过渡动画
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
