@@ -236,11 +236,3 @@
     background: #4195e1;
   }
 }
-
-// ========== 响应式适配 ==========
-@include mobile {
-  .action-buttons {
-    flex-direction: column;
-    gap: 15rpx;
-  }
-}

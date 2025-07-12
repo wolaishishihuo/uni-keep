@@ -7,6 +7,95 @@
 }
 </route>
 
+<template>
+  <view class="login-container">
+    <!-- 登录背景 -->
+    <view class="login-bg">
+      <view class="logo-section">
+        <view class="app-logo">
+          <i class="iconfont icon-jianchi text-white text-6xl!" />
+        </view>
+        <view class="app-name">
+          坚持有你
+        </view>
+        <view class="app-slogan">
+          一起坚持，一起成长
+        </view>
+      </view>
+    </view>
+
+    <!-- 登录表单区域 -->
+    <view class="login-form">
+      <view class="form-title">
+        欢迎使用坚持有你
+      </view>
+
+      <view class="form-subtitle">
+        请选择登录方式
+      </view>
+
+      <!-- 登录按钮组 -->
+      <view class="login-buttons">
+        <!-- 微信授权登录 -->
+        <wd-button
+          class="custom-button"
+          type="primary"
+          size="large"
+          custom-style="margin-bottom: 32rpx; background: #07c160; border-color: #07c160;"
+          :loading="isWxLoading"
+          @click="handleWxLogin"
+        >
+          <view class="login-btn-content">
+            <text class="btn-icon">
+              🔐
+            </text>
+            <text>微信授权登录</text>
+          </view>
+        </wd-button>
+
+        <!-- 一键登录 -->
+        <wd-button
+          class="custom-button"
+          type="info"
+          size="large"
+          plain
+          @click="handleQuickLogin"
+        >
+          <view class="login-btn-content">
+            <text class="btn-icon">
+              📱
+            </text>
+            <text>一键登录</text>
+          </view>
+        </wd-button>
+      </view>
+
+      <!-- 登录协议 -->
+      <view class="login-agreement">
+        <text class="agreement-text">
+          登录即表示同意
+        </text>
+        <text class="link-text" @click="viewPrivacy">
+          《隐私政策》
+        </text>
+        <text class="agreement-text">
+          和
+        </text>
+        <text class="link-text" @click="viewTerms">
+          《用户协议》
+        </text>
+      </view>
+    </view>
+
+    <!-- 授权弹窗 -->
+    <auth-modal
+      v-model="showAuthModal"
+      @confirm="handleAuthConfirm"
+      @cancel="handleAuthCancel"
+    />
+  </view>
+</template>
+
 <script setup lang="ts">
 import { useUserStore } from '@/store';
 import { toast } from '@/utils/toast';
@@ -69,93 +158,6 @@ function viewTerms() {
   });
 }
 </script>
-
-<template>
-  <view class="login-container">
-    <!-- 登录背景 -->
-    <view class="login-bg">
-      <view class="logo-section">
-        <view class="app-logo">
-          <i class="iconfont icon-jianchi text-white text-6xl!" />
-        </view>
-        <view class="app-name">
-          坚持有你
-        </view>
-        <view class="app-slogan">
-          一起坚持，一起成长
-        </view>
-      </view>
-    </view>
-
-    <!-- 登录表单区域 -->
-    <view class="login-form">
-      <view class="form-title">
-        欢迎使用坚持有你
-      </view>
-
-      <view class="form-subtitle">
-        请选择登录方式
-      </view>
-
-      <!-- 登录按钮组 -->
-      <view class="login-buttons">
-        <!-- 微信授权登录 -->
-        <wd-button
-          type="primary"
-          size="large"
-          custom-style="margin-bottom: 32rpx; background: #07c160; border-color: #07c160;"
-          :loading="isWxLoading"
-          @click="handleWxLogin"
-        >
-          <view class="login-btn-content">
-            <text class="btn-icon">
-              🔐
-            </text>
-            <text>微信授权登录</text>
-          </view>
-        </wd-button>
-
-        <!-- 一键登录 -->
-        <wd-button
-          type="info"
-          size="large"
-          plain
-          @click="handleQuickLogin"
-        >
-          <view class="login-btn-content">
-            <text class="btn-icon">
-              📱
-            </text>
-            <text>一键登录</text>
-          </view>
-        </wd-button>
-      </view>
-
-      <!-- 登录协议 -->
-      <view class="login-agreement">
-        <text class="agreement-text">
-          登录即表示同意
-        </text>
-        <text class="link-text" @click="viewPrivacy">
-          《隐私政策》
-        </text>
-        <text class="agreement-text">
-          和
-        </text>
-        <text class="link-text" @click="viewTerms">
-          《用户协议》
-        </text>
-      </view>
-    </view>
-
-    <!-- 授权弹窗 -->
-    <auth-modal
-      v-model="showAuthModal"
-      @confirm="handleAuthConfirm"
-      @cancel="handleAuthCancel"
-    />
-  </view>
-</template>
 
 <style lang="scss" scoped>
 .login-container {
@@ -246,7 +248,7 @@ function viewTerms() {
 }
 
 /* 自定义样式 */
-:deep(.wd-button) {
+:deep(.custom-button) {
   height: 88rpx !important;
   border-radius: 44rpx !important;
   font-size: 32rpx !important;

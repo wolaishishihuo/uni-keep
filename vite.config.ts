@@ -145,6 +145,12 @@ export default async ({ command, mode }) => {
           //   overrideBrowserslist: ['> 1%', 'last 2 versions'],
           // }),
         ]
+      },
+      preprocessorOptions: {
+        scss: {
+          additionalData: ` @import "@/style/variables.scss";
+            @import "@/style/components.scss";`
+        }
       }
     },
 

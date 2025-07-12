@@ -1,25 +1,3 @@
-<script setup lang="ts">
-import { useSetupForm } from '../hooks/useSetupForm';
-
-defineOptions({
-  name: 'PersonalInfoStep'
-});
-
-defineProps<{
-  bmiStatus: { text: string; color: string } | null;
-}>();
-const emit = defineEmits<{
-  'select-time': [field: string];
-}>();
-
-const { formData } = useSetupForm();
-
-// 点击时间字段，打开时间选择器
-function onTimeFieldClick(field: string) {
-  emit('select-time', field);
-}
-</script>
-
 <template>
   <view class="step-content">
     <view class="step-header">
@@ -132,6 +110,28 @@ function onTimeFieldClick(field: string) {
     </view>
   </view>
 </template>
+
+<script setup lang="ts">
+import { useSetupForm } from '../hooks/useSetupForm';
+
+defineOptions({
+  name: 'PersonalInfoStep'
+});
+
+defineProps<{
+  bmiStatus: { text: string; color: string } | null;
+}>();
+const emit = defineEmits<{
+  'select-time': [field: string];
+}>();
+
+const { formData } = useSetupForm();
+
+// 点击时间字段，打开时间选择器
+function onTimeFieldClick(field: string) {
+  emit('select-time', field);
+}
+</script>
 
 <style lang="scss" scoped>
 .info-group {
